@@ -7,6 +7,8 @@ A Nuxt module that provides an AI-powered chat interface using MCP (Model Contex
 - AI chat slideover component with streaming responses
 - Floating input component for quick questions
 - MCP tools integration for documentation search
+- Full-document search across titles, headings, paths, descriptions, and page body content
+- Fuse.js fuzzy fallback for typo-tolerant retrieval
 - Syntax highlighting for code blocks
 - FAQ suggestions
 - Persistent chat state
@@ -18,7 +20,7 @@ A Nuxt module that provides an AI-powered chat interface using MCP (Model Contex
 2. Install the required dependencies:
 
 ```bash
-pnpm add @ai-sdk/mcp @ai-sdk/vue @ai-sdk/gateway ai motion-v shiki shiki-stream
+pnpm add @ai-sdk/mcp @ai-sdk/vue @ai-sdk/gateway @ai-sdk/google @ai-sdk/openai-compatible ai motion-v shiki shiki-stream flexsearch fuse.js
 ```
 
 3. Add the module to your `nuxt.config.ts`:
@@ -37,20 +39,28 @@ export default defineNuxtConfig({
 })
 ```
 
-4. Authenticate to AI Gateway in one of two ways:
+4. Configure a model provider.
 
-   - **`AI_GATEWAY_API_KEY`** — Set it in the Vercel project env UI (and locally in `.env` if you want).
-   - **OIDC** — On Vercel, `VERCEL_OIDC_TOKEN` is injected automatically; you do **not** add it (or an API key) in the dashboard. For local builds, run `vercel env pull` on a linked project so `.env` contains the token:
+**Vercel AI Gateway**
 
 ```bash
-# Option A — API key (dashboard + optional local .env)
-AI_GATEWAY_API_KEY=your-gateway-key
-
-# Option B — local only, after vercel env pull (not set manually on Vercel)
-VERCEL_OIDC_TOKEN=...
+AI_PROVIDER=vercel
+AI_MODEL=google/gemini-3-flash
+VERCEL_API_KEY=your-vercel-key
+# or rely on Vercel OIDC via VERCEL_OIDC_TOKEN
 ```
 
-> **Note:** The module enables when `AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN` is present at build time. On Vercel, OIDC covers that without you creating env vars in the UI. If neither is available at build, the module stays disabled and a warning is logged.
+**Other supported providers**
+
+```bash
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=...
+OPENROUTER_MODEL=minimax/minimax-m2.5:free
+
+# or deepseek / nvidia / huggingface / groq / github / gemini / cloudflare
+```
+
+> **Note:** The module now supports Vercel AI Gateway, OpenRouter, DeepSeek, Nvidia, Hugging Face Router, Groq, GitHub Models, Gemini, and Cloudflare Workers AI. The assistant UI is enabled in dev, when `NUXT_PUBLIC_ASSISTANT_ENABLED=true`, or when supported provider credentials are present.
 
 ## Usage
 
@@ -158,7 +168,8 @@ clearMessages()
 |--------|------|---------|-------------|
 | `apiPath` | `string` | `/__docus__/assistant` | API endpoint path for the chat |
 | `mcpServer` | `string` | `/mcp` | MCP server path or full URL (e.g., `https://docs.example.com/mcp` for external servers) |
-| `model` | `string` | `google/gemini-3-flash` | AI model identifier for AI SDK Gateway |
+| `provider` | `string` | auto | Optional provider override (`vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`) |
+| `model` | `string` | provider default | Optional model override for the configured provider |
 
 ## Components
 
@@ -208,9 +219,27 @@ Composable for syntax highlighting code blocks with Shiki.
 - Nuxt 4.x
 - Nuxt UI 3.x (for `USlideover`, `UButton`, `UTextarea`, `UChatMessages`, etc.)
 - An MCP server running (path configurable via `mcpServer`)
-- `AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN` at build time
+- Built-in Docus MCP tools: `search-pages`, `list-pages`, and `get-page`
+- Server credentials for one supported provider, or Vercel AI Gateway auth
+- Optional `NUXT_PUBLIC_ASSISTANT_ENABLED=true` to expose the UI explicitly in production
 
 ## Customization
+
+### Retrieval Strategy
+
+The embedded assistant works best with the built-in Docus MCP tools:
+
+- `search-pages` — full-document retrieval across titles, descriptions, headings, paths, and body text
+- `list-pages` — structure browsing by page metadata
+- `get-page` — full markdown retrieval for a specific page
+
+By default, the assistant is prompted to:
+
+- use `search-pages` first for factual questions and troubleshooting
+- use `list-pages` for high-level exploration
+- use `get-page` after search when it needs full context or code examples
+
+`search-pages` uses FlexSearch for the primary pass and Fuse.js as a fuzzy fallback, so the assistant is more tolerant of minor typos.
 
 ### System Prompt
 

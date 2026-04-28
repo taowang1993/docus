@@ -2,6 +2,8 @@ import { join } from 'node:path'
 import { extendViteConfig, createResolver, useNuxt } from '@nuxt/kit'
 
 const { resolve } = createResolver(import.meta.url)
+const DevPort = 4987
+const DevSiteUrl = process.env.NUXT_SITE_URL || `http://127.0.0.1:${DevPort}`
 
 type DocusI18nOptions = { locales?: Array<string | { code: string }> }
 
@@ -39,7 +41,7 @@ export default defineNuxtConfig({
 
         // Fix @vercel/oidc ESM export issue (transitive dep of @ai-sdk/gateway)
         // Only needed when AI assistant is enabled.
-        if (process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN) {
+        if (process.env.VERCEL_API_KEY || process.env.VERCEL_OIDC_TOKEN) {
           config.optimizeDeps.include.push('@vercel/oidc')
           config.optimizeDeps.include = config.optimizeDeps.include.map(id =>
             id.replace(/^@vercel\/oidc$/, 'docus > @vercel/oidc'),
@@ -73,6 +75,36 @@ export default defineNuxtConfig({
     highlight: {
       shikiEngine: 'javascript',
     },
+  },
+  runtimeConfig: {
+    assistant: {
+      provider: process.env.AI_PROVIDER || '',
+      model: process.env.AI_MODEL || '',
+      apiPath: '',
+      mcpServer: '',
+      vercelApiKey: process.env.VERCEL_API_KEY || '',
+      openrouterApiKey: process.env.OPENROUTER_API_KEY || '',
+      openrouterModel: process.env.OPENROUTER_MODEL || 'minimax/minimax-m2.5:free',
+      deepseekApiKey: process.env.DEEPSEEK_API_KEY || '',
+      deepseekModel: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+      nvidiaApiKey: process.env.NVIDIA_API_KEY || '',
+      nvidiaModel: process.env.NVIDIA_MODEL || 'minimaxai/minimax-m2.7',
+      huggingfaceApiKey: process.env.HUGGINGFACE_API_KEY || '',
+      huggingfaceModel: process.env.HUGGINGFACE_MODEL || 'deepseek-ai/DeepSeek-V4-Pro:together',
+      groqApiKey: process.env.GROQ_API_KEY || '',
+      groqModel: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
+      githubToken: process.env.GITHUB_TOKEN || '',
+      githubModel: process.env.GITHUB_MODEL || 'openai/gpt-5',
+      geminiApiKey: process.env.GEMINI_API_KEY || '',
+      geminiModel: process.env.GEMINI_MODEL || 'gemini-3.1-flash-live-preview',
+      cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN || '',
+      cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
+      cloudflareModel: process.env.CLOUDFLARE_MODEL || '@cf/google/gemma-4-26b-a4b-it',
+    },
+  },
+  devServer: {
+    host: process.env.NUXT_HOST || 'localhost',
+    port: DevPort,
   },
   experimental: {
     asyncContext: true,
@@ -109,6 +141,9 @@ export default defineNuxtConfig({
       nitroConfig.prerender.routes.push('/sitemap.xml')
     },
   },
+  i18n: {
+    defaultLocale: 'en',
+  },
   icon: {
     customCollections: [
       {
@@ -121,6 +156,9 @@ export default defineNuxtConfig({
       includeCustomCollections: true,
     },
     provider: 'iconify',
+  },
+  llms: {
+    domain: DevSiteUrl,
   },
   ogImage: {
     zeroRuntime: true,

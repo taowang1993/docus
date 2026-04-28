@@ -1,5 +1,12 @@
 import { spawn } from 'node:child_process'
-import { resolveDevPort } from './dev-port.mjs'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+for (const envPath of [resolve('.env'), resolve('.env.local')]) {
+  if (existsSync(envPath)) {
+    process.loadEnvFile?.(envPath)
+  }
+}
 
 const appDir = process.argv[2]
 const extraArgs = process.argv.slice(3)
@@ -10,17 +17,15 @@ if (!appDir) {
 }
 
 const host = process.env.NUXT_HOST || 'localhost'
-const publicHost = ['0.0.0.0', '::', '[::]'].includes(host) ? 'localhost' : host
-const existingPort = Number(process.env.NUXT_PORT || process.env.PORT)
-const port = Number.isFinite(existingPort) && existingPort > 0
-  ? existingPort
-  : await resolveDevPort({ host })
-const siteUrl = process.env.NUXT_SITE_URL || `http://${publicHost}:${port}`
+const port = 4987
 const env = {
   ...process.env,
   NUXT_HOST: host,
   NUXT_PORT: String(port),
-  NUXT_SITE_URL: siteUrl,
+}
+
+if (!env.NUXT_SITE_URL) {
+  delete env.NUXT_SITE_URL
 }
 
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
