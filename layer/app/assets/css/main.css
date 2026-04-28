@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-sans: 'Public Sans', sans-serif;
+  --ui-container: 90rem;
+}
+
+html {
+  background-color: var(--ui-bg);
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--ui-border-accented) var(--ui-bg);
+  overflow-x: clip;
+}
+
+body {
+  background-color: var(--ui-bg);
+  overflow-x: clip;
+}
+
+#__nuxt {
+  overflow-x: clip;
+}
+
+* {
+  scrollbar-color: var(--ui-border-accented) var(--ui-bg);
+}
+
+body * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body *::-webkit-scrollbar {
+  display: none;
+}
+
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-corner {
+  background: var(--ui-bg);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--ui-border-accented);
+  border: 2px solid var(--ui-bg);
+  border-radius: 9999px;
+}
