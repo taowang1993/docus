@@ -95,7 +95,7 @@ export default defineEventHandler(async (event) => {
   else if (import.meta.dev) {
     transport = {
       type: 'http',
-      url: `http://localhost:3000${baseURL}${mcpServer}`,
+      url: `${getRequestURL(event).origin}${baseURL}${mcpServer}`,
     }
   }
   else {
