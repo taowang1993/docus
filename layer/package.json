@@ -46,6 +46,8 @@
     "ai": "6.0.168",
     "defu": "^6.1.7",
     "exsolve": "^1.0.8",
+    "flexsearch": "^0.8.212",
+    "fuse.js": "^7.1.0",
     "git-url-parse": "^16.1.0",
     "motion-v": "^2.2.1",
     "nuxt-llms": "^0.2.0",

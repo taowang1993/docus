@@ -2,8 +2,13 @@ import { streamText, convertToModelMessages, createUIMessageStream, createUIMess
 import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import type { H3Event } from 'h3'
+import { createAssistantChatModel, getAssistantProviderConfig } from '../utils/ai-provider'
 
 const MAX_STEPS = 10
+
+function logAssistant(step: string, data: Record<string, unknown>) {
+  console.info(`[docus-assistant] ${JSON.stringify({ step, ...data })}`)
+}
 
 function createLocalFetch(event: H3Event): typeof fetch {
   const origin = getRequestURL(event).origin
@@ -27,7 +32,6 @@ function stopWhenResponseComplete({ steps }: { steps: any[] }): boolean {
   const lastStep = steps.at(-1)
   if (!lastStep) return false
 
-  // Primary condition: stop when model gives a text response without tool calls
   const hasText = Boolean(lastStep.text && lastStep.text.trim().length > 0)
   const hasNoToolCalls = !lastStep.toolCalls || lastStep.toolCalls.length === 0
 
@@ -46,8 +50,14 @@ function getSystemPrompt(siteName: string) {
 - Speak as a helpful guide, not as the documentation itself
 
 **Tool usage (CRITICAL):**
-- You have tools: list-pages (discover pages) and get-page (read a page)
-- If a page title clearly matches the question, read it directly without listing first
+- You have tools: search-pages (full-document search), list-pages (browse structure), and get-page (read a page)
+- For substantive documentation questions, use a documentation tool before answering so the response stays grounded in the docs
+- Use search-pages first for most documentation questions, especially factual questions, troubleshooting, configuration details, or anything that may be buried in page content
+- You may answer simple greetings, acknowledgements, or purely meta/UI questions without tools when no docs lookup is needed
+- Use list-pages when the user is exploring sections, categories, or page names
+- If you already know the exact page path and need the full markdown, use get-page directly
+- After search-pages finds a likely match, use get-page when more context, exact wording, or code examples would help
+- Do not answer from prior knowledge when the docs tools can verify the answer
 - ALWAYS respond with text after using tools - never end with just tool calls
 
 **Guidelines:**
@@ -75,24 +85,30 @@ function getSystemPrompt(siteName: string) {
 }
 
 export default defineEventHandler(async (event) => {
+  const startedAt = performance.now()
   const { messages } = await readBody(event)
-  const config = useRuntimeConfig()
+  const config = useRuntimeConfig(event)
   const siteConfig = getSiteConfig(event)
-
   const siteName = siteConfig.name || 'Documentation'
 
+  const providerConfig = getAssistantProviderConfig(event)
   const mcpServer = config.assistant.mcpServer
   const isExternalUrl = mcpServer.startsWith('http://') || mcpServer.startsWith('https://')
   const baseURL = config.app?.baseURL?.replace(/\/$/, '') || ''
+  const requestPath = getRequestURL(event).pathname
 
   let transport: Parameters<typeof createMCPClient>[0]['transport']
+  let transportMode = 'internal-local-fetch'
+
   if (isExternalUrl) {
+    transportMode = 'external-http'
     transport = {
       type: 'http',
       url: mcpServer,
     }
   }
   else if (import.meta.dev) {
+    transportMode = 'internal-dev-http'
     transport = {
       type: 'http',
       url: `${getRequestURL(event).origin}${baseURL}${mcpServer}`,
@@ -106,42 +122,89 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  logAssistant('request_start', {
+    requestPath,
+    provider: providerConfig.provider,
+    model: providerConfig.model,
+    mcpServer,
+    transportMode,
+    transportUrl: transport.url,
+    messageCount: Array.isArray(messages) ? messages.length : 0,
+  })
+
   const httpClient = await createMCPClient({ transport })
   const mcpTools = await httpClient.tools()
 
+  logAssistant('mcp_tools_loaded', {
+    requestPath,
+    toolCount: Object.keys(mcpTools).length,
+    toolNames: Object.keys(mcpTools),
+  })
+
+  let toolCallCount = 0
+
   const stream = createUIMessageStream({
     execute: async ({ writer }: { writer: UIMessageStreamWriter }) => {
-      const modelMessages = await convertToModelMessages(messages)
-      const result = streamText({
-        model: config.assistant.model,
-        maxOutputTokens: 4000,
-        maxRetries: 2,
-        stopWhen: stopWhenResponseComplete,
-        system: getSystemPrompt(siteName),
-        messages: modelMessages,
-        tools: mcpTools as ToolSet,
-        onStepFinish: ({ toolCalls }: { toolCalls: ToolCallPart[] }) => {
-          if (toolCalls.length === 0) return
-          writer.write({
-            id: toolCalls[0]?.toolCallId,
-            type: 'data-tool-calls',
-            data: {
-              tools: toolCalls.map((tc: ToolCallPart) => {
-                const args = 'args' in tc ? tc.args : 'input' in tc ? tc.input : {}
-                return {
-                  toolName: tc.toolName,
-                  toolCallId: tc.toolCallId,
-                  args,
-                }
-              }),
-            },
-          })
-        },
-      })
-      writer.merge(result.toUIMessageStream())
+      try {
+        const modelMessages = await convertToModelMessages(messages)
+        const result = streamText({
+          model: createAssistantChatModel(event),
+          maxOutputTokens: 4000,
+          maxRetries: 2,
+          stopWhen: stopWhenResponseComplete,
+          system: getSystemPrompt(siteName),
+          messages: modelMessages,
+          tools: mcpTools as ToolSet,
+          onStepFinish: ({ toolCalls }: { toolCalls: ToolCallPart[] }) => {
+            if (toolCalls.length === 0) return
+
+            toolCallCount += toolCalls.length
+
+            logAssistant('tool_calls', {
+              requestPath,
+              provider: providerConfig.provider,
+              model: providerConfig.model,
+              toolCalls: toolCalls.map((tc: ToolCallPart) => tc.toolName),
+            })
+
+            writer.write({
+              id: toolCalls[0]?.toolCallId,
+              type: 'data-tool-calls',
+              data: {
+                tools: toolCalls.map((tc: ToolCallPart) => {
+                  const args = 'args' in tc ? tc.args : 'input' in tc ? tc.input : {}
+                  return {
+                    toolName: tc.toolName,
+                    toolCallId: tc.toolCallId,
+                    args,
+                  }
+                }),
+              },
+            })
+          },
+        })
+        writer.merge(result.toUIMessageStream())
+      }
+      catch (error) {
+        logAssistant('request_error', {
+          requestPath,
+          provider: providerConfig.provider,
+          model: providerConfig.model,
+          durationMs: Number((performance.now() - startedAt).toFixed(1)),
+          error: error instanceof Error ? error.message : String(error),
+        })
+        throw error
+      }
     },
     onFinish: async () => {
       await httpClient.close()
+      logAssistant('request_finish', {
+        requestPath,
+        provider: providerConfig.provider,
+        model: providerConfig.model,
+        durationMs: Number((performance.now() - startedAt).toFixed(1)),
+        toolCallCount,
+      })
     },
   })
 

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { queryCollection } from '@nuxt/content/server'
 import type { Collections } from '@nuxt/content'
-import { getAvailableLocales, getCollectionFromPath } from '../../utils/content'
+import { getAvailableLocales, getCollectionFromPath, isSearchableContentPath } from '../../utils/content'
 import { inferSiteURL } from '../../../utils/meta'
 
 export default defineMcpTool({
@@ -13,9 +13,9 @@ WHEN TO USE: Use this tool when you know the EXACT path to a documentation page.
 - You found a relevant path from list-pages and want the full content
 - User references a specific section or guide they want to read
 
-WHEN NOT TO USE: If you don't know the exact path and need to search/explore, use list-pages first.
+WHEN NOT TO USE: If you don't know the exact path, use search-pages for full-text retrieval or list-pages for structure browsing first.
 
-WORKFLOW: This tool returns the complete page content including title, description, and full markdown. Use this when you need to provide detailed answers or code examples from specific documentation pages.
+WORKFLOW: This tool returns the complete page content including title, description, and full markdown. Use this when you need to provide detailed answers, exact wording, or code examples from specific documentation pages.
 `,
   annotations: {
     readOnlyHint: true,
@@ -35,6 +35,10 @@ WORKFLOW: This tool returns the complete page content including title, descripti
     const event = useEvent()
     const config = useRuntimeConfig(event).public
     const siteUrl = getRequestURL(event).origin || inferSiteURL()
+
+    if (!isSearchableContentPath(path)) {
+      throw createError({ statusCode: 404, message: 'Page not found' })
+    }
 
     const availableLocales = getAvailableLocales(config)
     const collectionName = config.i18n?.locales

@@ -5,6 +5,14 @@ type ConfigWithLocales = {
   docus?: { filteredLocales?: LocaleObject<string>[] }
 }
 
+export function isNavigationPath(path: string): boolean {
+  return path.endsWith('.navigation') || path.includes('/.navigation')
+}
+
+export function isSearchableContentPath(path: string): boolean {
+  return Boolean(path) && !isNavigationPath(path)
+}
+
 export function getAvailableLocales(config: ConfigWithLocales): string[] {
   if (config.docus?.filteredLocales) {
     return config.docus.filteredLocales.map(locale => locale.code)
