@@ -30,39 +30,39 @@ The repo’s core architecture is: **build Docus once as an AI-powered Nuxt laye
 
 The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/with-env.mjs`.
 
-| Env Var                       | Use Case               |
-| ----------------------------- | ---------------------- |
-| NUXT_PORT                     | local dev port         |
-| NUXT_APP_BASE_URL             | deployment base path   |
-| NUXT_SITE_URL                 | canonical site URL     |
-| AI_PROVIDER                   | assistant provider     |
-| AI_MODEL                      | model override         |
-| AI_GATEWAY_API_KEY            | Vercel AI Gateway      |
-| OPENROUTER_API_KEY            | OpenRouter access      |
-| OPENROUTER_MODEL              | OpenRouter model       |
-| DEEPSEEK_API_KEY              | DeepSeek access        |
-| DEEPSEEK_MODEL                | DeepSeek model         |
-| NVIDIA_API_KEY                | NVIDIA access          |
-| NVIDIA_MODEL                  | NVIDIA model           |
-| HUGGINGFACE_API_KEY           | Hugging Face access    |
-| HUGGINGFACE_MODEL             | Hugging Face model     |
-| GROQ_API_KEY                  | Groq access            |
-| GROQ_MODEL                    | Groq model             |
-| GITHUB_TOKEN                  | GitHub Models access   |
-| GITHUB_MODEL                  | GitHub model           |
-| GEMINI_API_KEY                | Gemini access          |
-| GEMINI_MODEL                  | Gemini model           |
-| CLOUDFLARE_ACCOUNT_ID         | Cloudflare account        |
-| CLOUDFLARE_API_TOKEN          | Cloudflare API token      |
-| CLOUDFLARE_MODEL              | Cloudflare model          |
-| STUDIO_GITHUB_CLIENT_ID       | Nuxt Studio GitHub client |
-| STUDIO_GITHUB_CLIENT_SECRET   | Nuxt Studio GitHub secret |
-| STUDIO_GITHUB_MODERATORS      | Nuxt Studio access allowlist |
-| NUXT_PUBLIC_ASSISTANT_ENABLED | force-enable assistant    |
+| Env Var                       | Use Case                     |
+| ----------------------------- | ---------------------------- |
+| NUXT_PORT                     | Local Dev Port               |
+| NUXT_APP_BASE_URL             | Deployment Base Path         |
+| NUXT_SITE_URL                 | Canonical Site URL           |
+| AI_PROVIDER                   | Assistant Provider           |
+| AI_MODEL                      | Model Override               |
+| AI_GATEWAY_API_KEY            | Vercel AI Gateway            |
+| OPENROUTER_API_KEY            | OpenRouter Access            |
+| OPENROUTER_MODEL              | OpenRouter Model             |
+| DEEPSEEK_API_KEY              | DeepSeek Access              |
+| DEEPSEEK_MODEL                | DeepSeek Model               |
+| NVIDIA_API_KEY                | NVIDIA Access                |
+| NVIDIA_MODEL                  | NVIDIA Model                 |
+| HUGGINGFACE_API_KEY           | Hugging Face Access          |
+| HUGGINGFACE_MODEL             | Hugging Face Model           |
+| GROQ_API_KEY                  | Groq Access                  |
+| GROQ_MODEL                    | Groq Model                   |
+| GITHUB_TOKEN                  | GitHub Models Access         |
+| GITHUB_MODEL                  | GitHub Model                 |
+| GEMINI_API_KEY                | Gemini Access                |
+| GEMINI_MODEL                  | Gemini Model                 |
+| CLOUDFLARE_ACCOUNT_ID         | Cloudflare Account           |
+| CLOUDFLARE_API_TOKEN          | Cloudflare API Token         |
+| CLOUDFLARE_MODEL              | Cloudflare Model             |
+| STUDIO_GITHUB_CLIENT_ID       | Nuxt Studio GitHub Client    |
+| STUDIO_GITHUB_CLIENT_SECRET   | Nuxt Studio GitHub Secret    |
+| STUDIO_GITHUB_MODERATORS      | Nuxt Studio Access Allowlist |
+| NUXT_PUBLIC_ASSISTANT_ENABLED | Force Enable Assistant       |
 
 ## Deployment
 
-### Docs site
+### Docs Site
 
 The official docs app lives in `docs/`, extends `docus` from `layer/`, and can be deployed either from the repository root (workspace build) or directly from `docs/` (template-style Vercel setup).
 
@@ -85,7 +85,7 @@ Important deployment facts:
 - Configure the GitHub OAuth callback URL to `https://<your-domain>/__nuxt_studio/auth/github`
 - Open Studio after deployment at `https://<your-domain>/admin`
 
-### Package publishing
+### Package Publishing
 
 This repo also publishes two packages:
 
@@ -193,4 +193,5 @@ Docus is organized as a **layered monorepo**:
 
 - Do not edit the `Development Guidelines` section in `AGENTS.md` unless asked to.
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes manually unless the user explicitly asks for it.
+- Markdown files are formatted with Prettier. Run `pnpm run format:md` after editing Markdown, or rely on your editor's format-on-save behavior.
 - When opening or updating a PR, use `.github/PR.md` as the source template. If that file is missing in the current checkout, copy the current draft from `.github/workflows/PR.md` first.
