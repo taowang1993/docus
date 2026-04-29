@@ -67,6 +67,12 @@ function getOpenRouterHeaders(siteUrl: string) {
     : undefined
 }
 
+function getAiGatewayApiKey(config: ReturnType<typeof useRuntimeConfig>) {
+  return config.assistant.aiGatewayApiKey
+    || process.env.AI_GATEWAY_API_KEY
+    || ''
+}
+
 function hasCloudflareCredentials(config: ReturnType<typeof useRuntimeConfig>) {
   return Boolean(
     (config.assistant.cloudflareApiToken || process.env.CLOUDFLARE_API_TOKEN)
@@ -80,7 +86,7 @@ function getConfiguredProvider(config: ReturnType<typeof useRuntimeConfig>) {
     return normalizeProvider(explicitProvider)
   }
 
-  if (config.assistant.vercelApiKey || process.env.VERCEL_API_KEY || process.env.VERCEL_OIDC_TOKEN) return 'vercel'
+  if (getAiGatewayApiKey(config) || process.env.VERCEL_OIDC_TOKEN) return 'vercel'
   if (config.assistant.openrouterApiKey || process.env.OPENROUTER_API_KEY) return 'openrouter'
   if (config.assistant.deepseekApiKey || process.env.DEEPSEEK_API_KEY) return 'deepseek'
   if (config.assistant.nvidiaApiKey || process.env.NVIDIA_API_KEY) return 'nvidia'
@@ -266,13 +272,13 @@ export function getAssistantProviderConfig(event: H3Event): AssistantProviderCon
     }
   }
 
-  const apiKey = config.assistant.vercelApiKey || process.env.VERCEL_API_KEY || ''
+  const apiKey = getAiGatewayApiKey(config)
   const model = modelOverride || 'google/gemini-3-flash'
 
   if (!apiKey && !process.env.VERCEL_OIDC_TOKEN) {
     throw createError({
       statusCode: 503,
-      statusMessage: 'AI assistant is not configured. Set VERCEL_API_KEY, use Vercel OIDC, or configure AI_PROVIDER with provider-specific server credentials.',
+      statusMessage: 'AI assistant is not configured. Set AI_GATEWAY_API_KEY, use Vercel OIDC, or configure AI_PROVIDER with provider-specific server credentials.',
     })
   }
 

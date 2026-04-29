@@ -41,7 +41,7 @@ export default defineNuxtConfig({
 
         // Fix @vercel/oidc ESM export issue (transitive dep of @ai-sdk/gateway)
         // Only needed when AI assistant is enabled.
-        if (process.env.VERCEL_API_KEY || process.env.VERCEL_OIDC_TOKEN) {
+        if (process.env.AI_PROVIDER === 'vercel' || process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN) {
           config.optimizeDeps.include.push('@vercel/oidc')
           config.optimizeDeps.include = config.optimizeDeps.include.map(id =>
             id.replace(/^@vercel\/oidc$/, 'docus > @vercel/oidc'),
@@ -82,7 +82,7 @@ export default defineNuxtConfig({
       model: process.env.AI_MODEL || '',
       apiPath: '',
       mcpServer: '',
-      vercelApiKey: process.env.VERCEL_API_KEY || '',
+      aiGatewayApiKey: process.env.AI_GATEWAY_API_KEY || '',
       openrouterApiKey: process.env.OPENROUTER_API_KEY || '',
       openrouterModel: process.env.OPENROUTER_MODEL || 'minimax/minimax-m2.5:free',
       deepseekApiKey: process.env.DEEPSEEK_API_KEY || '',

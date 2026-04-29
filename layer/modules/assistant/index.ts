@@ -40,7 +40,7 @@ const defaults: Required<Pick<AssistantModuleOptions, 'apiPath' | 'mcpServer'>> 
 type AssistantRuntimeConfig = {
   provider?: string
   model?: string
-  vercelApiKey?: string
+  aiGatewayApiKey?: string
   openrouterApiKey?: string
   openrouterModel?: string
   deepseekApiKey?: string
@@ -66,7 +66,7 @@ function hasCloudflareCredentials(config: AssistantRuntimeConfig) {
 
 function getFirstConfiguredProvider(config: AssistantRuntimeConfig) {
   if (config.provider) return config.provider
-  if (config.vercelApiKey || process.env.VERCEL_OIDC_TOKEN) return 'vercel'
+  if (config.aiGatewayApiKey || process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN) return 'vercel'
   if (config.openrouterApiKey) return 'openrouter'
   if (config.deepseekApiKey) return 'deepseek'
   if (config.nvidiaApiKey) return 'nvidia'
@@ -148,7 +148,7 @@ export default defineNuxtModule<AssistantModuleOptions>({
       mcpServer: options.mcpServer,
       provider: options.provider || assistantRuntimeConfig.provider || '',
       model: options.model || assistantRuntimeConfig.model || '',
-      vercelApiKey: assistantRuntimeConfig.vercelApiKey || '',
+      aiGatewayApiKey: assistantRuntimeConfig.aiGatewayApiKey || '',
       openrouterApiKey: assistantRuntimeConfig.openrouterApiKey || '',
       openrouterModel: assistantRuntimeConfig.openrouterModel || 'minimax/minimax-m2.5:free',
       deepseekApiKey: assistantRuntimeConfig.deepseekApiKey || '',
@@ -189,7 +189,7 @@ declare module 'nuxt/schema' {
       mcpServer: string
       provider: string
       model: string
-      vercelApiKey: string
+      aiGatewayApiKey: string
       openrouterApiKey: string
       openrouterModel: string
       deepseekApiKey: string

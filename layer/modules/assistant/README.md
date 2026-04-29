@@ -46,7 +46,8 @@ export default defineNuxtConfig({
 ```bash
 AI_PROVIDER=vercel
 AI_MODEL=google/gemini-3-flash
-VERCEL_API_KEY=your-vercel-key
+# Use AI_GATEWAY_API_KEY for manual keys; Vercel reserves the VERCEL_* prefix.
+AI_GATEWAY_API_KEY=your-api-key
 # or rely on Vercel OIDC via VERCEL_OIDC_TOKEN
 ```
 

@@ -37,7 +37,7 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 | NUXT_SITE_URL                 | canonical site URL     |
 | AI_PROVIDER                   | assistant provider     |
 | AI_MODEL                      | model override         |
-| VERCEL_API_KEY                | Vercel AI Gateway      |
+| AI_GATEWAY_API_KEY            | Vercel AI Gateway      |
 | OPENROUTER_API_KEY            | OpenRouter access      |
 | OPENROUTER_MODEL              | OpenRouter model       |
 | DEEPSEEK_API_KEY              | DeepSeek access        |
