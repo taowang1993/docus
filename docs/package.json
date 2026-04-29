@@ -1,9 +1,9 @@
 {
-  "name": "docus-docs",
+  "name": "docus",
   "description": "Official documentation for Docus, also used as playground.",
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 pnpm --dir .. run layer:prepare && NODE_OPTIONS=--max-old-space-size=8192 nuxt build",
     "dev": "nuxt dev"
   },
   "dependencies": {
