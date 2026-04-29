@@ -64,18 +64,16 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 
 ### Docs Site
 
-The official docs app lives in `docs/`, extends `docus` from `layer/`, and can be deployed either from the repository root (workspace build) or directly from `docs/` (template-style Vercel setup).
+The official docs app lives in `docs/`, extends `docus` from `layer/`, and is deployed directly from `docs/` (template-style Vercel setup).
 
 Important deployment facts:
 
-- For repo-root deployments, use the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`
-- For template-style Vercel deployments, point the project at `docs/`; `docs/package.json` prepares the layer before `nuxt build`, so no `vercel.json` is needed in that setup
-- The workspace root `build` script delegates to `pnpm run docs:build`
+- For Vercel deployments, point the project at `docs/`; `docs/package.json` prepares the layer before `nuxt build`, so no `vercel.json` is needed in that setup
 - Verification command: `pnpm run verify`
 - Site config is defined in `docs/nuxt.config.ts`
 - Nitro prerendering, sitemap generation, robots output, OG image generation, `llms.txt` support, and the Vercel `/tmp/contents.sqlite` setup are configured through the layer
 - Set `NUXT_SITE_URL` to the public deployment URL for the site (for example `https://docus-pi-nine.vercel.app`)
-- Keep `NUXT_APP_BASE_URL=/` for normal root deployments unless the site is hosted under a subpath
+- Keep `NUXT_APP_BASE_URL=/` for the site root unless the site is hosted under a subpath
 
 ### Nuxt Studio
 

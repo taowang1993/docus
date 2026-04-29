@@ -10,7 +10,6 @@
   "license": "MIT",
   "scripts": {
     "dev": "pnpm run docs:dev",
-    "build": "pnpm run docs:build",
     "layer:prepare": "node scripts/with-env.mjs nuxt prepare layer",
     "docs:dev": "node scripts/run-dev.mjs docs",
     "docs:build": "NODE_OPTIONS=--max-old-space-size=8192 pnpm run layer:prepare && NODE_OPTIONS=--max-old-space-size=8192 node scripts/with-env.mjs nuxt build docs --extends ../layer",
