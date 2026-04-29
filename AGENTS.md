@@ -16,15 +16,15 @@ The repo’s core architecture is: **build Docus once as an AI-powered Nuxt laye
 
 | Tech                                  | Use Case      |
 | ------------------------------------- | ------------- |
-| pnpm, Node.js, TypeScript, release-it | workspace     |
-| Nuxt 4 + Vue 3                        | app framework |
-| Nuxt Content, MDC, Shiki, Nuxt Image  | content       |
+| pnpm, Node.js, TypeScript, release-it | Workspace     |
+| Nuxt 4 + Vue 3                        | App Framework |
+| Nuxt Content, MDC, Shiki, Nuxt Image  | Content       |
 | Nuxt UI, Tailwind CSS 4, Iconify      | UI            |
-| Nuxt i18n                             | localization  |
-| AI SDK                                | assistant     |
-| FlexSearch, Fuse.js, MCP toolkit      | search        |
-| Nuxt OG Image, Nuxt LLMs, Robots      | metadata      |
-| npm packages                          | publishing    |
+| Nuxt i18n                             | Localization  |
+| AI SDK                                | Assistant     |
+| FlexSearch, Fuse.js, MCP toolkit      | Search        |
+| Nuxt OG Image, Nuxt LLMs, Robots      | Metadata      |
+| npm packages                          | Publishing    |
 
 ## Environment Variables
 
