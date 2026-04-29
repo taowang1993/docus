@@ -77,6 +77,7 @@ async function copyPage() {
     />
 
     <UDropdownMenu
+      :modal="false"
       size="sm"
       :items="items"
       :content="{
@@ -90,6 +91,7 @@ async function copyPage() {
         color="neutral"
         variant="soft"
         class="border-l border-muted"
+        aria-label="Open copy actions menu"
       />
     </UDropdownMenu>
   </UFieldGroup>

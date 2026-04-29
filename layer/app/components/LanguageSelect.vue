@@ -1,81 +1,82 @@
 <script setup lang="ts">
 const { locale, locales, switchLocalePath } = useDocusI18n()
 
-function getEmojiFlag(locale: string): string {
-  const languageToCountry: Record<string, string> = {
-    ar: 'sa', // Arabic -> Saudi Arabia
-    bn: 'bd', // Bengali -> Bangladesh
-    ca: 'es', // Catalan -> Spain
-    ckb: 'iq', // Central Kurdish -> Iraq
-    cs: 'cz', // Czech -> Czech Republic (note: modern country code is actually 'cz')
-    da: 'dk', // Danish -> Denmark
-    el: 'gr', // Greek -> Greece
-    en: 'gb', // English -> Great Britain
-    et: 'ee', // Estonian -> Estonia
-    he: 'il', // Hebrew -> Israel
-    hi: 'in', // Hindi -> India
-    hy: 'am', // Armenian -> Armenia
-    ja: 'jp', // Japanese -> Japan
-    kk: 'kz', // Kazakh -> Kazakhstan
-    km: 'kh', // Khmer -> Cambodia
-    ko: 'kr', // Korean -> South Korea
-    ky: 'kg', // Kyrgyz -> Kyrgyzstan
-    lb: 'lu', // Luxembourgish -> Luxembourg
-    ms: 'my', // Malay -> Malaysia
-    nb: 'no', // Norwegian Bokmål -> Norway
-    sl: 'si', // Slovenian -> Slovenia
-    sv: 'se', // Swedish -> Sweden
-    uk: 'ua', // Ukrainian -> Ukraine
-    ur: 'pk', // Urdu -> Pakistan
-    vi: 'vn', // Vietnamese -> Vietnam
-    es: 'es', // Spanish -> Spain
-    id: 'id', // Indonesian -> Indonesia
-  }
+const currentLocaleLabel = computed(() => {
+  const currentLocale = locales.find(localeItem => localeItem.code === locale.value)
 
-  const baseLanguage = locale.split('-')[0]?.toLowerCase() || locale
-  const countryCode = languageToCountry[baseLanguage] || locale.replace(/^.*-/, '').slice(0, 2)
-
-  return countryCode.toUpperCase()
-    .split('')
-    .map(char => String.fromCodePoint(0x1F1A5 + char.charCodeAt(0)))
-    .join('')
-}
+  return currentLocale?.name || locale.value.toUpperCase()
+})
 </script>
 
 <template>
-  <UPopover :content="{ align: 'end' }">
-    <UButton
-      color="neutral"
-      variant="ghost"
-      class="size-8"
-    >
-      <template #trailing>
-        <span class="text-lg">
-          {{ getEmojiFlag(locale) }}
-        </span>
-      </template>
-    </UButton>
+  <UPopover :content="{ align: 'start', sideOffset: 8 }">
+    <template #default="{ open }">
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="sm"
+        :label="currentLocaleLabel"
+        aria-haspopup="menu"
+        :aria-expanded="open"
+        class="h-9 rounded-lg bg-default px-3 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
+        :class="open ? 'text-highlighted ring-default' : 'text-default'"
+        :ui="{ label: 'truncate' }"
+      >
+        <template #trailing>
+          <UIcon
+            name="i-lucide-chevron-down"
+            class="size-3.5 shrink-0 transition-transform duration-200 ease-out"
+            :class="open ? 'rotate-180' : 'rotate-0'"
+          />
+        </template>
+      </UButton>
+    </template>
 
     <template #content>
-      <ul class="flex flex-col">
-        <li
-          v-for="localeItem in locales"
-          :key="localeItem.code"
-        >
+      <div class="w-40 max-w-[calc(100vw-1rem)] px-1">
+        <div class="language-select-scrollbar max-h-80 overflow-y-auto py-1">
           <NuxtLink
-            class="flex justify-between py-1.5 px-2 gap-1 hover:bg-muted"
+            v-for="localeItem in locales"
+            :key="localeItem.code"
             :to="switchLocalePath(localeItem.code) as string"
             :aria-label="localeItem.name"
+            class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-highlighted"
+            :class="localeItem.code === locale ? 'bg-elevated font-medium text-highlighted' : 'text-muted'"
+            :aria-current="localeItem.code === locale ? 'page' : undefined"
           >
-            <span class="text-sm">
+            <span class="min-w-0 flex-1 truncate">
               {{ localeItem.name }}
             </span>
-            <span class="size-5 text-center">
-              {{ getEmojiFlag(localeItem.code) }}
-            </span>
+
+            <UIcon
+              v-if="localeItem.code === locale"
+              name="i-lucide-check"
+              class="size-4 shrink-0 text-primary"
+            />
           </NuxtLink>
-        </li>
-      </ul>
+        </div>
+      </div>
     </template>
   </UPopover>
 </template>
+
+<style scoped>
+.language-select-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--ui-bg) 84%, var(--ui-border-muted) 16%) var(--ui-bg);
+}
+
+.language-select-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.language-select-scrollbar::-webkit-scrollbar-track {
+  background: var(--ui-bg);
+}
+
+.language-select-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--ui-bg) 84%, var(--ui-border-muted) 16%);
+  border: 2px solid var(--ui-bg);
+  border-radius: 9999px;
+}
+</style>

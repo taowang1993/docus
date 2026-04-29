@@ -35,6 +35,7 @@
   },
   "assistant": {
     "title": "Demander à l'IA",
+    "panelTitle": "Assistant",
     "placeholder": "Posez une question...",
     "tooltip": "Poser une question à l'IA",
     "tryAsking": "Essayez de poser une question",

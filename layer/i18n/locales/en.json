@@ -35,6 +35,7 @@
   },
   "assistant": {
     "title": "Ask AI",
+    "panelTitle": "Assistant",
     "placeholder": "Ask a question...",
     "tooltip": "Ask AI a question",
     "tryAsking": "Try asking a question",

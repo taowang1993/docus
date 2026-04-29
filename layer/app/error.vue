@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const { forced: forcedColorMode } = useDocusColorMode()
 const { locale, locales, isEnabled, t, switchLocalePath } = useDocusI18n()
+const { open: contentSearchOpen } = useContentSearch()
 
 const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof nuxtUiLocales] || nuxtUiLocales.en)
 const lang = computed(() => nuxtUiLocale.value.code)
@@ -58,6 +59,10 @@ const { data: files } = useLazyAsyncData(`search_${collectionName.value}`, () =>
 })
 
 provide('navigation', navigation)
+
+function closeContentSearch() {
+  contentSearchOpen.value = false
+}
 </script>
 
 <template>
@@ -69,10 +74,20 @@ provide('navigation', navigation)
     <AppFooter />
 
     <ClientOnly>
+      <div
+        v-if="contentSearchOpen"
+        data-testid="content-search-overlay"
+        class="fixed inset-0 z-[60] bg-black/35 backdrop-blur-[1px]"
+        @click="closeContentSearch"
+      />
+
       <LazyUContentSearch
         :files="files"
         :navigation="navigation"
         :color-mode="!forcedColorMode"
+        :modal="false"
+        :overlay="false"
+        :ui="{ modal: 'z-[61]' }"
       />
     </ClientOnly>
   </UApp>
