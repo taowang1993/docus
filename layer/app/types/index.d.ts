@@ -88,7 +88,7 @@ declare module 'nuxt/schema' {
         trigger?: string
         /**
          * Icon for the "Explain with AI" button.
-         * @default 'i-lucide-brain'
+         * @default 'i-lucide-sparkles'
          */
         explain?: string
       }

@@ -8,7 +8,7 @@ const { open, isOpen } = useAssistant()
 const { t } = useDocusI18n()
 const input = ref('')
 const isVisible = ref(true)
-const inputRef = ref<{ inputRef: HTMLInputElement } | null>(null)
+const inputRef = ref<HTMLTextAreaElement | null>(null)
 
 const isDocsRoute = computed(() => route.meta.layout === 'docs')
 const isFloatingInputEnabled = computed(() => appConfig.assistant?.floatingInput !== false)
@@ -39,13 +39,13 @@ const shortcuts = computed(() => ({
     usingInput: true,
     handler: () => {
       if (!isDocsRoute.value || !isFloatingInputEnabled.value) return
-      inputRef.value?.inputRef?.focus()
+      inputRef.value?.focus()
     },
   },
   escape: {
     usingInput: true,
     handler: () => {
-      inputRef.value?.inputRef?.blur()
+      inputRef.value?.blur()
     },
   },
 }))
@@ -69,23 +69,21 @@ defineShortcuts(shortcuts)
         class="pointer-events-none flex w-full justify-center"
         @submit.prevent="handleSubmit"
       >
-        <div class="pointer-events-auto w-full max-w-96">
-          <UInput
-            ref="inputRef"
-            v-model="input"
-            :placeholder="placeholder"
-            size="lg"
-            maxlength="1000"
-            :ui="{
-              root: 'group w-full! min-w-0 sm:max-w-96 transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-105 [@media(hover:hover)]:focus-within:scale-105',
-              base: 'bg-default shadow-lg rounded-xl text-base',
-              trailing: 'pe-2',
-            }"
-            @keydown.enter.exact.prevent="handleSubmit"
-          >
-            <template #trailing>
-              <div class="flex items-center gap-2">
-                <div class="hidden sm:flex group-focus-within:hidden items-center gap-1">
+        <div class="pointer-events-auto w-full max-w-[36rem]">
+          <div class="rounded-xl border border-default bg-default/95 shadow-xl backdrop-blur-sm">
+            <div class="flex min-h-[3rem] flex-col px-4 py-1.5">
+              <textarea
+                ref="inputRef"
+                v-model="input"
+                :placeholder="placeholder"
+                rows="1"
+                maxlength="1000"
+                class="min-h-[1.75rem] w-full flex-1 resize-none bg-transparent text-sm leading-5 text-highlighted outline-none placeholder:text-muted [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                @keydown.enter.exact.prevent="handleSubmit"
+              />
+
+              <div class="mt-0.5 flex items-center justify-end gap-1.5">
+                <div class="hidden sm:flex items-center justify-end gap-1 text-xs text-muted">
                   <UKbd
                     v-for="key in shortcutDisplayKeys"
                     :key="key"
@@ -93,16 +91,14 @@ defineShortcuts(shortcuts)
                   />
                 </div>
 
-                <UButton
-                  type="submit"
-                  icon="i-lucide-arrow-up"
-                  color="primary"
+                <UChatPromptSubmit
                   size="xs"
+                  class="shrink-0"
                   :disabled="!input.trim()"
                 />
               </div>
-            </template>
-          </UInput>
+            </div>
+          </div>
         </div>
       </form>
     </motion.div>

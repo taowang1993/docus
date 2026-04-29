@@ -5,12 +5,16 @@ import { useRuntimeConfig } from '#imports'
 const route = useRoute()
 const toast = useToast()
 const appBaseURL = useRuntimeConfig().app?.baseURL || '/'
+const site = useSiteConfig()
+const requestURL = useRequestURL()
 
 const { copy, copied } = useClipboard()
 const { t } = useDocusI18n()
 
-const markdownLink = computed(() => `${window?.location?.origin}${appBaseURL}raw${route.path}.md`)
-const items = [
+const siteOrigin = computed(() => site.url?.replace(/\/$/, '') || requestURL.origin)
+const markdownLink = computed(() => `${siteOrigin.value}${appBaseURL}raw${route.path}.md`)
+const mcpLink = computed(() => `${siteOrigin.value}${appBaseURL}mcp`)
+const items = computed(() => [
   [{
     label: t('docs.copy.link'),
     icon: 'i-lucide-link',
@@ -41,7 +45,7 @@ const items = [
       label: 'Copy MCP Server URL',
       icon: 'i-lucide-link',
       onSelect() {
-        copy(`${window?.location?.origin}${appBaseURL}mcp`)
+        copy(mcpLink.value)
         toast.add({
           title: 'Copied to clipboard',
           icon: 'i-lucide-check-circle',
@@ -55,7 +59,7 @@ const items = [
       to: `/mcp/deeplink`,
     },
   ],
-]
+])
 
 async function copyPage() {
   const page = await $fetch<string>(`/raw${route.path}.md`)
@@ -77,6 +81,7 @@ async function copyPage() {
     />
 
     <UDropdownMenu
+      :modal="false"
       size="sm"
       :items="items"
       :content="{
@@ -90,6 +95,7 @@ async function copyPage() {
         color="neutral"
         variant="soft"
         class="border-l border-muted"
+        aria-label="Open copy actions menu"
       />
     </UDropdownMenu>
   </UFieldGroup>

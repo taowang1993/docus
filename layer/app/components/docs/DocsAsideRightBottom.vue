@@ -10,7 +10,7 @@ const showExplainWithAi = computed(() => {
   return isEnabled.value && appConfig.assistant?.explainWithAi !== false
 })
 
-const explainIcon = computed(() => appConfig.assistant?.icons?.explain || 'i-lucide-brain')
+const explainIcon = computed(() => appConfig.assistant?.icons?.explain || appConfig.assistant?.icons?.trigger || 'i-lucide-sparkles')
 </script>
 
 <template>

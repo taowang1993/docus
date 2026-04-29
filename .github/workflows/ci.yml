@@ -54,4 +54,5 @@ jobs:
         working-directory: ./cli
 
       - name: Publish CLI and Layer
+        if: github.repository == 'nuxt-content/docus'
         run: npx pkg-pr-new publish --compact './cli' './layer'

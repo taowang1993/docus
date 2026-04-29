@@ -13,13 +13,13 @@ const components: Record<string, any> = {
 
 const [DefineChatContent, ReuseChatContent] = createReusableTemplate<{ showExpandButton?: boolean }>()
 
-const { isOpen, isExpanded, isMobile, panelWidth, toggleExpanded, messages, pendingMessage, clearPending, faqQuestions } = useAssistant()
+const { isOpen, isExpanded, isMobile, isResizing, panelWidth, toggleExpanded, setDesktopWidth, setResizing, messages, pendingMessage, clearPending, faqQuestions } = useAssistant()
 const config = useRuntimeConfig()
 const toast = useToast()
 const { t } = useDocusI18n()
 const input = ref('')
 
-const displayTitle = computed(() => t('assistant.title'))
+const displayPanelTitle = computed(() => t('assistant.panelTitle'))
 const displayPlaceholder = computed(() => t('assistant.placeholder'))
 
 const chat = new Chat({
@@ -111,7 +111,63 @@ function resetChat() {
   chat.messages.length = 0
 }
 
+let resizeStartX = 0
+let resizeStartWidth = 0
+
+function stopResize() {
+  if (!isResizing.value) {
+    return
+  }
+
+  setResizing(false)
+
+  if (!import.meta.client) {
+    return
+  }
+
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+}
+
+function updateResize(clientX: number) {
+  if (!isResizing.value) {
+    return
+  }
+
+  const nextWidth = resizeStartWidth - (clientX - resizeStartX)
+  setDesktopWidth(nextWidth)
+}
+
+function handlePointerMove(event: PointerEvent) {
+  updateResize(event.clientX)
+}
+
+function handleMouseMove(event: MouseEvent) {
+  updateResize(event.clientX)
+}
+
+function startResize(event: PointerEvent | MouseEvent) {
+  if (event.button !== 0 || !import.meta.client) {
+    return
+  }
+
+  event.preventDefault()
+  setResizing(true)
+  resizeStartX = event.clientX
+  resizeStartWidth = panelWidth.value
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+}
+
 onMounted(() => {
+  if (import.meta.client) {
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', stopResize)
+    window.addEventListener('pointercancel', stopResize)
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', stopResize)
+  }
+
   if (pendingMessage.value) {
     chat.sendMessage({
       text: pendingMessage.value,
@@ -122,13 +178,32 @@ onMounted(() => {
     chat.regenerate()
   }
 })
+
+onBeforeUnmount(() => {
+  if (!import.meta.client) {
+    return
+  }
+
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', stopResize)
+  window.removeEventListener('pointercancel', stopResize)
+  window.removeEventListener('mousemove', handleMouseMove)
+  window.removeEventListener('mouseup', stopResize)
+  stopResize()
+})
 </script>
 
 <template>
   <DefineChatContent v-slot="{ showExpandButton = true }">
     <div class="flex h-full flex-col">
       <div class="flex h-16 shrink-0 items-center justify-between border-b border-default px-4">
-        <span class="font-medium text-highlighted">{{ displayTitle }}</span>
+        <div class="flex items-center gap-2 text-highlighted">
+          <UIcon
+            name="i-lucide-sparkles"
+            class="size-4 shrink-0 text-primary"
+          />
+          <span class="text-base font-semibold leading-5">{{ displayPanelTitle }}</span>
+        </div>
         <div class="flex items-center gap-1">
           <UTooltip
             v-if="showExpandButton"
@@ -258,7 +333,7 @@ onMounted(() => {
       <div class="w-full shrink-0 p-3">
         <UChatPrompt
           v-model="input"
-          :rows="2"
+          :rows="1"
           :placeholder="displayPlaceholder"
           maxlength="1000"
           :ui="{
@@ -300,14 +375,32 @@ onMounted(() => {
 
   <aside
     v-if="!isMobile"
-    class="left-auto! fixed top-0 z-50 h-dvh overflow-hidden border-l border-default bg-default/95 backdrop-blur-xl transition-[right,width] duration-200 ease-linear will-change-[right,width]"
+    :class="[
+      'left-auto! fixed top-0 z-50 h-dvh overflow-visible border-l border-default bg-default/95 backdrop-blur-xl will-change-[right,width]',
+      isResizing ? 'transition-none' : 'transition-[right,width] duration-200 ease-linear',
+    ]"
     :style="{
       width: `${panelWidth}px`,
       right: isOpen ? '0' : `-${panelWidth}px`,
     }"
   >
+    <button
+      v-if="isOpen"
+      type="button"
+      class="absolute inset-y-0 left-0 z-20 hidden w-8 -translate-x-1/2 cursor-col-resize bg-transparent lg:block"
+      aria-label="Resize assistant sidebar"
+      aria-orientation="vertical"
+      @pointerdown="startResize"
+      @mousedown="startResize"
+    >
+      <span class="sr-only">Resize assistant sidebar</span>
+    </button>
+
     <div
-      class="h-full transition-[width] duration-200 ease-linear"
+      :class="[
+        'h-full overflow-hidden',
+        isResizing ? 'transition-none' : 'transition-[width] duration-200 ease-linear',
+      ]"
       :style="{ width: `${panelWidth}px` }"
     >
       <ReuseChatContent :show-expand-button="true" />

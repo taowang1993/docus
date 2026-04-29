@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useDocusColorMode } from '../../composables/useDocusColorMode'
-import { useDocusI18n } from '../../composables/useDocusI18n'
 import { useSubNavigation } from '../../composables/useSubNavigation'
 
 const appConfig = useAppConfig()
+const route = useRoute()
 const { forced: forcedColorMode } = useDocusColorMode()
 
 const { isEnabled: isAssistantEnabled } = useAssistant()
-const { isEnabled, locales } = useDocusI18n()
 const { subNavigationMode } = useSubNavigation()
+
+const showAskAiButton = computed(() => isAssistantEnabled.value && route.meta.layout === 'docs')
 
 const links = computed(() => appConfig.github && appConfig.github.url
   ? [
@@ -24,10 +25,10 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
 <template>
   <UHeader
-    :ui="{ center: 'flex-1' }"
+    :ui="{ center: 'min-w-0 flex-1', right: 'flex items-center gap-1 shrink-0' }"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
   >
-    <AppHeaderCenter />
+    <AppHeaderCenter :show-ask-ai-button="showAskAiButton" />
 
     <template #left>
       <AppHeaderLeft />
@@ -36,32 +37,22 @@ const links = computed(() => appConfig.github && appConfig.github.url
     <template #right>
       <AppHeaderCTA />
 
-      <template v-if="isAssistantEnabled">
-        <AssistantChat />
-      </template>
+      <UContentSearchButton
+        size="lg"
+        class="shrink-0 lg:hidden"
+      />
 
-      <template v-if="isEnabled && locales.length > 1">
-        <ClientOnly>
-          <LanguageSelect />
-
-          <template #fallback>
-            <div class="h-8 w-8 animate-pulse bg-neutral-200 dark:bg-neutral-800 rounded-md" />
-          </template>
-        </ClientOnly>
-
-        <USeparator
-          orientation="vertical"
-          class="h-8"
-        />
-      </template>
-
-      <UContentSearchButton class="lg:hidden" />
+      <AskAiButton
+        v-if="showAskAiButton"
+        mobile
+        class="shrink-0 sm:hidden"
+      />
 
       <ClientOnly v-if="!forcedColorMode">
         <UColorModeButton />
 
         <template #fallback>
-          <div class="h-8 w-8 animate-pulse bg-neutral-200 dark:bg-neutral-800 rounded-md" />
+          <div class="h-8 w-8 animate-pulse rounded-md bg-neutral-200 dark:bg-neutral-800" />
         </template>
       </ClientOnly>
 
@@ -69,6 +60,7 @@ const links = computed(() => appConfig.github && appConfig.github.url
         <UButton
           v-for="(link, index) of links"
           :key="index"
+          class="shrink-0"
           v-bind="{ color: 'neutral', variant: 'ghost', ...link }"
         />
       </template>

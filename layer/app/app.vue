@@ -10,7 +10,8 @@ const { seo } = appConfig
 const { forced: forcedColorMode } = useDocusColorMode()
 const site = useSiteConfig()
 const { locale, locales, isEnabled, switchLocalePath } = useDocusI18n()
-const { isEnabled: isAssistantEnabled, panelWidth: assistantPanelWidth, shouldPushContent } = useAssistant()
+const { isEnabled: isAssistantEnabled, isResizing: isAssistantResizing, panelWidth: assistantPanelWidth, shouldPushContent } = useAssistant()
+const { open: contentSearchOpen } = useContentSearch()
 
 const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof nuxtUiLocales] || nuxtUiLocales.en)
 const lang = computed(() => nuxtUiLocale.value.code)
@@ -61,6 +62,10 @@ const { data: files } = useLazyAsyncData(`search_${collectionName.value}`, () =>
 provide('navigation', navigation)
 
 const { subNavigationMode } = useSubNavigation(navigation)
+
+function closeContentSearch() {
+  contentSearchOpen.value = false
+}
 </script>
 
 <template>
@@ -68,7 +73,11 @@ const { subNavigationMode } = useSubNavigation(navigation)
     <NuxtLoadingIndicator color="var(--ui-primary)" />
 
     <div
-      :class="['transition-[margin-right] duration-200 ease-linear will-change-[margin-right]', { 'docus-sub-header': subNavigationMode === 'header' }]"
+      :class="[
+        'will-change-[margin-right]',
+        isAssistantResizing ? 'transition-none' : 'transition-[margin-right] duration-200 ease-linear',
+        { 'docus-sub-header': subNavigationMode === 'header' },
+      ]"
       :style="{ marginRight: shouldPushContent ? `${assistantPanelWidth}px` : '0' }"
     >
       <AppHeader v-if="$route.meta.header !== false" />
@@ -79,10 +88,20 @@ const { subNavigationMode } = useSubNavigation(navigation)
     </div>
 
     <ClientOnly>
+      <div
+        v-if="contentSearchOpen"
+        data-testid="content-search-overlay"
+        class="fixed inset-0 z-[60] bg-black/35 backdrop-blur-[1px]"
+        @click="closeContentSearch"
+      />
+
       <LazyUContentSearch
         :files="files"
         :navigation="navigation"
         :color-mode="!forcedColorMode"
+        :modal="false"
+        :overlay="false"
+        :ui="{ modal: 'z-[61]' }"
       />
       <template v-if="isAssistantEnabled">
         <LazyAssistantPanel />

@@ -19,8 +19,14 @@ function normalizeFaqQuestions(questions: FaqQuestions): FaqCategory[] {
   return questions as FaqCategory[]
 }
 
-const PANEL_WIDTH_COMPACT = 360
+const PANEL_WIDTH_COMPACT = 352
 const PANEL_WIDTH_EXPANDED = 520
+const PANEL_WIDTH_MIN = 320
+const PANEL_WIDTH_MAX = 520
+
+function clampDesktopAssistantWidth(width: number) {
+  return Math.min(PANEL_WIDTH_MAX, Math.max(PANEL_WIDTH_MIN, Math.round(width)))
+}
 
 export function useAssistant() {
   const config = useRuntimeConfig()
@@ -31,12 +37,14 @@ export function useAssistant() {
   const isEnabled = computed(() => assistantRuntimeConfig?.enabled ?? false)
 
   const isOpen = useState('assistant-open', () => false)
-  const isExpanded = useState('assistant-expanded', () => false)
+  const isResizing = useState('assistant-resizing', () => false)
+  const desktopWidth = useState('assistant-desktop-width', () => PANEL_WIDTH_COMPACT)
   const messages = useState<UIMessage[]>('assistant-messages', () => [])
   const pendingMessage = useState<string | undefined>('assistant-pending', () => undefined)
 
   const isMobile = useMediaQuery('(max-width: 767px)')
-  const panelWidth = computed(() => isExpanded.value ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH_COMPACT)
+  const panelWidth = computed(() => desktopWidth.value)
+  const isExpanded = computed(() => desktopWidth.value > PANEL_WIDTH_COMPACT)
   const shouldPushContent = computed(() => !isMobile.value && isOpen.value)
 
   const faqQuestions = computed<FaqCategory[]>(() => {
@@ -87,8 +95,16 @@ export function useAssistant() {
     messages.value = []
   }
 
+  function setDesktopWidth(width: number) {
+    desktopWidth.value = clampDesktopAssistantWidth(width)
+  }
+
+  function setResizing(value: boolean) {
+    isResizing.value = value
+  }
+
   function toggleExpanded() {
-    isExpanded.value = !isExpanded.value
+    setDesktopWidth(isExpanded.value ? PANEL_WIDTH_COMPACT : PANEL_WIDTH_EXPANDED)
   }
 
   return {
@@ -96,6 +112,7 @@ export function useAssistant() {
     isOpen,
     isExpanded,
     isMobile,
+    isResizing,
     panelWidth,
     shouldPushContent,
     messages,
@@ -106,6 +123,8 @@ export function useAssistant() {
     close,
     toggle,
     toggleExpanded,
+    setDesktopWidth,
+    setResizing,
     clearMessages,
   }
 }

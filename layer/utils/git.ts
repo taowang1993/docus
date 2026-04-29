@@ -55,10 +55,25 @@ export async function getLocalGitInfo(rootDir: string): Promise<GitInfo | undefi
 async function getLocalGitRemote(dir: string): Promise<string | undefined> {
   try {
     const parsed = await readGitConfig(dir)
-    if (!parsed) {
+    if (!parsed?.remote) {
       return
     }
-    return parsed.remote?.['origin']?.url
+
+    const remotes = parsed.remote
+    const preferredRemoteNames = ['origin', 'upstream']
+
+    for (const remoteName of preferredRemoteNames) {
+      const remoteUrl = remotes[remoteName]?.url
+      if (remoteUrl) {
+        return remoteUrl
+      }
+    }
+
+    for (const remote of Object.values(remotes)) {
+      if (remote?.url) {
+        return remote.url
+      }
+    }
   }
   catch {
     // Ignore error
