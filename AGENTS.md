@@ -65,7 +65,7 @@ The official docs app lives in `docs/`, extends `docus` from `layer/`, and is de
 
 Important deployment facts:
 
-- Vercel uses the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`; let Nuxt/Vercel emit the Build Output API in `.vercel/output`
+- Vercel uses the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`; Docus needs this repo-level override because it builds the workspace root and prepares the layer before building `docs/`
 - the workspace root `build` script delegates to `pnpm run docs:build`
 - verification command: `pnpm run verify`
 - site config is defined in `docs/nuxt.config.ts`
