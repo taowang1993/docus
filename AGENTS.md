@@ -16,47 +16,46 @@ The repo’s core architecture is: **build Docus once as an AI-powered Nuxt laye
 
 | Tech | Use Case |
 | --- | --- |
-| pnpm workspace, Node.js 22, TypeScript, ESLint, release-it | workspace automation |
+| pnpm, Node.js, TypeScript, release-it | workspace |
 | Nuxt 4 + Vue 3 | app framework |
-| `@nuxt/content`, MDC, Shiki, Nuxt Image | content rendering |
-| `@nuxt/ui`, Tailwind CSS 4, Iconify icons | UI system |
-| `@nuxtjs/i18n` | locale support |
-| AI SDK (`ai`, `@ai-sdk/vue`, `@ai-sdk/mcp`, provider SDKs) | assistant runtime |
-| FlexSearch + Fuse.js, MCP tools via `@nuxtjs/mcp-toolkit` | docs search |
-| `nuxt-og-image`, `nuxt-llms`, `@nuxtjs/robots` | site metadata |
-| npm packages for `docus` and `create-docus` | package publishing |
+| Nuxt Content, MDC, Shiki, Nuxt Image | content |
+| Nuxt UI, Tailwind CSS 4, Iconify | UI |
+| Nuxt i18n | localization |
+| AI SDK | assistant |
+| FlexSearch, Fuse.js, MCP toolkit | search |
+| Nuxt OG Image, Nuxt LLMs, Robots | metadata |
+| npm packages | publishing |
 
 ## Environment Variables
 
 The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/with-env.mjs`.
 
-| Env Var | Use Case |
-| --- | --- |
-| NUXT_PORT | local dev port |
-| NUXT_APP_BASE_URL | deployment base path |
-| NUXT_SITE_URL | canonical site URL |
-| AI_PROVIDER | assistant provider |
-| AI_MODEL | model override |
-| VERCEL_API_KEY | Vercel AI Gateway |
-| OPENROUTER_API_KEY | OpenRouter access |
-| OPENROUTER_MODEL | OpenRouter model |
-| DEEPSEEK_API_KEY | DeepSeek access |
-| DEEPSEEK_MODEL | DeepSeek model |
-| NVIDIA_API_KEY | NVIDIA access |
-| NVIDIA_MODEL | NVIDIA model |
-| HUGGINGFACE_API_KEY | Hugging Face access |
-| HUGGINGFACE_MODEL | Hugging Face model |
-| GROQ_API_KEY | Groq access |
-| GROQ_MODEL | Groq model |
-| GITHUB_TOKEN | GitHub Models access |
-| GITHUB_MODEL | GitHub model |
-| GEMINI_API_KEY | Gemini access |
-| GEMINI_MODEL | Gemini model |
-| CLOUDFLARE_ACCOUNT_ID | Cloudflare account |
-| CLOUDFLARE_API_TOKEN | Cloudflare API token |
-| CLOUDFLARE_MODEL | Cloudflare model |
+| Env Var                       | Use Case               |
+| ----------------------------- | ---------------------- |
+| NUXT_PORT                     | local dev port         |
+| NUXT_APP_BASE_URL             | deployment base path   |
+| NUXT_SITE_URL                 | canonical site URL     |
+| AI_PROVIDER                   | assistant provider     |
+| AI_MODEL                      | model override         |
+| VERCEL_API_KEY                | Vercel AI Gateway      |
+| OPENROUTER_API_KEY            | OpenRouter access      |
+| OPENROUTER_MODEL              | OpenRouter model       |
+| DEEPSEEK_API_KEY              | DeepSeek access        |
+| DEEPSEEK_MODEL                | DeepSeek model         |
+| NVIDIA_API_KEY                | NVIDIA access          |
+| NVIDIA_MODEL                  | NVIDIA model           |
+| HUGGINGFACE_API_KEY           | Hugging Face access    |
+| HUGGINGFACE_MODEL             | Hugging Face model     |
+| GROQ_API_KEY                  | Groq access            |
+| GROQ_MODEL                    | Groq model             |
+| GITHUB_TOKEN                  | GitHub Models access   |
+| GITHUB_MODEL                  | GitHub model           |
+| GEMINI_API_KEY                | Gemini access          |
+| GEMINI_MODEL                  | Gemini model           |
+| CLOUDFLARE_ACCOUNT_ID         | Cloudflare account     |
+| CLOUDFLARE_API_TOKEN          | Cloudflare API token   |
+| CLOUDFLARE_MODEL              | Cloudflare model       |
 | NUXT_PUBLIC_ASSISTANT_ENABLED | force-enable assistant |
-
 
 ## Deployment
 
@@ -152,8 +151,6 @@ Docus is organized as a **layered monorepo**:
 6. **Hybrid docs retrieval** is implemented in `layer/server/utils/docs-search.ts` using FlexSearch for primary retrieval and Fuse.js for fuzzy fallback.
 7. **`docs/`**, **`playground/`**, and generated starter projects are consumers of the same layer architecture.
 
-For a fuller walkthrough and ASCII system diagram, see **`.context/architecture.md`**.
-
 ## Project Structure
 
 ```text
@@ -182,10 +179,6 @@ For a fuller walkthrough and ASCII system diagram, see **`.context/architecture.
 
 ## Development Guidelines
 
+- Do not edit the `Development Guidelines` section in `AGENTS.md` unless asked to.
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes manually unless the user explicitly asks for it.
-- Preferred validation commands are `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm run docs:build`.
-- Use `pnpm run verify` before shipping larger changes when time permits.
-- The docs site extends `../layer`; when debugging app behavior, determine whether the source of truth lives in `docs/` or `layer/`.
-- Assistant behavior is docs-grounded through MCP tools (`search-pages`, `list-pages`, `get-page`); changes to the assistant should preserve that grounding model.
-- Search changes should be evaluated against both FlexSearch and Fuse.js fallback behavior.
 - When opening or updating a PR, use `.github/PR.md` as the source template. If that file is missing in the current checkout, copy the current draft from `.github/workflows/PR.md` first.
