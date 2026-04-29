@@ -1,10 +1,10 @@
 # Docus
 
-A pnpm monorepo for the Docus Nuxt layer, the official docs site, the `create-docus` CLI, and the starter templates those tools generate.
+An AI-powered Knowledge Management System built as a pnpm monorepo around the Docus Nuxt layer, the official docs site, the `create-docus` CLI, and the starter templates those tools generate.
 
 ## Overview
 
-Docus is a pnpm monorepo for a documentation product built around a reusable **Nuxt layer**.
+Docus is an AI-powered Knowledge Management System built around a reusable **Nuxt layer**.
 
 - **`layer/`** is the main product: the Docus theme, layouts, routing, server utilities, AI assistant, MCP tools, and shared runtime assets.
 - **`docs/`** is the official documentation site (`docus.dev`) and a real consumer of the layer.
@@ -12,62 +12,67 @@ Docus is a pnpm monorepo for a documentation product built around a reusable **N
 - **`cli/`** publishes `create-docus`, which scaffolds new projects from the starter templates.
 - **`.starters/`** contains the `default` and `i18n` templates consumed by the CLI.
 
-The repo’s core architecture is: **build Docus once as a Nuxt layer, then reuse it across the docs site, playground, and generated starter projects**.
+The repo’s core architecture is: **build Docus once as an AI-powered Nuxt layer, then reuse it across the docs site, playground, and generated starter projects**.
 
 ## Tech Stack
 
-- **Monorepo / Tooling:** pnpm workspace, Node.js 22, TypeScript, ESLint, release-it
-- **Framework:** Nuxt 4 + Vue 3
-- **Docs/content:** `@nuxt/content`, MDC, Shiki, Nuxt Image
-- **UI:** `@nuxt/ui`, Tailwind CSS 4, Iconify icons
-- **Internationalization:** `@nuxtjs/i18n`
-- **AI assistant:** AI SDK (`ai`, `@ai-sdk/vue`, `@ai-sdk/mcp`, provider SDKs)
-- **Search / grounding:** FlexSearch + Fuse.js hybrid retrieval, MCP tools via `@nuxtjs/mcp-toolkit`
-- **Site metadata / deployment helpers:** `nuxt-og-image`, `nuxt-llms`, `@nuxtjs/robots`
-- **Publishing:** npm packages for `docus` and `create-docus`
+| Tech | Use Case |
+| --- | --- |
+| pnpm workspace, Node.js 22, TypeScript, ESLint, release-it | workspace automation |
+| Nuxt 4 + Vue 3 | app framework |
+| `@nuxt/content`, MDC, Shiki, Nuxt Image | content rendering |
+| `@nuxt/ui`, Tailwind CSS 4, Iconify icons | UI system |
+| `@nuxtjs/i18n` | locale support |
+| AI SDK (`ai`, `@ai-sdk/vue`, `@ai-sdk/mcp`, provider SDKs) | assistant runtime |
+| FlexSearch + Fuse.js, MCP tools via `@nuxtjs/mcp-toolkit` | docs search |
+| `nuxt-og-image`, `nuxt-llms`, `@nuxtjs/robots` | site metadata |
+| npm packages for `docus` and `create-docus` | package publishing |
 
 ## Environment Variables
 
 The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/with-env.mjs`.
 
-### Core runtime
+| Env Var | Use Case |
+| --- | --- |
+| NUXT_PORT | local dev port |
+| NUXT_APP_BASE_URL | deployment base path |
+| NUXT_SITE_URL | canonical site URL |
+| AI_PROVIDER | assistant provider |
+| AI_MODEL | model override |
+| VERCEL_API_KEY | Vercel AI Gateway |
+| OPENROUTER_API_KEY | OpenRouter access |
+| OPENROUTER_MODEL | OpenRouter model |
+| DEEPSEEK_API_KEY | DeepSeek access |
+| DEEPSEEK_MODEL | DeepSeek model |
+| NVIDIA_API_KEY | NVIDIA access |
+| NVIDIA_MODEL | NVIDIA model |
+| HUGGINGFACE_API_KEY | Hugging Face access |
+| HUGGINGFACE_MODEL | Hugging Face model |
+| GROQ_API_KEY | Groq access |
+| GROQ_MODEL | Groq model |
+| GITHUB_TOKEN | GitHub Models access |
+| GITHUB_MODEL | GitHub model |
+| GEMINI_API_KEY | Gemini access |
+| GEMINI_MODEL | Gemini model |
+| CLOUDFLARE_ACCOUNT_ID | Cloudflare account |
+| CLOUDFLARE_API_TOKEN | Cloudflare API token |
+| CLOUDFLARE_MODEL | Cloudflare model |
+| NUXT_PUBLIC_ASSISTANT_ENABLED | force-enable assistant |
 
-- `NUXT_PORT=4987` — local dev port used by Docus scripts
-- `NUXT_APP_BASE_URL=/` — base URL for root deployments
-- `NUXT_SITE_URL=http://127.0.0.1:4987` — canonical site URL used for site metadata and `llms.txt`
-
-### Assistant provider selection
-
-- `AI_PROVIDER` — one of `vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`
-- `AI_MODEL` — optional global model override for the selected provider
-- `NUXT_PUBLIC_ASSISTANT_ENABLED=false` — force-show the assistant UI in production
-
-### Provider-specific assistant credentials
-
-- `VERCEL_API_KEY`
-- `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`
-- `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL`
-- `NVIDIA_API_KEY`, `NVIDIA_MODEL`
-- `HUGGINGFACE_API_KEY`, `HUGGINGFACE_MODEL`
-- `GROQ_API_KEY`, `GROQ_MODEL`
-- `GITHUB_TOKEN`, `GITHUB_MODEL`
-- `GEMINI_API_KEY`, `GEMINI_MODEL`
-- `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_MODEL`
-
-In development, the assistant UI is enabled automatically. In production, it is enabled when credentials are present or when `NUXT_PUBLIC_ASSISTANT_ENABLED=true`.
 
 ## Deployment
 
 ### Docs site
 
-The official docs app lives in `docs/` and extends `docus` from `layer/`.
+The official docs app lives in `docs/`, extends `docus` from `layer/`, and is deployed from the repository root.
 
 Important deployment facts:
 
-- build command: `pnpm run docs:build`
+- Vercel uses the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`
+- the workspace root `build` script delegates to `pnpm run docs:build`
 - verification command: `pnpm run verify`
 - site config is defined in `docs/nuxt.config.ts`
-- Nitro prerendering, sitemap generation, robots output, OG image generation, and `llms.txt` support are configured through the layer
+- Nitro prerendering, sitemap generation, robots output, OG image generation, `llms.txt` support, and the Vercel `/tmp/contents.sqlite` setup are configured through the layer
 - set `NUXT_SITE_URL` correctly for the target environment
 - keep `NUXT_APP_BASE_URL=/` for normal root deployments unless the site is hosted under a subpath
 
@@ -81,6 +86,63 @@ This repo also publishes two packages:
 CI (`.github/workflows/ci.yml`) installs dependencies, prepares Nuxt types, lints, typechecks, builds the CLI, and validates package publishability.
 
 ## Architecture
+
+```text
+                                Docus Workspace
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Root pnpm workspace                                                         │
+│ package.json · pnpm-workspace.yaml · scripts/ · CI                          │
+└───────────────┬───────────────────────────────┬──────────────────────────────┘
+                │                               │
+                │ consumes / builds             │
+                │                               │
+        ┌───────▼────────┐              ┌───────▼────────┐
+        │   layer/       │              │    cli/        │
+        │ Docus Nuxt     │              │ create-docus   │
+        │ layer/product  │              │ scaffolder     │
+        └───────┬────────┘              └───────┬────────┘
+                │                                uses
+     extends    │                                  │
+                │                          ┌───────▼──────────────────┐
+        ┌───────▼────────┐                 │ .starters/default        │
+        │    docs/       │                 │ .starters/i18n           │
+        │ official site  │                 └──────────────────────────┘
+        └───────┬────────┘
+                │
+        ┌───────▼────────┐
+        │ playground/    │
+        │ dev harness    │
+        └────────────────┘
+
+Inside layer/
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Nuxt modules                                                                 │
+│ config · routing · markdown-rewrite · skills · css · assistant              │
+└───────────────┬───────────────────────────────┬──────────────────────────────┘
+                │                               │
+                │ registers                     │ exposes
+                │                               │
+     ┌──────────▼──────────┐         ┌──────────▼──────────────────────────┐
+     │ app/                │         │ server/                             │
+     │ layouts · pages     │         │ content utils · docs search         │
+     │ header/footer       │         │ MCP tools · sitemap route           │
+     │ docs navigation UI  │         └──────────┬──────────────────────────┘
+     └──────────┬──────────┘                    │
+                │                                │
+                │ renders                        │ queries
+                │                                │
+         ┌──────▼──────┐                ┌────────▼─────────┐
+         │ Nuxt Content│                │ FlexSearch +     │
+         │ collections │                │ Fuse.js index    │
+         └─────────────┘                └──────────────────┘
+
+Assistant path
+
+User → AssistantPanel.vue → /__docus__/assistant → AI provider resolver
+     → MCP client/server → search-pages | list-pages | get-page
+     → Nuxt Content + hybrid search → streamed grounded answer
+```
 
 Docus is organized as a **layered monorepo**:
 
