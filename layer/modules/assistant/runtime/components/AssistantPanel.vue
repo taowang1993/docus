@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
       <div class="w-full shrink-0 p-3">
         <UChatPrompt
           v-model="input"
-          :rows="2"
+          :rows="1"
           :placeholder="displayPlaceholder"
           maxlength="1000"
           :ui="{

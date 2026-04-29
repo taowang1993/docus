@@ -54,4 +54,5 @@ jobs:
         working-directory: ./cli
 
       - name: Publish CLI and Layer
+        continue-on-error: true
         run: npx pkg-pr-new publish --compact './cli' './layer'

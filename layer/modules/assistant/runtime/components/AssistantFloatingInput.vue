@@ -71,18 +71,18 @@ defineShortcuts(shortcuts)
       >
         <div class="pointer-events-auto w-full max-w-[36rem]">
           <div class="rounded-xl border border-default bg-default/95 shadow-xl backdrop-blur-sm">
-            <div class="flex min-h-[4.25rem] flex-col px-4 py-2.5">
+            <div class="flex min-h-[3rem] flex-col px-4 py-1.5">
               <textarea
                 ref="inputRef"
                 v-model="input"
                 :placeholder="placeholder"
-                rows="2"
+                rows="1"
                 maxlength="1000"
-                class="min-h-[2.25rem] w-full flex-1 resize-none bg-transparent text-base leading-6 text-highlighted outline-none placeholder:text-muted [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                class="min-h-[1.75rem] w-full flex-1 resize-none bg-transparent text-sm leading-5 text-highlighted outline-none placeholder:text-muted [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 @keydown.enter.exact.prevent="handleSubmit"
               />
 
-              <div class="mt-1.5 flex items-center justify-end gap-2">
+              <div class="mt-0.5 flex items-center justify-end gap-1.5">
                 <div class="hidden sm:flex items-center justify-end gap-1 text-xs text-muted">
                   <UKbd
                     v-for="key in shortcutDisplayKeys"
