@@ -14,17 +14,17 @@ The repo’s core architecture is: **build Docus once as an AI-powered Nuxt laye
 
 ## Tech Stack
 
-| Tech | Use Case |
-| --- | --- |
-| pnpm, Node.js, TypeScript, release-it | workspace |
-| Nuxt 4 + Vue 3 | app framework |
-| Nuxt Content, MDC, Shiki, Nuxt Image | content |
-| Nuxt UI, Tailwind CSS 4, Iconify | UI |
-| Nuxt i18n | localization |
-| AI SDK | assistant |
-| FlexSearch, Fuse.js, MCP toolkit | search |
-| Nuxt OG Image, Nuxt LLMs, Robots | metadata |
-| npm packages | publishing |
+| Tech                                  | Use Case      |
+| ------------------------------------- | ------------- |
+| pnpm, Node.js, TypeScript, release-it | workspace     |
+| Nuxt 4 + Vue 3                        | app framework |
+| Nuxt Content, MDC, Shiki, Nuxt Image  | content       |
+| Nuxt UI, Tailwind CSS 4, Iconify      | UI            |
+| Nuxt i18n                             | localization  |
+| AI SDK                                | assistant     |
+| FlexSearch, Fuse.js, MCP toolkit      | search        |
+| Nuxt OG Image, Nuxt LLMs, Robots      | metadata      |
+| npm packages                          | publishing    |
 
 ## Environment Variables
 
@@ -52,10 +52,13 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 | GITHUB_MODEL                  | GitHub model           |
 | GEMINI_API_KEY                | Gemini access          |
 | GEMINI_MODEL                  | Gemini model           |
-| CLOUDFLARE_ACCOUNT_ID         | Cloudflare account     |
-| CLOUDFLARE_API_TOKEN          | Cloudflare API token   |
-| CLOUDFLARE_MODEL              | Cloudflare model       |
-| NUXT_PUBLIC_ASSISTANT_ENABLED | force-enable assistant |
+| CLOUDFLARE_ACCOUNT_ID         | Cloudflare account        |
+| CLOUDFLARE_API_TOKEN          | Cloudflare API token      |
+| CLOUDFLARE_MODEL              | Cloudflare model          |
+| STUDIO_GITHUB_CLIENT_ID       | Nuxt Studio GitHub client |
+| STUDIO_GITHUB_CLIENT_SECRET   | Nuxt Studio GitHub secret |
+| STUDIO_GITHUB_MODERATORS      | Nuxt Studio access allowlist |
+| NUXT_PUBLIC_ASSISTANT_ENABLED | force-enable assistant    |
 
 ## Deployment
 
@@ -67,12 +70,20 @@ Important deployment facts:
 
 - For repo-root deployments, use the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`
 - For template-style Vercel deployments, point the project at `docs/`; `docs/package.json` prepares the layer before `nuxt build`, so no `vercel.json` is needed in that setup
-- the workspace root `build` script delegates to `pnpm run docs:build`
-- verification command: `pnpm run verify`
-- site config is defined in `docs/nuxt.config.ts`
+- The workspace root `build` script delegates to `pnpm run docs:build`
+- Verification command: `pnpm run verify`
+- Site config is defined in `docs/nuxt.config.ts`
 - Nitro prerendering, sitemap generation, robots output, OG image generation, `llms.txt` support, and the Vercel `/tmp/contents.sqlite` setup are configured through the layer
-- set `NUXT_SITE_URL` correctly for the target environment
-- keep `NUXT_APP_BASE_URL=/` for normal root deployments unless the site is hosted under a subpath
+- Set `NUXT_SITE_URL` to the public deployment URL for the site (for example `https://docus-pi-nine.vercel.app`)
+- Keep `NUXT_APP_BASE_URL=/` for normal root deployments unless the site is hosted under a subpath
+
+### Nuxt Studio
+
+- The Studio admin route is `/admin`
+- Add `STUDIO_GITHUB_CLIENT_ID` and `STUDIO_GITHUB_CLIENT_SECRET` to the deployment environment
+- Optionally set `STUDIO_GITHUB_MODERATORS` to restrict access to specific GitHub emails
+- Configure the GitHub OAuth callback URL to `https://<your-domain>/__nuxt_studio/auth/github`
+- Open Studio after deployment at `https://<your-domain>/admin`
 
 ### Package publishing
 
