@@ -1,6 +1,9 @@
 const siteUrl = process.env.NUXT_SITE_URL || 'https://docus.dev'
 
 export default defineNuxtConfig({
+  $production: {
+    studio: false,
+  },
   extends: ['docus'],
   modules: ['@nuxtjs/i18n', 'nuxt-studio'],
   site: {
@@ -16,6 +19,7 @@ export default defineNuxtConfig({
   vite: {
     build: {
       sourcemap: false,
+      chunkSizeWarningLimit: 1200,
     },
   },
   i18n: {

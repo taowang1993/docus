@@ -65,7 +65,7 @@ The official docs app lives in `docs/`, extends `docus` from `layer/`, and is de
 
 Important deployment facts:
 
-- Vercel uses the root `vercel.json` with `CI= pnpm install --frozen-lockfile` and `CI= pnpm build`
+- Vercel uses the root `vercel.json` with `CI= pnpm install --frozen-lockfile`, `CI= pnpm build`, and `outputDirectory=docs/.vercel/output`
 - the workspace root `build` script delegates to `pnpm run docs:build`
 - verification command: `pnpm run verify`
 - site config is defined in `docs/nuxt.config.ts`

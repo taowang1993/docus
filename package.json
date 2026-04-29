@@ -36,7 +36,8 @@
     "vue-tsc": "^3.2.7"
   },
   "resolutions": {
-    "unimport": "5.6.0"
+    "unimport": "5.6.0",
+    "better-sqlite3": "12.9.0"
   },
   "packageManager": "pnpm@10.33.0"
 }

@@ -10,7 +10,7 @@ import { getAvailableLocales, isSearchableContentPath } from './content'
 type SearchIndexDocument = {
   id: string
   path: string
-  locale?: string
+  locale: string
   title: string
   description: string
   headings: string
@@ -109,7 +109,7 @@ function getPathTokens(path: string) {
 }
 
 function normalizeLocale(collectionName: string) {
-  return collectionName.startsWith('docs_') ? collectionName.slice(5) : undefined
+  return collectionName.startsWith('docs_') ? collectionName.slice(5) : ''
 }
 
 function getOrigin(event: H3Event) {
@@ -322,7 +322,7 @@ function toSearchResult(event: H3Event, doc: SearchIndexDocument, query: string)
     description: doc.description,
     path: doc.path,
     url: `${getOrigin(event)}${doc.path}`,
-    locale: doc.locale,
+    locale: doc.locale || undefined,
     excerpt: buildSearchExcerpt(doc.rawContent, query),
   }
 }
