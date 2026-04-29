@@ -1,6 +1,4 @@
-# Docus
-
-A pnpm monorepo for the Docus Nuxt layer, the official docs site, the `create-docus` CLI, and the starter templates those tools generate.
+# AGENTS.md
 
 ## Overview
 
@@ -119,3 +117,13 @@ For a fuller walkthrough and ASCII system diagram, see **`.context/architecture.
 ├── package.json             # Workspace scripts
 └── pnpm-workspace.yaml      # Workspace package definitions
 ```
+
+## Development Guidelines
+
+- Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes manually unless the user explicitly asks for it.
+- Preferred validation commands are `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm run docs:build`.
+- Use `pnpm run verify` before shipping larger changes when time permits.
+- The docs site extends `../layer`; when debugging app behavior, determine whether the source of truth lives in `docs/` or `layer/`.
+- Assistant behavior is docs-grounded through MCP tools (`search-pages`, `list-pages`, `get-page`); changes to the assistant should preserve that grounding model.
+- Search changes should be evaluated against both FlexSearch and Fuse.js fallback behavior.
+- When opening or updating a PR, use `.github/PR.md` as the source template. If that file is missing in the current checkout, copy the current draft from `.github/workflows/PR.md` first.
