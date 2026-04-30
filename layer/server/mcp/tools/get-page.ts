@@ -1,22 +1,17 @@
 import { z } from 'zod'
 import { queryCollection } from '@nuxt/content/server'
 import type { Collections } from '@nuxt/content'
-import { getAvailableLocales, getCollectionFromPath, isSearchableContentPath } from '../../utils/content'
+import { getCollectionFromPath, isSearchableContentPath } from '../../utils/content'
 import { inferSiteURL } from '../../../utils/meta'
 
 export default defineMcpTool({
-  description: `Retrieves the full content and details of a specific documentation page.
+  description: `Retrieves the full content and metadata for a specific documentation page.
 
-WHEN TO USE: Use this tool when you know the EXACT path to a documentation page. Common use cases:
-- User asks for a specific page: "Show me the getting started guide" → /en/getting-started/installation
-- User asks about a known topic with a dedicated page
-- You found a relevant path from list-pages and want the full content
-- User references a specific section or guide they want to read
+WHEN TO USE: Use this tool when you already know the exact page path and want the full markdown.
 
-WHEN NOT TO USE: If you don't know the exact path, use search-pages for full-text retrieval or list-pages for structure browsing first.
+WHEN NOT TO USE: If you do not know the exact path, use search-pages or list-pages first.
 
-WORKFLOW: This tool returns the complete page content including title, description, and full markdown. Use this when you need to provide detailed answers, exact wording, or code examples from specific documentation pages.
-`,
+The path should include the full routed path. In KB-first sites that means paths like /docs/platform/en/getting-started.`,
   annotations: {
     readOnlyHint: true,
     destructiveHint: false,
@@ -24,26 +19,23 @@ WORKFLOW: This tool returns the complete page content including title, descripti
     openWorldHint: false,
   },
   inputSchema: {
-    path: z.string().describe('The page path from list-pages or provided by the user (e.g., /en/getting-started/installation)'),
+    path: z.string().describe('The exact page path (for example: /docs/platform/en/getting-started or /en/getting-started/installation).'),
   },
   inputExamples: [
+    { path: '/docs/platform/en/getting-started/installation' },
     { path: '/en/getting-started/installation' },
-    { path: '/getting-started/introduction' },
   ],
   cache: '1h',
   handler: async ({ path }) => {
     const event = useEvent()
-    const config = useRuntimeConfig(event).public
+    const config = useRuntimeConfig(event).public as Parameters<typeof getCollectionFromPath>[1]
     const siteUrl = getRequestURL(event).origin || inferSiteURL()
 
     if (!isSearchableContentPath(path)) {
       throw createError({ statusCode: 404, message: 'Page not found' })
     }
 
-    const availableLocales = getAvailableLocales(config)
-    const collectionName = config.i18n?.locales
-      ? getCollectionFromPath(path, availableLocales)
-      : 'docs'
+    const collectionName = getCollectionFromPath(path, config)
 
     try {
       const page = await queryCollection(event, collectionName as keyof Collections)

@@ -11,7 +11,7 @@ function getFirstPagePath(item: ContentNavigationItem): string {
 export function useSubNavigation(providedNavigation?: Ref<ContentNavigationItem[] | null | undefined>) {
   const route = useRoute()
   const appConfig = useAppConfig()
-  const navigation = providedNavigation ?? inject<Ref<ContentNavigationItem[]>>('navigation')
+  const navigation = providedNavigation ?? inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 
   const isDocsPage = computed(() => route.meta.layout === 'docs')
 

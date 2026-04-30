@@ -62,7 +62,7 @@ Add the layer to your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  extends: ['docus']
+  extends: ['docus'],
 })
 ```
 
@@ -77,11 +77,11 @@ export default defineNuxtConfig({
       { code: 'en', name: 'English' },
       { code: 'fr', name: 'Français' },
     ],
-  }
+  },
 })
 ```
 
-#### Option 2b: CLI Usage 
+#### Option 2b: CLI Usage
 
 Use directly with Nuxt CLI:
 
@@ -113,4 +113,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-Made with ❤️ for the Nuxt community 
+Made with ❤️ for the Nuxt community

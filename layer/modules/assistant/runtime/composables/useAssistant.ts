@@ -1,7 +1,7 @@
 import type { UIMessage } from 'ai'
 import { useAppConfig, useRuntimeConfig, useState } from '#imports'
 import { useMediaQuery } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import type { FaqCategory, FaqQuestions, LocalizedFaqQuestions } from '../types'
 
 function normalizeFaqQuestions(questions: FaqQuestions): FaqCategory[] {
@@ -31,9 +31,9 @@ function clampDesktopAssistantWidth(width: number) {
 export function useAssistant() {
   const config = useRuntimeConfig()
   const appConfig = useAppConfig()
+  const docs = useDocusDocs()
   const assistantRuntimeConfig = config.public.assistant as { enabled?: boolean } | undefined
   const assistantConfig = appConfig.assistant as { faqQuestions?: FaqQuestions | LocalizedFaqQuestions } | undefined
-  const docusRuntimeConfig = appConfig.docus as { locale?: string } | undefined
   const isEnabled = computed(() => assistantRuntimeConfig?.enabled ?? false)
 
   const isOpen = useState('assistant-open', () => false)
@@ -41,23 +41,31 @@ export function useAssistant() {
   const desktopWidth = useState('assistant-desktop-width', () => PANEL_WIDTH_COMPACT)
   const messages = useState<UIMessage[]>('assistant-messages', () => [])
   const pendingMessage = useState<string | undefined>('assistant-pending', () => undefined)
+  const scopeKey = useState('assistant-scope', () => '')
 
   const isMobile = useMediaQuery('(max-width: 767px)')
   const panelWidth = computed(() => desktopWidth.value)
   const isExpanded = computed(() => desktopWidth.value > PANEL_WIDTH_COMPACT)
   const shouldPushContent = computed(() => !isMobile.value && isOpen.value)
+  const currentScopeKey = computed(() => `${docs.activeKnowledgeBase.value?.id || 'site'}:${docs.activeLocale.value || config.public.i18n?.defaultLocale || 'en'}`)
+
+  watch(currentScopeKey, (value) => {
+    if (scopeKey.value && scopeKey.value !== value) {
+      messages.value = []
+      pendingMessage.value = undefined
+    }
+
+    scopeKey.value = value
+  }, { immediate: true })
 
   const faqQuestions = computed<FaqCategory[]>(() => {
     const faqConfig = assistantConfig?.faqQuestions
     if (!faqConfig) return []
 
-    // Check if it's a localized object (has locale keys like 'en', 'fr')
     if (!Array.isArray(faqConfig)) {
       const localizedConfig = faqConfig as LocalizedFaqQuestions
-      const currentLocale = docusRuntimeConfig?.locale || 'en'
+      const currentLocale = docs.activeLocale.value || config.public.i18n?.defaultLocale || 'en'
       const defaultLocale = config.public.i18n?.defaultLocale || 'en'
-
-      // Try current locale, then default locale, then first available
       const questions = localizedConfig[currentLocale]
         || localizedConfig[defaultLocale]
         || Object.values(localizedConfig)[0]

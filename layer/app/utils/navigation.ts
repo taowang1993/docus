@@ -6,23 +6,32 @@ export const flattenNavigation = (items?: ContentNavigationItem[]): ContentNavig
     : [item],
 ) || []
 
-/**
- * Transform navigation data by stripping locale and docs levels
- */
 export function transformNavigation(
   data: ContentNavigationItem[],
   isI18nEnabled: boolean,
   locale?: string,
+  docsMode: 'legacy' | 'kb' = 'legacy',
+  kb?: string,
 ): ContentNavigationItem[] {
+  if (docsMode === 'kb') {
+    const docsResult = data.find(item => item.path === '/docs')?.children || data
+    const knowledgeBaseResult = kb
+      ? docsResult.find(item => item.path === `/docs/${kb}`)?.children || docsResult
+      : docsResult
+
+    if (kb && locale) {
+      return knowledgeBaseResult.find(item => item.path === `/docs/${kb}/${locale}`)?.children || knowledgeBaseResult
+    }
+
+    return knowledgeBaseResult
+  }
+
   if (isI18nEnabled && locale) {
-    // i18n: first strip locale level, then check for docs level
     const localeResult = data.find(item => item.path === `/${locale}`)?.children || data
     return localeResult.find(item => item.path === `/${locale}/docs`)?.children || localeResult
   }
-  else {
-    // non-i18n: strip docs level if exists
-    return data.find(item => item.path === '/docs')?.children || data
-  }
+
+  return data.find(item => item.path === '/docs')?.children || data
 }
 
 export interface BreadcrumbItem {
@@ -30,9 +39,6 @@ export interface BreadcrumbItem {
   path: string
 }
 
-/**
- * Find breadcrumb path to a page in the navigation tree
- */
 export function findPageBreadcrumbs(
   navigation: ContentNavigationItem[] | undefined,
   path: string,

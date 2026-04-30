@@ -2,7 +2,7 @@
 const { locale, locales, switchLocalePath } = useDocusI18n()
 
 const currentLocaleLabel = computed(() => {
-  const currentLocale = locales.find(localeItem => localeItem.code === locale.value)
+  const currentLocale = locales.value.find(localeItem => localeItem.code === locale.value)
 
   return currentLocale?.name || locale.value.toUpperCase()
 })
@@ -33,8 +33,8 @@ const currentLocaleLabel = computed(() => {
     </template>
 
     <template #content>
-      <div class="w-40 max-w-[calc(100vw-1rem)] px-1">
-        <div class="language-select-scrollbar max-h-80 overflow-y-auto py-1">
+      <div class="w-40 max-w-[calc(100vw-1rem)] px-1 py-1">
+        <div class="language-select-scrollbar flex max-h-80 flex-col gap-1 overflow-y-auto">
           <NuxtLink
             v-for="localeItem in locales"
             :key="localeItem.code"

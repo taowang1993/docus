@@ -1,12 +1,15 @@
 import type { DefinedCollection } from '@nuxt/content'
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 import { useNuxt } from '@nuxt/kit'
-import { joinURL } from 'ufo'
+import { join } from 'node:path'
+import { getDocsCollectionName } from './utils/docs'
+import { getDocusContentConfiguration } from './utils/knowledge-bases'
 import { landingPageExists, docsFolderExists } from './utils/pages'
 
 const { options } = useNuxt()
-const cwd = joinURL(options.rootDir, 'content')
+const cwd = join(options.rootDir, 'content')
 const locales = options.i18n?.locales
+const contentConfiguration = getDocusContentConfiguration(options.rootDir)
 
 const hasLandingPage = landingPageExists(options.rootDir)
 const hasDocsFolder = docsFolderExists(options.rootDir)
@@ -22,8 +25,42 @@ const createDocsSchema = () => z.object({
 
 let collections: Record<string, DefinedCollection>
 
-if (locales && Array.isArray(locales)) {
+if (contentConfiguration.mode === 'kb') {
   collections = {}
+
+  if (contentConfiguration.hasSiteContent) {
+    collections.site = defineCollection({
+      type: 'page',
+      source: {
+        cwd,
+        include: 'site/**/*',
+        prefix: '/',
+      },
+      schema: createDocsSchema(),
+    })
+  }
+
+  for (const knowledgeBase of contentConfiguration.knowledgeBases) {
+    for (const locale of knowledgeBase.locales) {
+      collections[getDocsCollectionName({
+        mode: 'kb',
+        kb: knowledgeBase.id,
+        locale,
+      })] = defineCollection({
+        type: 'page',
+        source: {
+          cwd,
+          include: `${knowledgeBase.sourceDir}/${locale}/**/*`,
+          prefix: `/docs/${knowledgeBase.id}/${locale}`,
+        },
+        schema: createDocsSchema(),
+      })
+    }
+  }
+}
+else if (locales && Array.isArray(locales)) {
+  collections = {}
+
   for (const locale of locales) {
     const code = (typeof locale === 'string' ? locale : locale.code).replace('-', '_')
     const hasLocaleDocs = docsFolderExists(options.rootDir, code)
@@ -64,7 +101,6 @@ else {
     }),
   }
 
-  // Only define landing collection if user doesn't have their own index.vue
   if (!hasLandingPage) {
     collections.landing = defineCollection({
       type: 'page',

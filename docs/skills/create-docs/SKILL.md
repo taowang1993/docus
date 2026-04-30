@@ -26,12 +26,12 @@ Generate a complete, production-ready documentation site for any project.
 
 Detect from lock files, default to npm if none found:
 
-| Lock File | PM | Install | Run | Add |
-|-----------|------|---------|-----|-----|
-| `pnpm-lock.yaml` | pnpm | `pnpm install` | `pnpm run` | `pnpm add` |
-| `package-lock.json` | npm | `npm install` | `npm run` | `npm install` |
-| `yarn.lock` | yarn | `yarn install` | `yarn` | `yarn add` |
-| `bun.lockb` | bun | `bun install` | `bun run` | `bun add` |
+| Lock File           | PM   | Install        | Run        | Add           |
+| ------------------- | ---- | -------------- | ---------- | ------------- |
+| `pnpm-lock.yaml`    | pnpm | `pnpm install` | `pnpm run` | `pnpm add`    |
+| `package-lock.json` | npm  | `npm install`  | `npm run`  | `npm install` |
+| `yarn.lock`         | yarn | `yarn install` | `yarn`     | `yarn add`    |
+| `bun.lockb`         | bun  | `bun install`  | `bun run`  | `bun add`     |
 
 Use `[pm]` as placeholder in commands below.
 
@@ -56,32 +56,32 @@ Check for:
 
 ### Determine Docs Location
 
-| Project Type | Target Directory | Workspace Entry |
-|--------------|------------------|-----------------|
-| Standard project | `./docs` | N/A |
-| Monorepo with `apps/` | `./apps/docs` | `apps/docs` |
-| Monorepo with `packages/` | `./docs` | `docs` |
-| Existing `docs/` folder | Ask user or `./documentation` | — |
+| Project Type              | Target Directory              | Workspace Entry |
+| ------------------------- | ----------------------------- | --------------- |
+| Standard project          | `./docs`                      | N/A             |
+| Monorepo with `apps/`     | `./apps/docs`                 | `apps/docs`     |
+| Monorepo with `packages/` | `./docs`                      | `docs`          |
+| Existing `docs/` folder   | Ask user or `./documentation` | —               |
 
 ### Read Context Files
 
-| File | Extract |
-|------|---------|
-| `README.md` | Project name, description, features, usage examples |
-| `package.json` | Name, description, dependencies, repository URL |
-| `src/` or `lib/` | Exported functions, composables for API docs |
+| File             | Extract                                             |
+| ---------------- | --------------------------------------------------- |
+| `README.md`      | Project name, description, features, usage examples |
+| `package.json`   | Name, description, dependencies, repository URL     |
+| `src/` or `lib/` | Exported functions, composables for API docs        |
 
 ### Detect i18n Requirement
 
 Check if project needs multi-language docs:
 
-| Indicator | Action |
-|-----------|--------|
-| `@nuxtjs/i18n` in dependencies | Use i18n template |
-| `locales/` or `i18n/` folder exists | Use i18n template |
-| Multiple language README files | Use i18n template |
-| User explicitly mentions multiple languages | Use i18n template |
-| None of the above | Use default template |
+| Indicator                                   | Action               |
+| ------------------------------------------- | -------------------- |
+| `@nuxtjs/i18n` in dependencies              | Use i18n template    |
+| `locales/` or `i18n/` folder exists         | Use i18n template    |
+| Multiple language README files              | Use i18n template    |
+| User explicitly mentions multiple languages | Use i18n template    |
+| None of the above                           | Use default template |
 
 ---
 
@@ -184,10 +184,10 @@ export default defineNuxtConfig({
   i18n: {
     locales: [
       { code: 'en', language: 'en-US', name: 'English' },
-      { code: 'fr', language: 'fr-FR', name: 'Français' }
+      { code: 'fr', language: 'fr-FR', name: 'Français' },
     ],
-    defaultLocale: 'en'
-  }
+    defaultLocale: 'en',
+  },
 })
 ```
 
@@ -257,13 +257,13 @@ Use templates from [references/templates.md](references/templates.md).
 
 All Nuxt UI components in MDC must use the `u-` prefix:
 
-| Correct | Wrong |
-|---------|-------|
-| `::u-page-hero` | `::page-hero` |
-| `::u-page-section` | `::page-section` |
+| Correct             | Wrong             |
+| ------------------- | ----------------- |
+| `::u-page-hero`     | `::page-hero`     |
+| `::u-page-section`  | `::page-section`  |
 | `:::u-page-feature` | `:::page-feature` |
-| `:::u-button` | `:::button` |
-| `::::u-page-card` | `::::page-card` |
+| `:::u-button`       | `:::button`       |
+| `::::u-page-card`   | `::::page-card`   |
 
 Without the `u-` prefix, Vue will fail to resolve the components.
 
@@ -321,9 +321,9 @@ export default defineAppConfig({
     description: '[Project description]',
     url: 'https://[docs-url]',
     socials: {
-      github: '[org]/[repo]'
-    }
-  }
+      github: '[org]/[repo]',
+    },
+  },
 })
 ```
 
@@ -336,8 +336,8 @@ If the project has a design system or brand colors, customize the docs theme.
 Create `app/assets/css/main.css`:
 
 ```css [app/assets/css/main.css]
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import 'tailwindcss';
+@import '@nuxt/ui';
 
 @theme {
   /* Custom font */
@@ -363,8 +363,8 @@ export default defineAppConfig({
     url: 'https://[docs-url]',
     socials: {
       github: '[org]/[repo]',
-      x: '@[handle]'
-    }
+      x: '@[handle]',
+    },
   },
   // Customize UI components
   ui: {
@@ -374,10 +374,10 @@ export default defineAppConfig({
     },
     pageHero: {
       slots: {
-        title: 'font-semibold sm:text-6xl'
-      }
-    }
-  }
+        title: 'font-semibold sm:text-6xl',
+      },
+    },
+  },
 })
 ```
 
@@ -454,12 +454,12 @@ Let me know what you'd like to improve!
 
 ## Deployment
 
-| Platform | Command | Output |
-|----------|---------|--------|
-| Vercel | `npx vercel --prod` | Auto-detected |
-| Netlify | `[pm] run generate` | `.output/public` |
+| Platform         | Command             | Output           |
+| ---------------- | ------------------- | ---------------- |
+| Vercel           | `npx vercel --prod` | Auto-detected    |
+| Netlify          | `[pm] run generate` | `.output/public` |
 | Cloudflare Pages | `[pm] run generate` | `.output/public` |
-| GitHub Pages | `[pm] run generate` | `.output/public` |
+| GitHub Pages     | `[pm] run generate` | `.output/public` |
 
 ---
 
@@ -468,6 +468,7 @@ Let me know what you'd like to improve!
 **Detected:** pnpm monorepo, package in packages/
 
 **Generated structure:**
+
 ```
 docs/
 ├── content/
@@ -491,9 +492,13 @@ docs/
 ```
 
 **Inside `authentication.md`** (action-based H2 headings):
+
 ```markdown
 ## Add basic authentication
+
 ## Protect your routes
+
 ## Handle login redirects
+
 ## Customize the session
 ```

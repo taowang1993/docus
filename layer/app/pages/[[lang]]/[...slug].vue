@@ -1,75 +1,50 @@
 <script setup lang="ts">
-import { kebabCase } from 'scule'
-import type { ContentNavigationItem, Collections, DocsCollectionItem } from '@nuxt/content'
-import { findPageHeadline } from '@nuxt/content/utils'
+import type { DocsCollectionItem } from '@nuxt/content'
 
 definePageMeta({
   layout: 'docs',
 })
 
-const route = useRoute()
-const { locale, isEnabled, t } = useDocusI18n()
-const appConfig = useAppConfig()
-const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-const { shouldPushContent: shouldHideToc } = useAssistant()
+const { t } = useDocusI18n()
+const docs = useDocusDocs()
 
-const collectionName = computed(() => isEnabled.value ? `docs_${locale.value}` : 'docs')
+if (docs.mode.value === 'kb') {
+  if (!docs.isDocsRoute.value || !docs.activeKnowledgeBase.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  }
 
-const [{ data: page }, { data: surround }] = await Promise.all([
-  useAsyncData(kebabCase(route.path), () => queryCollection(collectionName.value as keyof Collections).path(route.path).first() as Promise<DocsCollectionItem>),
-  useAsyncData(`${kebabCase(route.path)}-surround`, () => {
-    return queryCollectionItemSurroundings(collectionName.value as keyof Collections, route.path, {
-      fields: ['description'],
+  if (!docs.resolvedRoute.value.locale) {
+    await navigateTo(docs.getKnowledgeBaseHomePath(docs.activeKnowledgeBase.value.id), {
+      redirectCode: 301,
     })
-  }),
-])
-
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  }
 }
 
-const title = page.value.seo?.title || page.value.title
-const description = page.value.seo?.description || page.value.description
-
-const headline = ref(findPageHeadline(navigation?.value, page.value?.path))
-const breadcrumbs = computed(() => findPageBreadcrumbs(navigation?.value, page.value?.path || ''))
+const {
+  page,
+  surround,
+  title,
+  description,
+  headline,
+  breadcrumbs,
+  github,
+  editLink,
+  shouldHideToc,
+} = await useDocsPage(docs.collectionName)
 
 useSeo({
   title,
   description,
   type: 'article',
-  modifiedAt: (page.value as unknown as Record<string, unknown>).modifiedAt as string | undefined,
+  modifiedAt: computed(() => (page.value as unknown as Record<string, unknown>)?.modifiedAt as string | undefined),
   breadcrumbs,
-})
-watch(() => navigation?.value, () => {
-  headline.value = findPageHeadline(navigation?.value, page.value?.path) || headline.value
 })
 
 defineOgImage('Docs', {
   headline: headline.value,
-  title: title?.slice(0, 60),
-  description: formatOgDescription(title, description),
+  title: title.value?.slice(0, 60),
+  description: formatOgDescription(title.value, description.value),
 })
-
-const github = computed(() => appConfig.github ? appConfig.github : null)
-
-const editLink = computed(() => {
-  if (!github.value) {
-    return
-  }
-
-  return [
-    github.value.url,
-    'edit',
-    github.value.branch,
-    github.value.rootDir,
-    'content',
-    `${page.value?.stem}.${page.value?.extension}`,
-  ].filter(Boolean).join('/')
-})
-
-// Add the page path to the prerender list
-addPrerenderPath(`/raw${route.path}.md`)
 </script>
 
 <template>
@@ -104,9 +79,7 @@ addPrerenderPath(`/raw${route.path}.md`)
       />
 
       <USeparator v-if="github">
-        <div
-          class="flex items-center gap-2 text-sm text-muted"
-        >
+        <div class="flex items-center gap-2 text-sm text-muted">
           <UButton
             variant="link"
             color="neutral"

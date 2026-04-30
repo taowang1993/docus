@@ -1,5 +1,7 @@
 import { join } from 'node:path'
 import { extendViteConfig, createResolver, useNuxt } from '@nuxt/kit'
+import { getKnowledgeBaseEntrySlug } from './utils/docs'
+import { getDocusContentConfiguration } from './utils/knowledge-bases'
 
 const { resolve } = createResolver(import.meta.url)
 const DevPort = 4987
@@ -125,10 +127,25 @@ export default defineNuxtConfig({
     'nitro:config'(nitroConfig) {
       const nuxt = useNuxt()
 
+      if (nuxt.options.dev) {
+        return
+      }
+
+      const contentConfiguration = getDocusContentConfiguration(nuxt.options.rootDir)
       const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: DocusI18nOptions }).i18n
 
       const routes: string[] = []
-      if (!i18nOptions) {
+
+      if (contentConfiguration.mode === 'kb') {
+        routes.push('/')
+        routes.push(...contentConfiguration.knowledgeBases.map((knowledgeBase) => {
+          const slug = getKnowledgeBaseEntrySlug(knowledgeBase)
+          return slug.length > 0
+            ? `/docs/${knowledgeBase.id}/${knowledgeBase.defaultLocale}/${slug.join('/')}`
+            : `/docs/${knowledgeBase.id}/${knowledgeBase.defaultLocale}`
+        }))
+      }
+      else if (!i18nOptions) {
         routes.push('/')
       }
       else {
@@ -137,7 +154,7 @@ export default defineNuxtConfig({
 
       nitroConfig.prerender = nitroConfig.prerender || {}
       nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
-      nitroConfig.prerender.routes.push(...(routes || []))
+      nitroConfig.prerender.routes.push(...routes)
       nitroConfig.prerender.routes.push('/sitemap.xml')
     },
   },

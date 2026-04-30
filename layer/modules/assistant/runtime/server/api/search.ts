@@ -1,7 +1,8 @@
-import { streamText, convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse } from 'ai'
-import type { UIMessageStreamWriter, ToolCallPart, ToolSet } from 'ai'
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, streamText } from 'ai'
+import type { ToolCallPart, ToolSet, UIMessageStreamWriter } from 'ai'
 import { createMCPClient } from '@ai-sdk/mcp'
 import type { H3Event } from 'h3'
+import { getDefaultLocale, resolveDocsRoute } from '../../../../../utils/docs'
 import { createAssistantChatModel, getAssistantProviderConfig } from '../utils/ai-provider'
 
 const MAX_STEPS = 10
@@ -40,7 +41,7 @@ function stopWhenResponseComplete({ steps }: { steps: any[] }): boolean {
   return steps.length >= MAX_STEPS
 }
 
-function getSystemPrompt(siteName: string) {
+function getSystemPrompt(siteName: string, scopeLabel?: string) {
   return `You are the documentation assistant for ${siteName}. Help users navigate and understand the project documentation.
 
 **Your identity:**
@@ -48,6 +49,7 @@ function getSystemPrompt(siteName: string) {
 - NEVER use first person ("I", "me", "my") - always refer to the project by name: "${siteName} provides...", "${siteName} supports...", "The project offers..."
 - Be confident and knowledgeable about the project
 - Speak as a helpful guide, not as the documentation itself
+${scopeLabel ? `- You are currently scoped to the ${scopeLabel} knowledge base context. Prefer answers from that scope.` : ''}
 
 **Tool usage (CRITICAL):**
 - You have tools: search-pages (full-document search), list-pages (browse structure), and get-page (read a page)
@@ -84,18 +86,59 @@ function getSystemPrompt(siteName: string) {
 - Provide actionable guidance, not just information dumps`
 }
 
+function getAssistantScope(event: H3Event) {
+  const config = useRuntimeConfig(event).public as Parameters<typeof resolveDocsRoute>[1]
+  const referer = getRequestHeader(event, 'referer')
+
+  if (!referer) {
+    return {
+      kb: undefined,
+      locale: getDefaultLocale(config),
+      scopeLabel: undefined,
+    }
+  }
+
+  try {
+    const refererPath = new URL(referer).pathname
+    const resolved = resolveDocsRoute(refererPath, config)
+
+    return {
+      kb: resolved.kb,
+      locale: resolved.locale || getDefaultLocale(config),
+      scopeLabel: resolved.kb ? `${resolved.kb}${resolved.locale ? `/${resolved.locale}` : ''}` : undefined,
+    }
+  }
+  catch {
+    return {
+      kb: undefined,
+      locale: getDefaultLocale(config),
+      scopeLabel: undefined,
+    }
+  }
+}
+
 export default defineEventHandler(async (event) => {
   const startedAt = performance.now()
   const { messages } = await readBody(event)
   const config = useRuntimeConfig(event)
   const siteConfig = getSiteConfig(event)
   const siteName = siteConfig.name || 'Documentation'
-
   const providerConfig = getAssistantProviderConfig(event)
+  const assistantScope = getAssistantScope(event)
+
   const mcpServer = config.assistant.mcpServer
   const isExternalUrl = mcpServer.startsWith('http://') || mcpServer.startsWith('https://')
   const baseURL = config.app?.baseURL?.replace(/\/$/, '') || ''
   const requestPath = getRequestURL(event).pathname
+  const mcpUrl = new URL(mcpServer, getRequestURL(event).origin)
+
+  if (assistantScope.kb) {
+    mcpUrl.searchParams.set('kb', assistantScope.kb)
+  }
+
+  if (assistantScope.locale) {
+    mcpUrl.searchParams.set('locale', assistantScope.locale)
+  }
 
   let transport: Parameters<typeof createMCPClient>[0]['transport']
   let transportMode = 'internal-local-fetch'
@@ -104,20 +147,20 @@ export default defineEventHandler(async (event) => {
     transportMode = 'external-http'
     transport = {
       type: 'http',
-      url: mcpServer,
+      url: mcpUrl.toString(),
     }
   }
   else if (import.meta.dev) {
     transportMode = 'internal-dev-http'
     transport = {
       type: 'http',
-      url: `${getRequestURL(event).origin}${baseURL}${mcpServer}`,
+      url: `${getRequestURL(event).origin}${baseURL}${mcpUrl.pathname}${mcpUrl.search}`,
     }
   }
   else {
     transport = {
       type: 'http',
-      url: `${getRequestURL(event).origin}${baseURL}${mcpServer}`,
+      url: `${getRequestURL(event).origin}${baseURL}${mcpUrl.pathname}${mcpUrl.search}`,
       fetch: createLocalFetch(event),
     }
   }
@@ -126,6 +169,8 @@ export default defineEventHandler(async (event) => {
     requestPath,
     provider: providerConfig.provider,
     model: providerConfig.model,
+    kb: assistantScope.kb,
+    locale: assistantScope.locale,
     mcpServer,
     transportMode,
     transportUrl: transport.url,
@@ -152,7 +197,7 @@ export default defineEventHandler(async (event) => {
           maxOutputTokens: 4000,
           maxRetries: 2,
           stopWhen: stopWhenResponseComplete,
-          system: getSystemPrompt(siteName),
+          system: getSystemPrompt(siteName, assistantScope.scopeLabel),
           messages: modelMessages,
           tools: mcpTools as ToolSet,
           onStepFinish: ({ toolCalls }: { toolCalls: ToolCallPart[] }) => {

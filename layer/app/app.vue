@@ -9,14 +9,15 @@ const appConfig = useAppConfig()
 const { seo } = appConfig
 const { forced: forcedColorMode } = useDocusColorMode()
 const site = useSiteConfig()
-const { locale, locales, isEnabled, switchLocalePath } = useDocusI18n()
+const { locale, isEnabled } = useDocusI18n()
+const docs = useDocusDocs()
 const { isEnabled: isAssistantEnabled, isResizing: isAssistantResizing, panelWidth: assistantPanelWidth, shouldPushContent } = useAssistant()
 const { open: contentSearchOpen } = useContentSearch()
 
 const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof nuxtUiLocales] || nuxtUiLocales.en)
 const lang = computed(() => nuxtUiLocale.value.code)
 const dir = computed(() => nuxtUiLocale.value.dir)
-const collectionName = computed(() => isEnabled.value ? `docs_${locale.value}` : 'docs')
+const collectionName = computed(() => docs.collectionName.value)
 
 useHead({
   meta: [
@@ -39,27 +40,20 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-if (isEnabled.value) {
-  const route = useRoute()
-  const defaultLocale = useRuntimeConfig().public.i18n.defaultLocale!
-  onMounted(() => {
-    const currentLocale = route.path.split('/')[1]
-    if (!locales.some(locale => locale.code === currentLocale)) {
-      return navigateTo(switchLocalePath(defaultLocale) as string)
-    }
-  })
-}
-
-const { data: navigation } = await useAsyncData(() => `navigation_${collectionName.value}`, () => queryCollectionNavigation(collectionName.value as keyof PageCollections), {
-  transform: (data: ContentNavigationItem[]) => transformNavigation(data, isEnabled.value, locale.value),
-  watch: [locale],
+const navigationAsyncData = useAsyncData(() => `navigation_${collectionName.value}`, () => queryCollectionNavigation(collectionName.value as keyof PageCollections), {
+  transform: (data: ContentNavigationItem[]) => transformNavigation(data, isEnabled.value, locale.value, docs.mode.value, docs.activeKnowledgeBase.value?.id),
+  watch: [collectionName],
 })
-const { data: files } = useLazyAsyncData(`search_${collectionName.value}`, () => queryCollectionSearchSections(collectionName.value as keyof PageCollections), {
-  server: false,
-  watch: [locale],
-})
+const { data: navigation } = navigationAsyncData
 
 provide('navigation', navigation)
+
+const { data: files } = useLazyAsyncData(`search_${collectionName.value}`, () => queryCollectionSearchSections(collectionName.value as keyof PageCollections), {
+  server: false,
+  watch: [collectionName],
+})
+
+await navigationAsyncData
 
 const { subNavigationMode } = useSubNavigation(navigation)
 
@@ -114,7 +108,6 @@ function closeContentSearch() {
 <style>
 @media (min-width: 1024px) {
   .docus-sub-header {
-    /* 64px base header + 48px sub-navigation bar */
     --ui-header-height: 112px;
   }
 }

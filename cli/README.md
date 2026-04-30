@@ -31,9 +31,11 @@ That's it! Your documentation site will be running at `http://localhost:3000`
 ## 🌍 Templates
 
 ### Default Template
+
 Creates a basic documentation project ready for single-language content.
 
-### I18n Template  
+### I18n Template
+
 Use the `-t i18n` flag to create a project with internationalization support:
 
 ```bash
@@ -41,6 +43,7 @@ npx create-docus my-docs -t i18n
 ```
 
 The i18n template includes:
+
 - Pre-configured `@nuxtjs/i18n` module
 - Locale-based content structure (`content/en/`, `content/fr/`)
 - Built-in language switcher
@@ -51,7 +54,7 @@ The i18n template includes:
 The CLI scaffolds a complete documentation project with:
 
 - ✨ **Beautiful Design** - Clean, modern documentation theme
-- 📱 **Responsive** - Mobile-first responsive design  
+- 📱 **Responsive** - Mobile-first responsive design
 - 🌙 **Dark Mode** - Built-in dark/light mode support
 - 🌍 **Internationalization** - Native i18n support for multi-language docs
 - 🔍 **Search** - Full-text search functionality
@@ -91,6 +94,7 @@ my-docs/
 ### `/content` folder structure
 
 **Single language structure:**
+
 ```
 content/
 ├── index.md
@@ -101,6 +105,7 @@ content/
 ```
 
 **Multi-language structure (with i18n):**
+
 ```
 content/
 ├── en/
