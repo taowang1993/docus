@@ -196,5 +196,6 @@ Docus is organized as a **layered monorepo**:
 
 - Do not edit the `Development Guidelines` section in `AGENTS.md` unless asked to.
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes manually unless the user explicitly asks for it.
+- Run the relevant CI checks locally before committing; at minimum reproduce the touched CI step and, when practical, run `pnpm run lint`, `pnpm run typecheck`, and the affected package build/prepare commands before pushing.
 - Markdown files are formatted with Prettier. Run `pnpm run format:md` after editing Markdown, or rely on your editor's format-on-save behavior.
 - When opening or updating a PR, use `.github/PR.md` as the source template. If that file is missing in the current checkout, copy the current draft from `.github/workflows/PR.md` first.

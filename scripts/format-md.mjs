@@ -19,7 +19,7 @@ const files = [
       encoding: 'utf8',
     })
       .split(/\r?\n/)
-      .map((file) => file.trim())
+      .map(file => file.trim())
       .filter(Boolean),
   ),
 ]
