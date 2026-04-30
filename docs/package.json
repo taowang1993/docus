@@ -15,5 +15,8 @@
     "nuxt": "4.4.2",
     "nuxt-studio": "^1.6.0",
     "tailwindcss": "^4.2.3"
+  },
+  "devDependencies": {
+    "nuxt-skill-hub": "0.0.8"
   }
 }

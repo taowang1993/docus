@@ -187,6 +187,11 @@ Docus is organized as a **layered monorepo**:
 └── pnpm-workspace.yaml      # Workspace package definitions
 ```
 
+## Local agent skills
+
+- `.agents/skills/nuxt`: Symlink to `.codex/skills/nuxt` so local agent tooling follows the generated Nuxt wrapper automatically.
+- `.codex/skills/nuxt/SKILL.md`: Stable wrapper for the generated `docs/.nuxt/skill-hub/nuxt` tree.
+
 ## Development Guidelines
 
 - Do not edit the `Development Guidelines` section in `AGENTS.md` unless asked to.

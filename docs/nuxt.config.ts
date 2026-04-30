@@ -2,7 +2,7 @@ const siteUrl = process.env.NUXT_SITE_URL || 'https://docus.dev'
 
 export default defineNuxtConfig({
   extends: ['docus'],
-  modules: ['@nuxtjs/i18n', 'nuxt-studio'],
+  modules: ['@nuxtjs/i18n', 'nuxt-skill-hub', 'nuxt-studio'],
   site: {
     name: 'Docus',
     url: siteUrl,
@@ -37,6 +37,11 @@ export default defineNuxtConfig({
       title: 'Docus',
       description: 'Write beautiful docs with Markdown.',
     },
+  },
+  skillHub: {
+    skillName: 'nuxt',
+    generationMode: 'prepare',
+    targets: ['codex'],
   },
   mcp: {
     name: 'Docus documentation',
