@@ -303,38 +303,6 @@ export function resolveDocsRoute(path: string, config: DocusPublicRuntimeConfig)
   }
 }
 
-export function getLegacyDocsRedirectPath(path: string, config: DocusPublicRuntimeConfig): string | undefined {
-  if (getDocsMode(config) !== 'kb') {
-    return undefined
-  }
-
-  const cleanPath = path.split('?')[0] || '/'
-  const segments = cleanPath.split('/').filter(Boolean)
-
-  if (segments.length === 0 || segments[0] === 'docs') {
-    return undefined
-  }
-
-  const locale = segments[0]
-  const availableLocales = getFilteredLocaleCodes(config)
-
-  if (!locale || !availableLocales.includes(locale)) {
-    return undefined
-  }
-
-  const knowledgeBase = getKnowledgeBase(config)
-  if (!knowledgeBase) {
-    return undefined
-  }
-
-  return buildDocsPath({
-    mode: 'kb',
-    kb: knowledgeBase.id,
-    locale: resolveKnowledgeBaseLocale(config, knowledgeBase.id, locale),
-    slug: segments.slice(1),
-  })
-}
-
 export function getCollectionFromPath(path: string, config: DocusPublicRuntimeConfig): string {
   const resolved = resolveDocsRoute(path, config)
 

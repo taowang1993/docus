@@ -6,7 +6,6 @@ import {
   getKnowledgeBase,
   getKnowledgeBaseEntrySlug,
   getKnowledgeBases,
-  getLegacyDocsRedirectPath,
   resolveDocsRoute,
   resolveKnowledgeBaseLocale,
   switchKnowledgeBaseInPath,
@@ -42,7 +41,6 @@ export const useDocusDocs = () => {
         : 'docs')
   })
   const currentSlug = computed(() => resolvedRoute.value.slug)
-  const legacyRedirectPath = computed(() => getLegacyDocsRedirectPath(route.path, config))
 
   function withHash(path: string) {
     return `${path}${route.hash || ''}`
@@ -88,7 +86,6 @@ export const useDocusDocs = () => {
     activeLocale,
     collectionName,
     currentSlug,
-    legacyRedirectPath,
     getKnowledgeBaseHomePath,
     switchLocalePath,
     switchKnowledgeBasePath,

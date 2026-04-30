@@ -1,6 +1,6 @@
 import type { RouteLocationNormalized } from 'vue-router'
 import { consola } from 'consola'
-import { getDefaultLocale, getDocsMode, getFilteredLocaleCodes, getLegacyDocsRedirectPath, resolveDocsRoute } from '../../utils/docs'
+import { getDefaultLocale, getDocsMode, getFilteredLocaleCodes, resolveDocsRoute } from '../../utils/docs'
 
 const log = consola.withTag('Docus')
 
@@ -61,11 +61,6 @@ export default defineNuxtPlugin(async () => {
   syncLocale(useRoute().path)
 
   addRouteMiddleware((to: RouteLocationNormalized) => {
-    const legacyRedirectPath = getLegacyDocsRedirectPath(to.path, publicConfig)
-    if (legacyRedirectPath) {
-      return navigateTo(legacyRedirectPath, { redirectCode: 301 })
-    }
-
     if (docsMode === 'legacy' && to.path === '/') {
       const cookieLocale = useCookie('i18n_redirected').value || i18nConfig.defaultLocale || defaultLocale
       return navigateTo(`/${cookieLocale}`)

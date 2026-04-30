@@ -9,15 +9,7 @@ const { t } = useDocusI18n()
 const docs = useDocusDocs()
 
 if (docs.mode.value === 'kb') {
-  if (!docs.isDocsRoute.value || !docs.activeKnowledgeBase.value) {
-    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-  }
-
-  if (!docs.resolvedRoute.value.locale) {
-    await navigateTo(docs.getKnowledgeBaseHomePath(docs.activeKnowledgeBase.value.id), {
-      redirectCode: 301,
-    })
-  }
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
 const {
