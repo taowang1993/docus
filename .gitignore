@@ -19,9 +19,6 @@ logs
 .idea
 .eslintcache
 
-# Local context notes
-.context/architecture.md
-
 # Local env files
 .env
 .env.*
