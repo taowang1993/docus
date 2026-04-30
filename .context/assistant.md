@@ -9,7 +9,7 @@ The Docus assistant is a docs-grounded chat surface built on top of:
 - **FlexSearch** for primary full-text retrieval
 - **Fuse.js** for fuzzy fallback retrieval
 
-The assistant is intentionally grounded in the documentation rather than relying on the model's prior knowledge.
+It is intentionally tool-grounded. The assistant should prefer documentation tools before answering substantive questions, and it scopes itself to the current knowledge base and locale whenever the request comes from a docs page.
 
 ## Runtime pieces
 
@@ -22,10 +22,19 @@ The UI lives in the assistant runtime components and composables:
 - `layer/modules/assistant/runtime/components/AssistantFloatingInput.vue`
 - `layer/modules/assistant/runtime/composables/useAssistant.ts`
 
-The chat panel uses `@ai-sdk/vue` + `DefaultChatTransport` and posts to:
+The chat panel uses `@ai-sdk/vue` + `DefaultChatTransport` and posts to `config.public.assistant.apiPath`:
 
-- `config.public.assistant.apiPath`
 - default: `/__docus__/assistant`
+
+The preferred module config lives under `docus.assistant` in `nuxt.config.ts`. The legacy top-level `assistant` config is still read for compatibility, but it logs a deprecation warning.
+
+The assistant UI is enabled when:
+
+- the app is running in dev, or
+- `NUXT_PUBLIC_ASSISTANT_ENABLED=true`, or
+- supported provider credentials are present
+
+When none of those are true, the module registers disabled assistant components instead of the live chat UI.
 
 ### Server
 
@@ -36,9 +45,15 @@ The server endpoint is:
 That route:
 
 1. resolves the active AI provider/model
-2. connects to the configured MCP server
-3. exposes MCP tools to the model
-4. streams the result back to the UI
+2. derives the current knowledge-base scope from the request referer when possible
+3. connects to the configured MCP server
+4. exposes MCP tools to the model
+5. streams the result back to the UI
+
+The MCP server target comes from `docus.assistant.mcpServer`:
+
+- default: `/mcp`
+- it can also be an external URL such as `https://docs.example.com/mcp`
 
 ## Model providers
 
@@ -62,10 +77,11 @@ Important env vars:
 
 - `AI_PROVIDER`
 - `AI_MODEL`
-- `VERCEL_API_KEY`
-- provider-specific key/model vars such as `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, etc.
+- `AI_GATEWAY_API_KEY`
+- `VERCEL_OIDC_TOKEN`
+- provider-specific key/model vars such as `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `GITHUB_TOKEN`, `GEMINI_API_KEY`, and `CLOUDFLARE_API_TOKEN`
 
-If `AI_PROVIDER` is unset, Docus auto-detects the first configured provider from runtime config.
+If `AI_PROVIDER` is unset, Docus auto-detects the first configured provider from runtime config or environment credentials. Vercel AI Gateway is the fallback provider when no explicit provider is set.
 
 ## MCP tool layer
 
@@ -97,6 +113,8 @@ It performs full-document retrieval across:
 - path tokens
 - body content
 
+It also accepts optional `kb` and `locale` filters in multi-knowledge-base sites.
+
 #### `list-pages`
 
 Use this for structure browsing:
@@ -105,9 +123,13 @@ Use this for structure browsing:
 - categories
 - page discovery by title/path/description
 
+It is also KB-aware and supports `kb` and `locale` filters.
+
 #### `get-page`
 
 Use this when the exact page path is known and the assistant needs full markdown context.
+
+In KB-first sites, paths look like `/docs/<kb>/<locale>/...`.
 
 ## Search implementation
 
@@ -144,7 +166,7 @@ Filtering helpers live in:
    - `locale`
    - `excerpt`
 
-### Grounding behavior
+## Grounding behavior
 
 The assistant prompt strongly biases the model toward using tools for substantive documentation questions.
 
@@ -153,7 +175,7 @@ Current behavior:
 - substantive docs questions should use MCP tools before answering
 - `search-pages` is preferred first
 - `get-page` is used for deeper reads
-- simple greetings / acknowledgement / purely meta UI questions may be answered without tools
+- simple greetings, acknowledgements, or purely meta UI questions may be answered without tools
 
 This means Docus is **tool-grounded by design**, but not absolutely tool-forced for trivial non-doc interactions.
 

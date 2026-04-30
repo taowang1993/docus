@@ -4,7 +4,7 @@
 
 Docus is an AI-powered Knowledge Management System built around a reusable **Nuxt layer**.
 
-- **`layer/`** is the main product: the Docus theme, layouts, routing, server utilities, AI assistant, MCP tools, and shared runtime assets.
+- **`layer/`** is the main product: the Docus theme, layouts, routing, knowledge-base/content resolution, server utilities, AI assistant, MCP tools, and shared runtime assets.
 - **`docs/`** is the official documentation site (`docus.dev`) and a real consumer of the layer.
 - **`playground/`** is a lightweight local consumer used to validate the layer in isolation.
 - **`cli/`** publishes `create-docus`, which scaffolds new projects from the starter templates.
@@ -38,6 +38,7 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 | AI_PROVIDER                   | Assistant Provider           |
 | AI_MODEL                      | Model Override               |
 | AI_GATEWAY_API_KEY            | Vercel AI Gateway            |
+| VERCEL_OIDC_TOKEN             | Vercel AI Gateway OIDC auth  |
 | OPENROUTER_API_KEY            | OpenRouter Access            |
 | OPENROUTER_MODEL              | OpenRouter Model             |
 | DEEPSEEK_API_KEY              | DeepSeek Access              |
@@ -158,6 +159,26 @@ User → AssistantPanel.vue → /__docus__/assistant → AI provider resolver
      → MCP client/server → search-pages | list-pages | get-page
      → Nuxt Content + hybrid search → streamed grounded answer
 ```
+
+### Knowledge base mode
+
+Docus can also organize docs as multiple knowledge bases. When it finds one or more `content/<kb>/kb.yml` files, it switches to KB mode and serves routes from `/docs/<kb>/<locale>/...`.
+
+Example structure:
+
+```text
+content/
+├── site/
+│   └── index.md
+├── platform/
+│   ├── kb.yml
+│   └── en/getting-started/installation.md
+└── parser/
+    ├── kb.yml
+    └── en/parser/best-document-parsing-apis-2026.md
+```
+
+The `site/` landing page can link to each KB, and the header automatically shows KB and language switchers when more than one option is available.
 
 Docus is organized as a **layered monorepo**:
 
