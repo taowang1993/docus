@@ -88,7 +88,7 @@ export function useSeo(options: UseSeoOptions) {
 
       // Hreflang tags for i18n
       if (isI18nEnabled.value && baseUrl.value) {
-        for (const loc of locales) {
+        for (const loc of locales.value) {
           const localePath = switchLocalePath(loc.code)
           if (localePath) {
             links.push({
@@ -100,7 +100,7 @@ export function useSeo(options: UseSeoOptions) {
         }
 
         // x-default hreflang (points to default locale)
-        const defaultLocalePath = switchLocalePath(locales[0]?.code || 'en')
+        const defaultLocalePath = switchLocalePath(locales.value[0]?.code || 'en')
         if (defaultLocalePath) {
           links.push({
             rel: 'alternate',

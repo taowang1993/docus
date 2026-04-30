@@ -23,7 +23,8 @@
     "layer:release": "release-it --config .release-it.layer.json && cd layer && npm publish",
     "cli:release": "release-it --config .release-it.cli.json && cd cli && npm publish",
     "release": "pnpm run layer:release && pnpm run cli:release && release-it",
-    "clean": "rm -rf .nuxt .output node_modules cli/node_modules docs/.nuxt docs/.data docs/node_modules layer/node_modules layer/.data analyze cli/dist docs/.nuxt docs/.output layer/.nuxt playground/.nuxt playground/.output playground/node_modules playground/.data pnpm-lock.yaml .pnpm-store"
+    "clean": "node scripts/clean.mjs",
+    "clean:full": "pnpm run clean && rm -rf node_modules cli/node_modules docs/node_modules layer/node_modules playground/node_modules analyze cli/dist pnpm-lock.yaml .pnpm-store"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",

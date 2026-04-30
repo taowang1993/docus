@@ -1,5 +1,5 @@
 import { queryCollection } from '@nuxt/content/server'
-import { getAvailableLocales, getCollectionsToQuery } from '../utils/content'
+import { getAllDocsCollectionNames, getDocsMode, hasSiteContent } from '../../utils/docs'
 import { inferSiteURL } from '../../utils/meta'
 
 interface SitemapUrl {
@@ -9,21 +9,29 @@ interface SitemapUrl {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
+  const publicConfig = config.public as Parameters<typeof getDocsMode>[0]
   const siteUrl = inferSiteURL() || ''
+  const urls: SitemapUrl[] = []
 
-  const availableLocales = getAvailableLocales(config.public as Record<string, unknown>)
-  const collections = getCollectionsToQuery(undefined, availableLocales)
+  if (getDocsMode(publicConfig) === 'kb') {
+    urls.push({ loc: '/' })
+  }
 
-  if (availableLocales.length > 0) {
-    for (const locale of availableLocales) {
-      collections.push(`landing_${locale}`)
+  const collections = [...getAllDocsCollectionNames(publicConfig)]
+
+  if (getDocsMode(publicConfig) === 'legacy') {
+    const availableLocales = publicConfig.docus?.filteredLocales?.map(locale => locale.code) || []
+
+    if (availableLocales.length > 0) {
+      collections.push(...availableLocales.map(locale => `landing_${locale}`))
+    }
+    else {
+      collections.push('landing')
     }
   }
-  else {
-    collections.push('landing')
+  else if (hasSiteContent(publicConfig)) {
+    collections.push('site')
   }
-
-  const urls: SitemapUrl[] = []
 
   for (const collection of collections) {
     try {
@@ -33,26 +41,22 @@ export default defineEventHandler(async (event) => {
         const meta = page as Record<string, unknown>
         const pagePath = page.path || '/'
 
-        // Skip pages with sitemap: false in frontmatter
         if (meta.sitemap === false) continue
-
-        // Skip .navigation files (used for navigation configuration)
         if (pagePath.endsWith('.navigation') || pagePath.includes('/.navigation')) continue
 
         const urlEntry: SitemapUrl = {
           loc: pagePath,
         }
 
-        // Add lastmod if available (modifiedAt from content)
         if (meta.modifiedAt && typeof meta.modifiedAt === 'string') {
-          urlEntry.lastmod = meta.modifiedAt.split('T')[0] // Use date part only (YYYY-MM-DD)
+          urlEntry.lastmod = meta.modifiedAt.split('T')[0]
         }
 
         urls.push(urlEntry)
       }
     }
     catch {
-      // Collection might not exist, skip it
+      // Collection may not exist in a given consumer
     }
   }
 
@@ -63,7 +67,9 @@ export default defineEventHandler(async (event) => {
 })
 
 function generateSitemap(urls: SitemapUrl[], siteUrl: string): string {
-  const urlEntries = urls
+  const uniqueUrls = [...new Map(urls.map(url => [url.loc, url])).values()]
+
+  const urlEntries = uniqueUrls
     .map((url) => {
       const loc = siteUrl ? `${siteUrl}${url.loc}` : url.loc
       let entry = `  <url>\n    <loc>${escapeXml(loc)}</loc>`

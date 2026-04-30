@@ -1,27 +1,17 @@
 import { z } from 'zod'
 import { queryCollection } from '@nuxt/content/server'
 import type { Collections } from '@nuxt/content'
-import { getCollectionsToQuery, getAvailableLocales, isSearchableContentPath } from '../../utils/content'
+import { getCollectionsToQuery, getScopedKnowledgeBaseAndLocale, isSearchableContentPath } from '../../utils/content'
 import { inferSiteURL } from '../../../utils/meta'
 
 export default defineMcpTool({
-  description: `Lists all available documentation pages with their categories and basic information.
+  description: `Lists available documentation pages with their titles, paths, and descriptions.
 
-WHEN TO USE: Use this tool when you need to EXPLORE the documentation structure and browse available pages by title, path, or description. Common scenarios:
-- "Show me all getting started guides" - browse introductory content
-- "What sections exist for AI features?" - inspect the docs structure
-- User asks for categories, sections, or page names
-- You need to understand the overall documentation map before drilling down
+WHEN TO USE: Use this tool when you need to explore the documentation structure, browse sections, or inspect available page titles.
 
-WHEN NOT TO USE: If the answer may be buried inside page body text, use search-pages first. If you already know the specific page path (e.g., "/en/getting-started/installation"), use get-page directly instead.
+WHEN NOT TO USE: If the answer may be buried inside page body text, use search-pages first. If you already know the exact page path, use get-page directly.
 
-WORKFLOW: This tool returns page titles, descriptions, and paths. After finding relevant pages, use get-page to retrieve the full content of specific pages that match the user's needs.
-
-OUTPUT: Returns a structured list with:
-- title: Human-readable page name
-- path: Exact path for use with get-page
-- description: Brief summary of page content
-- url: Full URL for reference`,
+This tool is knowledge-base aware. In multi-KB sites you can scope results with kb and locale.`,
   annotations: {
     readOnlyHint: true,
     destructiveHint: false,
@@ -29,20 +19,22 @@ OUTPUT: Returns a structured list with:
     openWorldHint: false,
   },
   inputSchema: {
-    locale: z.string().optional().describe('The locale to filter pages by (e.g., "en", "fr")'),
+    kb: z.string().optional().describe('Optional knowledge base id to scope results (for example: "platform" or "parser").'),
+    locale: z.string().optional().describe('Optional locale code to scope results (for example: "en" or "fr").'),
   },
   inputExamples: [
-    { locale: 'en' },
+    { kb: 'platform', locale: 'en' },
+    { locale: 'fr' },
     {},
   ],
   cache: '1h',
-  handler: async ({ locale }) => {
+  handler: async ({ kb, locale }) => {
     const event = useEvent()
-    const config = useRuntimeConfig(event).public
+    const config = useRuntimeConfig(event).public as Parameters<typeof getCollectionsToQuery>[1]
 
+    const scoped = getScopedKnowledgeBaseAndLocale(event, { kb, locale })
     const siteUrl = getRequestURL(event).origin || inferSiteURL()
-    const availableLocales = getAvailableLocales(config)
-    const collections = getCollectionsToQuery(locale, availableLocales)
+    const collections = getCollectionsToQuery(scoped, config)
 
     try {
       const allPages = await Promise.all(
@@ -56,7 +48,6 @@ OUTPUT: Returns a structured list with:
             title: page.title,
             path: page.path,
             description: page.description,
-            locale: collectionName.replace('docs_', ''),
             url: `${siteUrl}${page.path}`,
           }))
         }),

@@ -1,66 +1,63 @@
 ---
 seo:
-  title: Write beautiful docs with Markdown
-  description: Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box. Docus brings together the best of the Nuxt ecosystem. Powered by Nuxt UI.
+  title: Docus
+  description: An AI-powered Knowledge Management System
 ---
 
-::u-page-hero
+::u-page-hero{class="!pt-6 sm:!pt-8 lg:!pt-12 !pb-4 sm:!pb-6 lg:!pb-8 [&>[data-slot=container]]:!py-12 [&>[data-slot=container]]:!gap-6"}
 #title
-Write beautiful docs with Markdown.
+Docus
 
 #description
-Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box. :br Docus brings the best of the Nuxt ecosystem.
-
-#links
-  :::u-button
-  ---
-  color: neutral
-  size: xl
-  to: en/getting-started/installation
-  trailing-icon: i-lucide-arrow-right
-  ---
-  Get started
-  :::
-
-  :::u-button
-  ---
-  color: neutral
-  icon: simple-icons-github
-  size: xl
-  to: https://github.com/nuxt-content/docus
-  variant: outline
-  ---
-  Star on GitHub
-  :::
-
-#headline
-  :::u-button
-  ---
-  size: sm
-  to: https://github.com/nuxt-content/docus/releases/tag/v5.0.0
-  variant: outline
-  ---
-  Docus v5 →
-  :::
+An AI-powered Knowledge Management System
 ::
 
-::u-page-section
-  :::u-page-grid
-    ::::u-page-card
-    ---
-    spotlight: true
-    class: group col-span-2 lg:col-span-1
-    target: _blank
-    to: https://nuxt.com
-    ---
-    :floating-nuxt
+::u-page-section{class="pt-0 [&>[data-slot=container]]:!py-0"}
+:::u-page-grid{class="lg:grid-cols-2 gap-4 mt-2"}
+::::u-page-card
+---
+spotlight: true
+icon: i-lucide-layout-dashboard
+to: /docs/platform/en/getting-started/installation
+---
+#title
+Platform docs
 
-    #title
-    Built with [Nuxt](https://nuxt.com)
+#description
+Product docs for configuration, authoring, AI tooling, and deployment.
+::::
 
-    #description
-    Optimized by the most famous Vue framework. Docus gives you everything you need to build fast, performant, and SEO-friendly websites.
-    ::::
+::::u-page-card
+---
+spotlight: true
+icon: i-lucide-file-text
+to: /docs/parser/en/parser/best-document-parsing-apis-2026
+---
+#title
+Parser docs
+
+#description
+Document parsing comparisons, RAG ingestion guides, and enterprise document intelligence patterns.
+::::
+:::
+
+:::u-page-grid{class="mt-4 lg:mt-6"}
+::::u-page-card
+---
+spotlight: true
+class: group col-span-2 lg:col-span-1
+target: \_blank
+to: https://nuxt.com
+---
+#title
+Built with [Nuxt](https://nuxt.com)
+
+#description
+Optimized by the most famous Vue framework. Docus gives you everything you need to build fast, performant, and SEO-friendly websites.
+
+#header
+:floating-nuxt
+::::
 
     ::::u-page-card
     ---
@@ -248,7 +245,7 @@ Ship fast, flexible, and SEO-optimized documentation with beautiful design out o
     spotlight: true
     class: col-span-2 lg:col-span-1
     target: _blank
-    to: /en/concepts/internationalization
+    to: /docs/platform/en/concepts/internationalization
     ---
       :::::u-color-mode-image
       ---
@@ -273,7 +270,7 @@ Ship fast, flexible, and SEO-optimized documentation with beautiful design out o
     spotlight: true
     class: col-span-2
     target: _blank
-    to: /en/ai/mcp
+    to: /docs/platform/en/ai/mcp
     ---
       :::::u-color-mode-image
       ---
@@ -328,16 +325,6 @@ Ship fast, flexible, and SEO-optimized documentation with beautiful design out o
     ---
       :::::div{.flex-1.flex.flex-col.items-center.justify-center.py-8.text-center}
         ::::::div{.flex.flex-col.gap-3.w-full.max-w-xs}
-          :::::::u-button
-          ---
-          block: true
-          color: primary
-          size: lg
-          to: /en/getting-started/introduction
-          trailing-icon: i-lucide-arrow-right
-          ---
-          Read Documentation
-          :::::::
 
           :::::::u-button
           ---
@@ -360,5 +347,6 @@ Ship fast, flexible, and SEO-optimized documentation with beautiful design out o
     #description
     Explore all the features that make Docus the perfect documentation solution.
     ::::
-  :::
+
+:::
 ::

@@ -1,0 +1,11 @@
+id: platform
+title: Platform
+description: Core Docus platform documentation covering configuration, authoring, AI tooling, and deployment.
+icon: i-lucide-layout-dashboard
+defaultLocale: en
+entry: getting-started/installation
+locales:
+  - en
+  - fr
+assistantName: Platform Assistant
+searchPlaceholder: Search platform docs...

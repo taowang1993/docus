@@ -136,6 +136,7 @@ Use `AssistantFloatingInput` for a floating input at the bottom of the page.
 ```
 
 The floating input:
+
 - Appears at the bottom center of the viewport
 - Automatically hides when the chat slideover is open
 - Expands on focus for better typing experience
@@ -165,12 +166,12 @@ clearMessages()
 
 ## Module Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `apiPath` | `string` | `/__docus__/assistant` | API endpoint path for the chat |
-| `mcpServer` | `string` | `/mcp` | MCP server path or full URL (e.g., `https://docs.example.com/mcp` for external servers) |
-| `provider` | `string` | auto | Optional provider override (`vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`) |
-| `model` | `string` | provider default | Optional model override for the configured provider |
+| Option      | Type     | Default                | Description                                                                                                                        |
+| ----------- | -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `apiPath`   | `string` | `/__docus__/assistant` | API endpoint path for the chat                                                                                                     |
+| `mcpServer` | `string` | `/mcp`                 | MCP server path or full URL (e.g., `https://docs.example.com/mcp` for external servers)                                            |
+| `provider`  | `string` | auto                   | Optional provider override (`vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`) |
+| `model`     | `string` | provider default       | Optional model override for the configured provider                                                                                |
 
 ## Components
 
@@ -187,6 +188,7 @@ Main chat interface displayed as a side panel. Configuration is done via `app.co
 Floating input field positioned at the bottom of the viewport. No props required.
 
 **Keyboard shortcuts:**
+
 - `⌘I` / `Ctrl+I` - Focus the input
 - `Escape` - Blur the input
 - `Enter` - Submit the question
@@ -199,15 +201,15 @@ Main composable for controlling the chat state.
 
 ```ts
 const {
-  isOpen,         // Ref<boolean> - Whether the chat is open
-  messages,       // Ref<UIMessage[]> - Chat messages
+  isOpen, // Ref<boolean> - Whether the chat is open
+  messages, // Ref<UIMessage[]> - Chat messages
   pendingMessage, // Ref<string | undefined> - Pending message to send
-  faqQuestions,   // ComputedRef<FaqCategory[]> - FAQ questions from config
-  open,           // (message?: string, clearPrevious?: boolean) => void
-  close,          // () => void
-  toggle,         // () => void
-  clearMessages,  // () => void
-  clearPending,   // () => void
+  faqQuestions, // ComputedRef<FaqCategory[]> - FAQ questions from config
+  open, // (message?: string, clearPrevious?: boolean) => void
+  close, // () => void
+  toggle, // () => void
+  clearMessages, // () => void
+  clearPending, // () => void
 } = useAssistant()
 ```
 

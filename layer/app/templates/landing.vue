@@ -2,30 +2,57 @@
 import type { Collections } from '@nuxt/content'
 
 const route = useRoute()
+const runtimeConfig = useRuntimeConfig().public as { docus?: { hasSiteContent?: boolean } }
 const { locale, isEnabled } = useDocusI18n()
+const docs = useDocusDocs()
+const site = useSiteConfig()
+const appConfig = useAppConfig()
 
-// Dynamic collection name based on i18n status
-const collectionName = computed(() => isEnabled.value ? `landing_${locale.value}` : 'landing')
-
-const { data: page } = await useAsyncData(collectionName.value, () => queryCollection(collectionName.value as keyof Collections).path(route.path).first())
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+type LandingPage = {
+  title?: string
+  description?: string
+  seo?: {
+    title?: string
+    description?: string
+    ogImage?: string
+  }
 }
 
-const title = page.value.seo?.title || page.value.title
-const description = page.value.seo?.description || page.value.description
+const page = ref<LandingPage | null>(null)
+
+if (docs.mode.value === 'kb' && runtimeConfig.docus?.hasSiteContent) {
+  const { data } = await useAsyncData('site_landing', () => queryCollection('site' as keyof Collections).path(route.path).first())
+  page.value = data.value as LandingPage | null
+}
+else if (docs.mode.value === 'legacy') {
+  const collectionName = computed(() => isEnabled.value ? `landing_${locale.value}` : 'landing')
+  const { data } = await useAsyncData(collectionName.value, () => queryCollection(collectionName.value as keyof Collections).path(route.path).first())
+
+  if (!data.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  }
+
+  page.value = data.value as LandingPage
+}
+
+const title = computed(() => {
+  return page.value?.seo?.title || page.value?.title || appConfig.seo?.title || site.name || 'Documentation'
+})
+const description = computed(() => {
+  return page.value?.seo?.description || page.value?.description || appConfig.seo?.description || ''
+})
 
 useSeo({
   title,
   description,
   type: 'website',
-  ogImage: page.value?.seo?.ogImage as string | undefined,
+  ogImage: computed(() => page.value?.seo?.ogImage),
 })
 
 if (!page.value?.seo?.ogImage) {
   defineOgImage('Landing', {
-    title: title?.slice(0, 60),
-    description: formatOgDescription(title, description),
+    title: title.value?.slice(0, 60),
+    description: formatOgDescription(title.value, description.value),
   })
 }
 </script>
@@ -35,4 +62,5 @@ if (!page.value?.seo?.ogImage) {
     v-if="page"
     :value="page"
   />
+  <KnowledgeBaseDirectory v-else-if="docs.isKnowledgeBaseMode" />
 </template>

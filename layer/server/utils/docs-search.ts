@@ -5,11 +5,13 @@ import { queryCollection } from '@nuxt/content/server'
 import type { Collections } from '@nuxt/content'
 import type { H3Event } from 'h3'
 import { inferSiteURL } from '../../utils/meta'
-import { getAvailableLocales, isSearchableContentPath } from './content'
+import { getDocsCollectionName, getDocsMode, getFilteredLocaleCodes, getKnowledgeBases } from '../../utils/docs'
+import { isSearchableContentPath } from './content'
 
 type SearchIndexDocument = {
   id: string
   path: string
+  kb: string
   locale: string
   title: string
   description: string
@@ -31,6 +33,7 @@ export type DocusSearchResult = {
   description: string
   path: string
   url: string
+  kb?: string
   locale?: string
   excerpt: string
 }
@@ -106,10 +109,6 @@ function getPathTokens(path: string) {
     .filter(Boolean)
     .map(segment => segment.replace(/[-_]+/g, ' '))
     .join(' ')
-}
-
-function normalizeLocale(collectionName: string) {
-  return collectionName.startsWith('docs_') ? collectionName.slice(5) : ''
 }
 
 function getOrigin(event: H3Event) {
@@ -232,13 +231,40 @@ function normalizeFlexResults(rawResults: unknown, byId: Map<string, SearchIndex
     .filter((doc): doc is SearchIndexDocument => Boolean(doc))
 }
 
-async function getCollectionDocuments(event: H3Event, collectionName: string) {
-  const pages = (await queryCollection(event, collectionName as keyof Collections)
+function getCollectionDescriptors(event: H3Event) {
+  const config = useRuntimeConfig(event).public as Parameters<typeof getDocsMode>[0]
+  const mode = getDocsMode(config)
+
+  if (mode === 'kb') {
+    return getKnowledgeBases(config).flatMap(knowledgeBase =>
+      knowledgeBase.locales.map(locale => ({
+        collectionName: getDocsCollectionName({ mode, kb: knowledgeBase.id, locale }),
+        kb: knowledgeBase.id,
+        locale,
+      })),
+    )
+  }
+
+  const locales = getFilteredLocaleCodes(config)
+
+  if (locales.length > 0) {
+    return locales.map(locale => ({
+      collectionName: getDocsCollectionName({ mode, locale }),
+      locale,
+    }))
+  }
+
+  return [{
+    collectionName: 'docs',
+    locale: '',
+  }]
+}
+
+async function getCollectionDocuments(event: H3Event, descriptor: { collectionName: string, kb?: string, locale?: string }) {
+  const pages = (await queryCollection(event, descriptor.collectionName as keyof Collections)
     .select('title', 'path', 'description')
     .all())
     .filter(page => isSearchableContentPath(page.path || ''))
-
-  const locale = normalizeLocale(collectionName)
 
   return Promise.all(pages.map(async (page) => {
     let markdown = ''
@@ -255,7 +281,8 @@ async function getCollectionDocuments(event: H3Event, collectionName: string) {
     return {
       id: page.path,
       path: page.path,
-      locale,
+      kb: descriptor.kb || '',
+      locale: descriptor.locale || '',
       title: page.title || page.path,
       description: page.description || '',
       headings: extractHeadings(rawContent),
@@ -268,18 +295,14 @@ async function getCollectionDocuments(event: H3Event, collectionName: string) {
 
 async function createDocsSearch(event: H3Event): Promise<DocsSearchIndex> {
   const startedAt = performance.now()
-  const config = useRuntimeConfig(event).public
-  const availableLocales = getAvailableLocales(config)
-  const collections = availableLocales.length > 0
-    ? availableLocales.map(locale => `docs_${locale}`)
-    : ['docs']
+  const descriptors = getCollectionDescriptors(event)
 
-  const documents = (await Promise.all(collections.map(collectionName => getCollectionDocuments(event, collectionName)))).flat()
+  const documents = (await Promise.all(descriptors.map(descriptor => getCollectionDocuments(event, descriptor)))).flat()
 
   logDocsSearch('build_index', {
     requestPath: getRequestURL(event).pathname,
     docCount: documents.length,
-    collections,
+    collections: descriptors.map(descriptor => descriptor.collectionName),
     durationMs: Number((performance.now() - startedAt).toFixed(1)),
   })
 
@@ -322,6 +345,7 @@ function toSearchResult(event: H3Event, doc: SearchIndexDocument, query: string)
     description: doc.description,
     path: doc.path,
     url: `${getOrigin(event)}${doc.path}`,
+    kb: doc.kb || undefined,
     locale: doc.locale || undefined,
     excerpt: buildSearchExcerpt(doc.rawContent, query),
   }
@@ -330,10 +354,12 @@ function toSearchResult(event: H3Event, doc: SearchIndexDocument, query: string)
 export async function searchDocs(event: H3Event, {
   query,
   limit = 5,
+  kb,
   locale,
 }: {
   query: string
   limit?: number
+  kb?: string
   locale?: string
 }): Promise<DocusSearchResult[]> {
   const trimmedQuery = query.trim()
@@ -351,13 +377,25 @@ export async function searchDocs(event: H3Event, {
     limit: overfetchLimit,
   })
 
-  const filteredDocuments = locale
-    ? search.documents.filter(document => document.locale === locale)
-    : search.documents
+  const filteredDocuments = search.documents.filter((document) => {
+    if (kb && document.kb !== kb) {
+      return false
+    }
+
+    if (locale && document.locale !== locale) {
+      return false
+    }
+
+    return true
+  })
 
   const candidates = new Map<string, SearchResultCandidate>()
 
   for (const [index, doc] of normalizeFlexResults(flexRawResults, search.byId).entries()) {
+    if (kb && doc.kb !== kb) {
+      continue
+    }
+
     if (locale && doc.locale !== locale) {
       continue
     }
@@ -373,7 +411,7 @@ export async function searchDocs(event: H3Event, {
 
   if (isQueryWeakForFlex([...candidates.values()], effectiveLimit)) {
     usedFuseFallback = true
-    const fuse = locale
+    const fuse = kb || locale
       ? new Fuse(filteredDocuments, fuseOptions)
       : search.fuse
 
@@ -400,6 +438,7 @@ export async function searchDocs(event: H3Event, {
   logDocsSearch('search', {
     requestPath: getRequestURL(event).pathname,
     query: trimmedQuery,
+    kb,
     locale,
     limit: effectiveLimit,
     candidateCount: candidates.size,

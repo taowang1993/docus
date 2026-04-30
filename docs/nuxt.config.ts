@@ -40,7 +40,7 @@ export default defineNuxtConfig({
   },
   mcp: {
     name: 'Docus documentation',
-    browserRedirect: '/en/ai/mcp',
+    browserRedirect: '/docs/platform/en/ai/mcp',
   },
   skillHub: {
     skillName: 'nuxt',

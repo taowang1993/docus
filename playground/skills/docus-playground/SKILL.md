@@ -3,7 +3,7 @@ name: docus-playground
 description: Sample skill for testing the Docus agent skills discovery feature. Use to verify that /.well-known/skills/ routes work correctly.
 metadata:
   author: docus
-  version: "1.0"
+  version: '1.0'
 ---
 
 # Docus Playground Skill
