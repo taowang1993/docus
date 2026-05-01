@@ -18,21 +18,68 @@ const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof n
 const lang = computed(() => nuxtUiLocale.value.code)
 const dir = computed(() => nuxtUiLocale.value.dir)
 const collectionName = computed(() => docs.collectionName.value)
-const faviconUrl = computed(() => appConfig.header?.logo?.favicon || '/favicon.ico')
+const faviconUrl = computed(() => appConfig.header?.logo?.favicon || '/favicon.svg')
 const faviconType = computed(() => /\.svg(?:[?#]|$)/i.test(faviconUrl.value) ? 'image/svg+xml' : 'image/x-icon')
+const themeAwareFavicons = useState('docus-theme-favicons', () => ({
+  dark: false,
+  light: false,
+}))
+
+if (import.meta.server) {
+  const [{ existsSync }, { resolve: resolvePath }] = await Promise.all([
+    import('node:fs'),
+    import('node:path'),
+  ])
+
+  const publicDir = resolvePath(process.cwd(), 'public')
+
+  themeAwareFavicons.value = {
+    dark: existsSync(resolvePath(publicDir, 'favicon-dark.svg')),
+    light: existsSync(resolvePath(publicDir, 'favicon-light.svg')),
+  }
+}
+
+const faviconLinks = computed(() => {
+  const links: Array<{ key: string, rel: string, href: string, type: string, media?: string, sizes?: string }> = []
+
+  if (themeAwareFavicons.value.dark) {
+    links.push({
+      key: 'favicon-dark',
+      rel: 'icon',
+      href: '/favicon-dark.svg',
+      type: 'image/svg+xml',
+      media: '(prefers-color-scheme: light)',
+      sizes: 'any',
+    })
+  }
+
+  if (themeAwareFavicons.value.light) {
+    links.push({
+      key: 'favicon-light',
+      rel: 'icon',
+      href: '/favicon-light.svg',
+      type: 'image/svg+xml',
+      media: '(prefers-color-scheme: dark)',
+      sizes: 'any',
+    })
+  }
+
+  links.push({
+    key: 'favicon',
+    rel: 'icon',
+    href: faviconUrl.value,
+    type: faviconType.value,
+    sizes: faviconType.value === 'image/svg+xml' ? 'any' : undefined,
+  })
+
+  return links
+})
 
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
   ],
-  link: [
-    {
-      rel: 'icon',
-      href: faviconUrl,
-      type: faviconType,
-      sizes: faviconType.value === 'image/svg+xml' ? 'any' : undefined,
-    },
-  ],
+  link: faviconLinks,
   htmlAttrs: {
     lang,
     dir,
