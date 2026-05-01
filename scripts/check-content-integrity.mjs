@@ -188,6 +188,8 @@ function analyzeSource(filePath) {
       continue
     }
 
+    const isPropLikeLine = /^[a-z][\w-]*:\s*/i.test(trimmed)
+
     if (pendingComponentFence && trimmed === '---') {
       assert.ok(
         !pendingComponentFence.hasBlankLine,
@@ -197,6 +199,11 @@ function analyzeSource(filePath) {
       pendingComponentFence = null
       isGuarded = true
       continue
+    }
+
+    if (pendingComponentFence && isPropLikeLine) {
+      tokens.add(trimmed)
+      isGuarded = true
     }
 
     if (pendingComponentFence && trimmed) {
