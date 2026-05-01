@@ -1,0 +1,345 @@
+import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const repoRoot = fileURLToPath(new URL('..', import.meta.url))
+const docsContentDir = resolve(repoRoot, 'docs/content')
+const docsOutputDir = resolve(repoRoot, 'docs/.output/public')
+const docsServerEntry = resolve(repoRoot, 'docs/.output/server/index.mjs')
+
+assert.ok(existsSync(docsContentDir), `Missing docs content directory: ${docsContentDir}`)
+assert.ok(existsSync(docsOutputDir), `Missing built docs output: ${docsOutputDir}. Run the docs build before this check.`)
+
+function walkFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const filePath = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      return walkFiles(filePath)
+    }
+
+    return /\.mdc?$/i.test(entry.name) ? [filePath] : []
+  })
+}
+
+function parseSimpleYamlBlock(lines) {
+  const result = {}
+  let currentArrayKey = null
+
+  for (const rawLine of lines) {
+    const trimmed = rawLine.replace(/\r$/, '').trim()
+
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue
+    }
+
+    if (trimmed.startsWith('- ')) {
+      if (currentArrayKey) {
+        result[currentArrayKey] ||= []
+        result[currentArrayKey].push(trimmed.slice(2).trim())
+      }
+      continue
+    }
+
+    const separatorIndex = trimmed.indexOf(':')
+    if (separatorIndex === -1) {
+      currentArrayKey = null
+      continue
+    }
+
+    const key = trimmed.slice(0, separatorIndex).trim()
+    const value = trimmed.slice(separatorIndex + 1).trim()
+
+    if (value) {
+      result[key] = value
+      currentArrayKey = null
+      continue
+    }
+
+    result[key] ||= []
+    currentArrayKey = key
+  }
+
+  return result
+}
+
+function getKnowledgeBaseConfigs() {
+  const configs = new Map()
+
+  for (const entry of readdirSync(docsContentDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+
+    const configPath = join(docsContentDir, entry.name, 'kb.yml')
+    if (!existsSync(configPath)) {
+      continue
+    }
+
+    const config = parseSimpleYamlBlock(readFileSync(configPath, 'utf8').split('\n'))
+    configs.set(entry.name, {
+      sourceDir: entry.name,
+      id: config.id || entry.name,
+    })
+  }
+
+  return configs
+}
+
+function stripPageFrontmatter(lines) {
+  if (lines[0]?.trim() !== '---') {
+    return { bodyLines: lines, frontmatter: {} }
+  }
+
+  const endIndex = lines.findIndex((line, index) => index > 0 && line.trim() === '---')
+  if (endIndex === -1) {
+    return { bodyLines: lines, frontmatter: {} }
+  }
+
+  return {
+    frontmatter: parseSimpleYamlBlock(lines.slice(1, endIndex)),
+    bodyLines: lines.slice(endIndex + 1),
+  }
+}
+
+function stripOrderingPrefix(segment) {
+  return segment.replace(/^\d+\./, '')
+}
+
+function normalizeRouteSegments(segments) {
+  const normalized = segments
+    .map(segment => segment.replace(/\.(md|mdc)$/i, ''))
+    .map(stripOrderingPrefix)
+    .filter(Boolean)
+
+  if (normalized.at(-1) === 'index') {
+    normalized.pop()
+  }
+
+  return normalized
+}
+
+function deriveRoutePath(filePath, knowledgeBaseConfigs) {
+  const relativePath = relative(docsContentDir, filePath)
+  const segments = relativePath.split('/').filter(Boolean)
+
+  if (segments[0] === 'site') {
+    const routeSegments = normalizeRouteSegments(segments.slice(1))
+    return routeSegments.length > 0 ? `/${routeSegments.join('/')}` : '/'
+  }
+
+  const [sourceDir, locale, ...rest] = segments
+  const knowledgeBase = knowledgeBaseConfigs.get(sourceDir)
+
+  assert.ok(knowledgeBase, `Unable to resolve knowledge base for ${relativePath}`)
+  assert.ok(locale, `Missing locale segment for ${relativePath}`)
+
+  const routeSegments = normalizeRouteSegments(rest)
+  return `/docs/${knowledgeBase.id}/${locale}${routeSegments.length > 0 ? `/${routeSegments.join('/')}` : ''}`
+}
+
+function getBuiltHtmlPath(routePath) {
+  return routePath === '/'
+    ? join(docsOutputDir, 'index.html')
+    : join(docsOutputDir, `${routePath.replace(/^\//, '')}.html`)
+}
+
+function createCodeFenceState(line) {
+  const match = line.match(/^\s*(`{3,}|~{3,})/)
+  return match ? match[1][0].repeat(match[1].length) : null
+}
+
+function analyzeSource(filePath) {
+  const rawSource = readFileSync(filePath, 'utf8').replace(/\r/g, '')
+  const allLines = rawSource.split('\n')
+  const { bodyLines, frontmatter } = stripPageFrontmatter(allLines)
+
+  const tokens = new Set()
+  let isGuarded = false
+  let codeFence = null
+  let pendingComponentFence = null
+  let inComponentFrontmatter = false
+
+  for (const [index, line] of bodyLines.entries()) {
+    const trimmed = line.trim()
+
+    if (codeFence) {
+      if (trimmed.startsWith(codeFence)) {
+        codeFence = null
+      }
+      continue
+    }
+
+    const nextCodeFence = createCodeFenceState(line)
+    if (nextCodeFence) {
+      codeFence = nextCodeFence
+      continue
+    }
+
+    assert.notStrictEqual(trimmed, '## ::::u-page-card', `${filePath}: component fence was converted into a heading.`)
+    assert.ok(!/^#{1,6}\s+:{2,}[a-z0-9][\w-]*/i.test(trimmed), `${filePath}:${index + 1}: component fence was converted into a heading.`)
+    assert.ok(!/^#{1,6}\s+#(?:title|description|header|footer|default|code)$/.test(trimmed), `${filePath}:${index + 1}: slot marker was converted into a heading.`)
+    assert.notStrictEqual(trimmed, 'target: \\_blank', `${filePath}:${index + 1}: escaped _blank leaked into component props.`)
+
+    if (pendingComponentFence && !trimmed) {
+      pendingComponentFence.hasBlankLine = true
+      continue
+    }
+
+    if (pendingComponentFence && trimmed === '---') {
+      assert.ok(
+        !pendingComponentFence.hasBlankLine,
+        `${filePath}:${pendingComponentFence.lineNumber}: blank line between component fence and component frontmatter.`,
+      )
+      inComponentFrontmatter = true
+      pendingComponentFence = null
+      isGuarded = true
+      continue
+    }
+
+    if (pendingComponentFence && trimmed) {
+      pendingComponentFence = null
+    }
+
+    if (inComponentFrontmatter) {
+      if (trimmed === '---') {
+        inComponentFrontmatter = false
+        continue
+      }
+
+      if (trimmed) {
+        tokens.add(trimmed)
+        isGuarded = true
+      }
+      continue
+    }
+
+    if (!trimmed) {
+      continue
+    }
+
+    const isSlotMarker = /^#(?:title|description|header|footer|default)$/.test(trimmed)
+    const isComponentFence = /^:{2,}[a-z0-9][\w-]*/i.test(trimmed)
+
+    if (isSlotMarker) {
+      tokens.add(trimmed)
+      isGuarded = true
+    }
+
+    if (isComponentFence) {
+      isGuarded = true
+      pendingComponentFence = {
+        lineNumber: index + 1,
+        hasBlankLine: false,
+      }
+    }
+  }
+
+  return {
+    filePath,
+    isGuarded,
+    tokens: [...tokens],
+    frontmatter,
+  }
+}
+
+function stripNonVisibleHtml(html) {
+  return html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<!--([\s\S]*?)-->/g, ' ')
+}
+
+function delay(ms) {
+  return new Promise(resolveDelay => setTimeout(resolveDelay, ms))
+}
+
+async function waitForServer(baseUrl) {
+  let lastError = null
+
+  for (let attempt = 0; attempt < 60; attempt++) {
+    try {
+      const response = await fetch(baseUrl, { redirect: 'manual' })
+      if (response.status < 500) {
+        return
+      }
+    }
+    catch (error) {
+      lastError = error
+    }
+
+    await delay(250)
+  }
+
+  throw lastError || new Error(`Timed out waiting for docs server at ${baseUrl}`)
+}
+
+let activeDocsServer = null
+
+async function getDocsServer() {
+  if (activeDocsServer) {
+    return activeDocsServer
+  }
+
+  assert.ok(existsSync(docsServerEntry), `Missing built docs server entry: ${docsServerEntry}`)
+
+  const port = 4100 + Math.floor(Math.random() * 1000)
+  const baseUrl = `http://127.0.0.1:${port}`
+  const child = spawn(process.execPath, [docsServerEntry], {
+    cwd: repoRoot,
+    stdio: 'ignore',
+    env: {
+      ...process.env,
+      HOST: '127.0.0.1',
+      PORT: String(port),
+      NITRO_HOST: '127.0.0.1',
+      NITRO_PORT: String(port),
+    },
+  })
+
+  await waitForServer(baseUrl)
+  activeDocsServer = { child, baseUrl }
+  return activeDocsServer
+}
+
+async function renderRouteViaServer(routePath) {
+  const { baseUrl } = await getDocsServer()
+  const response = await fetch(`${baseUrl}${routePath}`)
+
+  assert.ok(response.ok, `Unable to render ${routePath} from the built docs server (status ${response.status}).`)
+
+  return await response.text()
+}
+
+const knowledgeBaseConfigs = getKnowledgeBaseConfigs()
+const markdownFiles = walkFiles(docsContentDir)
+const guardedPages = markdownFiles
+  .map(analyzeSource)
+  .filter(page => page.isGuarded)
+
+assert.ok(guardedPages.length > 0, 'No guarded MDC pages were detected under docs/content.')
+
+try {
+  for (const page of guardedPages) {
+    const routePath = deriveRoutePath(page.filePath, knowledgeBaseConfigs)
+    const builtHtmlPath = getBuiltHtmlPath(routePath)
+    const renderedSource = existsSync(builtHtmlPath)
+      ? readFileSync(builtHtmlPath, 'utf8')
+      : await renderRouteViaServer(routePath)
+    const renderedHtml = stripNonVisibleHtml(renderedSource)
+
+    for (const token of page.tokens) {
+      assert.ok(
+        !renderedHtml.includes(token),
+        `${page.filePath}: raw MDC token leaked into rendered HTML for ${routePath}: ${token}`,
+      )
+    }
+  }
+
+  console.log(`Content integrity passed for ${guardedPages.length} guarded MDC page(s).`)
+}
+finally {
+  activeDocsServer?.child.kill('SIGTERM')
+}

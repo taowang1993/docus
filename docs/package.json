@@ -3,7 +3,7 @@
   "description": "An AI-powered Knowledge Management System.",
   "type": "module",
   "scripts": {
-    "build": "NODE_OPTIONS=--max-old-space-size=8192 pnpm --dir .. run layer:prepare && NODE_OPTIONS=--max-old-space-size=8192 nuxt build",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 pnpm --dir .. run layer:prepare && NODE_OPTIONS=--max-old-space-size=8192 nuxt build && pnpm --dir .. run check:content-integrity",
     "dev": "nuxt dev"
   },
   "dependencies": {

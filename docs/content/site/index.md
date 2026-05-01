@@ -15,15 +15,11 @@ An AI-powered Knowledge Management System
 ::u-page-section{class="pt-0 [&>[data-slot=container]]:!py-0"}
 :::u-page-grid{class="lg:grid-cols-2 gap-4 mt-2"}
 ::::u-page-card
-
 ---
-
 spotlight: true
 icon: i-lucide-layout-dashboard
 to: /docs/platform/en/getting-started/installation
-
 ---
-
 #title
 Platform docs
 
@@ -31,14 +27,12 @@ Platform docs
 Product docs for configuration, authoring, AI tooling, and deployment.
 ::::
 
-## ::::u-page-card
-
+::::u-page-card
+---
 spotlight: true
 icon: i-lucide-file-text
 to: /docs/parser/en/parser/best-document-parsing-apis-2026
-
 ---
-
 #title
 Parser docs
 
@@ -49,16 +43,12 @@ Document parsing comparisons, RAG ingestion guides, and enterprise document inte
 
 :::u-page-grid{class="mt-4 lg:mt-6"}
 ::::u-page-card
-
 ---
-
 spotlight: true
 class: group col-span-2 lg:col-span-1
-target: \_blank
+target: _blank
 to: https://nuxt.com
-
 ---
-
 #title
 Built with [Nuxt](https://nuxt.com)
 
