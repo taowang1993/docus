@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Copiază logo",
-    "copyWordmark": "Copiază wordmark",
     "downloadLogo": "Descarcă logo",
-    "downloadWordmark": "Descarcă wordmark",
     "brandAssets": "Resurse de brand",
     "logoCopied": "Logo copiat",
-    "wordmarkCopied": "Wordmark copiat",
     "logoDownloaded": "Logo descărcat",
-    "wordmarkDownloaded": "Wordmark descărcat",
-    "copyLogoFailed": "Nu s-a putut copia logo-ul",
-    "copyWordmarkFailed": "Nu s-a putut copia wordmark-ul"
+    "copyLogoFailed": "Nu s-a putut copia logo-ul"
   },
   "assistant": {
     "title": "Întrebați AI",

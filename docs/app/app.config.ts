@@ -5,10 +5,6 @@ export default defineAppConfig({
       light: '/logo/logo-dark.svg',
       dark: '/logo/logo-light.svg',
       alt: 'Docus Logo',
-      wordmark: {
-        light: '/logo/wordmark-dark.svg',
-        dark: '/logo/wordmark-light.svg',
-      },
       favicon: '/favicon.svg',
     },
   },

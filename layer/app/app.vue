@@ -18,13 +18,20 @@ const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof n
 const lang = computed(() => nuxtUiLocale.value.code)
 const dir = computed(() => nuxtUiLocale.value.dir)
 const collectionName = computed(() => docs.collectionName.value)
+const faviconUrl = computed(() => appConfig.header?.logo?.favicon || '/favicon.ico')
+const faviconType = computed(() => /\.svg(?:[?#]|$)/i.test(faviconUrl.value) ? 'image/svg+xml' : 'image/x-icon')
 
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' },
+    {
+      rel: 'icon',
+      href: faviconUrl,
+      type: faviconType,
+      sizes: faviconType.value === 'image/svg+xml' ? 'any' : undefined,
+    },
   ],
   htmlAttrs: {
     lang,

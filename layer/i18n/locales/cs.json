@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Kopírovat logo",
-    "copyWordmark": "Kopírovat wordmark",
     "downloadLogo": "Stáhnout logo",
-    "downloadWordmark": "Stáhnout wordmark",
     "brandAssets": "Materiály značky",
     "logoCopied": "Logo zkopírováno",
-    "wordmarkCopied": "Wordmark zkopírován",
     "logoDownloaded": "Logo staženo",
-    "wordmarkDownloaded": "Wordmark stažen",
-    "copyLogoFailed": "Kopírování loga selhalo",
-    "copyWordmarkFailed": "Kopírování wordmarku selhalo"
+    "copyLogoFailed": "Kopírování loga selhalo"
   },
   "assistant": {
     "title": "Zeptejte se AI",

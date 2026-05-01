@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Logoyu kopyala",
-    "copyWordmark": "Wordmark'ı kopyala",
     "downloadLogo": "Logoyu indir",
-    "downloadWordmark": "Wordmark'ı indir",
     "brandAssets": "Marka materyalleri",
     "logoCopied": "Logo kopyalandı",
-    "wordmarkCopied": "Wordmark kopyalandı",
     "logoDownloaded": "Logo indirildi",
-    "wordmarkDownloaded": "Wordmark indirildi",
-    "copyLogoFailed": "Logo kopyalanamadı",
-    "copyWordmarkFailed": "Wordmark kopyalanamadı"
+    "copyLogoFailed": "Logo kopyalanamadı"
   },
   "assistant": {
     "title": "Yapay zekaya sor",

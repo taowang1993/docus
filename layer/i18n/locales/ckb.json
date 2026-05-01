@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "کۆپیکردنی لۆگۆ",
-    "copyWordmark": "کۆپیکردنی وشەنیشان",
     "downloadLogo": "داگرتنی لۆگۆ",
-    "downloadWordmark": "داگرتنی وشەنیشان",
     "brandAssets": "سامانەکانی براند",
     "logoCopied": "لۆگۆ کۆپی کرا",
-    "wordmarkCopied": "وشەنیشان کۆپی کرا",
     "logoDownloaded": "لۆگۆ دابەزێنرا",
-    "wordmarkDownloaded": "وشەنیشان دابەزێنرا",
-    "copyLogoFailed": "کۆپیکردنی لۆگۆ سەرکەوتوو نەبوو",
-    "copyWordmarkFailed": "کۆپیکردنی وشەنیشان سەرکەوتوو نەبوو"
+    "copyLogoFailed": "کۆپیکردنی لۆگۆ سەرکەوتوو نەبوو"
   },
   "assistant": {
     "title": "پرسیار لە AI بکە",
