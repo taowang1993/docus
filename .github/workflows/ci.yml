@@ -55,4 +55,10 @@ jobs:
 
       - name: Publish CLI and Layer
         if: github.repository == 'nuxt-content/docus'
-        run: npx pkg-pr-new publish --compact './cli' './layer'
+        run: |
+          if [ "$GITHUB_REPOSITORY" != "nuxt-content/docus" ]; then
+            echo "Skipping pkg-pr-new publish outside nuxt-content/docus"
+            exit 0
+          fi
+
+          npx pkg-pr-new publish --compact './cli' './layer'
