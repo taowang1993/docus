@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Kopiér logo",
-    "copyWordmark": "Kopiér wordmark",
     "downloadLogo": "Download logo",
-    "downloadWordmark": "Download wordmark",
     "brandAssets": "Brandmaterialer",
     "logoCopied": "Logo kopieret",
-    "wordmarkCopied": "Wordmark kopieret",
     "logoDownloaded": "Logo downloadet",
-    "wordmarkDownloaded": "Wordmark downloadet",
-    "copyLogoFailed": "Kunne ikke kopiere logo",
-    "copyWordmarkFailed": "Kunne ikke kopiere wordmark"
+    "copyLogoFailed": "Kunne ikke kopiere logo"
   },
   "assistant": {
     "title": "Spørg AI",

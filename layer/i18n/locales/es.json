@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Copiar logo",
-    "copyWordmark": "Copiar wordmark",
     "downloadLogo": "Descargar logo",
-    "downloadWordmark": "Descargar wordmark",
     "brandAssets": "Recursos de marca",
     "logoCopied": "Logo copiado",
-    "wordmarkCopied": "Wordmark copiado",
     "logoDownloaded": "Logo descargado",
-    "wordmarkDownloaded": "Wordmark descargado",
-    "copyLogoFailed": "No se pudo copiar el logo",
-    "copyWordmarkFailed": "No se pudo copiar el wordmark"
+    "copyLogoFailed": "No se pudo copiar el logo"
   },
   "assistant": {
     "title": "Preguntar a la IA",

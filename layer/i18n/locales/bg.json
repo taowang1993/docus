@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Копиране на логото",
-    "copyWordmark": "Копиране на словната марка",
     "downloadLogo": "Изтегляне на логото",
-    "downloadWordmark": "Изтегляне на словната марка",
     "brandAssets": "Брандови материали",
     "logoCopied": "Логото е копирано",
-    "wordmarkCopied": "Словната марка е копирана",
     "logoDownloaded": "Логото е изтеглено",
-    "wordmarkDownloaded": "Словната марка е изтеглена",
-    "copyLogoFailed": "Неуспешно копиране на логото",
-    "copyWordmarkFailed": "Неуспешно копиране на словната марка"
+    "copyLogoFailed": "Неуспешно копиране на логото"
   },
   "assistant": {
     "title": "Попитайте AI",

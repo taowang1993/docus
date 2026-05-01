@@ -9,12 +9,26 @@ function getExtension(url: string): string {
   return match?.[1] ? `.${match[1].toLowerCase()}` : '.png'
 }
 
+function toSvgId(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'logo'
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
 function normalizeSvg(svg: string, name: string): string {
-  let result = svg.replace(/fill="(black|white|#[0-9a-fA-F]{3,8}|rgba?\([^)]+\))"/g, 'fill="currentColor"')
+  let result = svg.replace(/\b(fill|stroke)="(black|white|#[0-9a-fA-F]{3,8}|rgba?\([^)]+\))"/g, '$1="currentColor"')
 
   if (name) {
-    result = result.replace(/<svg\b/, `<svg id="${name}"`)
-    result = result.replace(/(<svg[^>]*>)/, `$1<title>${name}</title>`)
+    const safeName = escapeXml(name)
+    result = result.replace(/<svg\b/, `<svg id="${toSvgId(name)}"`)
+    result = result.replace(/(<svg[^>]*>)/, `$1<title>${safeName}</title>`)
   }
 
   return result
@@ -71,8 +85,6 @@ export const useLogoAssets = () => {
 
   const hasLogo = computed(() => !!(appConfig.header?.logo?.light || appConfig.header?.logo?.dark))
 
-  const displayMode = computed(() => appConfig.header?.logo?.display || 'logo')
-
   const currentLogoUrl = computed(() => {
     const logo = appConfig.header?.logo
     if (!logo) return ''
@@ -80,33 +92,15 @@ export const useLogoAssets = () => {
     return logo.light || logo.dark || ''
   })
 
-  const hasWordmark = computed(() => {
-    const wm = appConfig.header?.logo?.wordmark
-    return !!(wm?.light || wm?.dark)
-  })
-
-  const currentWordmarkUrl = computed(() => {
-    const wm = appConfig.header?.logo?.wordmark
-    if (!wm) return ''
-    if (colorMode.value === 'dark') return wm.dark || wm.light || ''
-    return wm.light || wm.dark || ''
-  })
-
   const headerLightUrl = computed(() => {
     const logo = appConfig.header?.logo
     if (!logo) return ''
-    if (displayMode.value === 'wordmark' && hasWordmark.value) {
-      return logo.wordmark?.light || logo.wordmark?.dark || logo.light || logo.dark || ''
-    }
     return logo.light || logo.dark || ''
   })
 
   const headerDarkUrl = computed(() => {
     const logo = appConfig.header?.logo
     if (!logo) return ''
-    if (displayMode.value === 'wordmark' && hasWordmark.value) {
-      return logo.wordmark?.dark || logo.wordmark?.light || logo.dark || logo.light || ''
-    }
     return logo.dark || logo.light || ''
   })
 
@@ -126,13 +120,9 @@ export const useLogoAssets = () => {
     return name ? `${name} Logo` : 'Logo'
   })
 
-  const wordmarkName = computed(() => {
-    const name = brandName.value
-    return name ? `${name} Wordmark` : 'Wordmark'
-  })
-
   const logoIsSvg = computed(() => isSvgUrl(currentLogoUrl.value))
-  const wordmarkIsSvg = computed(() => isSvgUrl(currentWordmarkUrl.value))
+
+  const brandAssetsUrl = computed(() => appConfig.header?.logo?.brandAssetsUrl || '')
 
   async function copyLogo() {
     if (!logoIsSvg.value) return
@@ -145,20 +135,6 @@ export const useLogoAssets = () => {
     toast.add(ok
       ? { title: t('logo.logoCopied'), icon: 'i-lucide-circle-check', color: 'success' }
       : { title: t('logo.copyLogoFailed'), icon: 'i-lucide-circle-x', color: 'error' },
-    )
-  }
-
-  async function copyWordmark() {
-    if (!wordmarkIsSvg.value) return
-    const svg = await fetchSvgContent(currentWordmarkUrl.value, wordmarkName.value)
-    if (!svg) {
-      toast.add({ title: t('logo.copyWordmarkFailed'), icon: 'i-lucide-circle-x', color: 'error' })
-      return
-    }
-    const ok = await copyTextToClipboard(svg)
-    toast.add(ok
-      ? { title: t('logo.wordmarkCopied'), icon: 'i-lucide-circle-check', color: 'success' }
-      : { title: t('logo.copyWordmarkFailed'), icon: 'i-lucide-circle-x', color: 'error' },
     )
   }
 
@@ -175,21 +151,6 @@ export const useLogoAssets = () => {
     toast.add({ title: t('logo.logoDownloaded'), icon: 'i-lucide-download', color: 'success' })
   }
 
-  async function downloadWordmark() {
-    const url = currentWordmarkUrl.value
-    if (wordmarkIsSvg.value) {
-      const svg = await fetchSvgContent(url, wordmarkName.value)
-      if (!svg) return
-      triggerDownload(new Blob([svg], { type: 'image/svg+xml' }), `${prefix.value}-wordmark.svg`)
-    }
-    else {
-      triggerLinkDownload(url, `${prefix.value}-wordmark${getExtension(url)}`)
-    }
-    toast.add({ title: t('logo.wordmarkDownloaded'), icon: 'i-lucide-download', color: 'success' })
-  }
-
-  const brandAssetsUrl = computed(() => appConfig.header?.logo?.brandAssetsUrl || '')
-
   const contextMenuItems = computed(() => {
     if (!hasLogo.value) return []
 
@@ -197,16 +158,10 @@ export const useLogoAssets = () => {
     if (logoIsSvg.value) {
       copyGroup.push({ label: t('logo.copyLogo'), icon: 'i-lucide-copy', onSelect: copyLogo })
     }
-    if (hasWordmark.value && wordmarkIsSvg.value) {
-      copyGroup.push({ label: t('logo.copyWordmark'), icon: 'i-lucide-copy', onSelect: copyWordmark })
-    }
 
     const downloadGroup: ContextMenuItem[] = [
       { label: t('logo.downloadLogo'), icon: 'i-lucide-download', onSelect: downloadLogo },
     ]
-    if (hasWordmark.value) {
-      downloadGroup.push({ label: t('logo.downloadWordmark'), icon: 'i-lucide-download', onSelect: downloadWordmark })
-    }
 
     const items: ContextMenuItem[][] = []
     if (copyGroup.length) items.push(copyGroup)
@@ -227,19 +182,14 @@ export const useLogoAssets = () => {
 
   return {
     hasLogo,
-    displayMode,
     currentLogoUrl,
     headerLightUrl,
     headerDarkUrl,
-    hasWordmark,
-    currentWordmarkUrl,
     faviconUrl,
     logoAlt,
     contextMenuItems,
     copyLogo,
     downloadLogo,
-    copyWordmark,
-    downloadWordmark,
     copyTextToClipboard,
     fetchSvgContent,
   }

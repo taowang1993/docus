@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Капіяваць лагатып",
-    "copyWordmark": "Капіяваць словесны знак",
     "downloadLogo": "Спампаваць лагатып",
-    "downloadWordmark": "Спампаваць словесны знак",
     "brandAssets": "Матэрыялы брэнда",
     "logoCopied": "Лагатып скапіяваны",
-    "wordmarkCopied": "Словесны знак скапіяваны",
     "logoDownloaded": "Лагатып спампаваны",
-    "wordmarkDownloaded": "Словесны знак спампаваны",
-    "copyLogoFailed": "Не ўдалося скапіяваць лагатып",
-    "copyWordmarkFailed": "Не ўдалося скапіяваць словесны знак"
+    "copyLogoFailed": "Не ўдалося скапіяваць лагатып"
   },
   "assistant": {
     "title": "Спытаць ІІ",

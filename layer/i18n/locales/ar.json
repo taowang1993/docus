@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "نسخ الشعار",
-    "copyWordmark": "نسخ العلامة النصية",
     "downloadLogo": "تحميل الشعار",
-    "downloadWordmark": "تحميل العلامة النصية",
     "brandAssets": "أصول العلامة التجارية",
     "logoCopied": "تم نسخ الشعار",
-    "wordmarkCopied": "تم نسخ العلامة النصية",
     "logoDownloaded": "تم تحميل الشعار",
-    "wordmarkDownloaded": "تم تحميل العلامة النصية",
-    "copyLogoFailed": "فشل نسخ الشعار",
-    "copyWordmarkFailed": "فشل نسخ العلامة النصية"
+    "copyLogoFailed": "فشل نسخ الشعار"
   },
   "assistant": {
     "title": "اسأل الذكاء الاصطناعي",

@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Kopioi logo",
-    "copyWordmark": "Kopioi sanamerkki",
     "downloadLogo": "Lataa logo",
-    "downloadWordmark": "Lataa sanamerkki",
     "brandAssets": "Brändimateriaalit",
     "logoCopied": "Logo kopioitu",
-    "wordmarkCopied": "Sanamerkki kopioitu",
     "logoDownloaded": "Logo ladattu",
-    "wordmarkDownloaded": "Sanamerkki ladattu",
-    "copyLogoFailed": "Logon kopiointi epäonnistui",
-    "copyWordmarkFailed": "Sanamerkin kopiointi epäonnistui"
+    "copyLogoFailed": "Logon kopiointi epäonnistui"
   },
   "assistant": {
     "title": "Kysy tekoälyltä",

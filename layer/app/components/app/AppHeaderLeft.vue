@@ -4,7 +4,7 @@ const site = useSiteConfig()
 const { isEnabled, locales, localePath } = useDocusI18n()
 const docs = useDocusDocs()
 
-const ariaLabel = appConfig.header?.title || site.name
+const brandName = computed(() => appConfig.header?.title || site.name || '')
 const homePath = computed(() => docs.isKnowledgeBaseMode.value ? '/' : localePath('/'))
 const showKnowledgeBaseSelect = computed(() => docs.isKnowledgeBaseMode.value && docs.knowledgeBases.value.length > 1 && docs.isDocsRoute.value)
 const showLanguageSelect = computed(() => isEnabled.value && locales.value.length > 1 && (!docs.isKnowledgeBaseMode.value || docs.isDocsRoute.value))
@@ -14,10 +14,13 @@ const showLanguageSelect = computed(() => isEnabled.value && locales.value.lengt
   <div class="flex min-w-0 items-center gap-1.5 sm:gap-2">
     <NuxtLink
       :to="homePath"
-      :aria-label="ariaLabel"
-      class="inline-flex h-9 shrink-0 -translate-y-px items-center leading-none"
+      :aria-label="brandName"
+      class="flex items-center gap-3"
     >
-      <AppHeaderLogo class="h-6 w-auto shrink-0" />
+      <AppHeaderLogo />
+      <span class="text-xl font-bold">
+        {{ brandName }}
+      </span>
     </NuxtLink>
 
     <template v-if="showKnowledgeBaseSelect">

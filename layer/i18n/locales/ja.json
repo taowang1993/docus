@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "ロゴをコピー",
-    "copyWordmark": "ワードマークをコピー",
     "downloadLogo": "ロゴをダウンロード",
-    "downloadWordmark": "ワードマークをダウンロード",
     "brandAssets": "ブランドアセット",
     "logoCopied": "ロゴをコピーしました",
-    "wordmarkCopied": "ワードマークをコピーしました",
     "logoDownloaded": "ロゴをダウンロードしました",
-    "wordmarkDownloaded": "ワードマークをダウンロードしました",
-    "copyLogoFailed": "ロゴのコピーに失敗しました",
-    "copyWordmarkFailed": "ワードマークのコピーに失敗しました"
+    "copyLogoFailed": "ロゴのコピーに失敗しました"
   },
   "assistant": {
     "title": "AIに聞く",

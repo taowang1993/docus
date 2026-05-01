@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "Logo kopiëren",
-    "copyWordmark": "Woordmerk kopiëren",
     "downloadLogo": "Logo downloaden",
-    "downloadWordmark": "Woordmerk downloaden",
     "brandAssets": "Merkmaterialen",
     "logoCopied": "Logo gekopieerd",
-    "wordmarkCopied": "Woordmerk gekopieerd",
     "logoDownloaded": "Logo gedownload",
-    "wordmarkDownloaded": "Woordmerk gedownload",
-    "copyLogoFailed": "Logo kopiëren mislukt",
-    "copyWordmarkFailed": "Woordmerk kopiëren mislukt"
+    "copyLogoFailed": "Logo kopiëren mislukt"
   },
   "assistant": {
     "title": "Vraag AI",

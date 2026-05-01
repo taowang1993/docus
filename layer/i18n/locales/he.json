@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "העתק לוגו",
-    "copyWordmark": "העתק סימן מילולי",
     "downloadLogo": "הורד לוגו",
-    "downloadWordmark": "הורד סימן מילולי",
     "brandAssets": "נכסי מותג",
     "logoCopied": "הלוגו הועתק",
-    "wordmarkCopied": "הסימן המילולי הועתק",
     "logoDownloaded": "הלוגו הורד",
-    "wordmarkDownloaded": "הסימן המילולי הורד",
-    "copyLogoFailed": "העתקת הלוגו נכשלה",
-    "copyWordmarkFailed": "העתקת הסימן המילולי נכשלה"
+    "copyLogoFailed": "העתקת הלוגו נכשלה"
   },
   "assistant": {
     "title": "שאל את הבינה המלאכותית",

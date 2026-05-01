@@ -22,16 +22,11 @@
   },
   "logo": {
     "copyLogo": "ចម្លងនិមិត្តសញ្ញា",
-    "copyWordmark": "ចម្លង wordmark",
     "downloadLogo": "ទាញយកនិមិត្តសញ្ញា",
-    "downloadWordmark": "ទាញយក wordmark",
     "brandAssets": "ទ្រព្យសម្បត្តិម៉ាក",
     "logoCopied": "បានចម្លងនិមិត្តសញ្ញា",
-    "wordmarkCopied": "បានចម្លង wordmark",
     "logoDownloaded": "បានទាញយកនិមិត្តសញ្ញា",
-    "wordmarkDownloaded": "បានទាញយក wordmark",
-    "copyLogoFailed": "មិនអាចចម្លងនិមិត្តសញ្ញាបានទេ",
-    "copyWordmarkFailed": "មិនអាចចម្លង wordmark បានទេ"
+    "copyLogoFailed": "មិនអាចចម្លងនិមិត្តសញ្ញាបានទេ"
   },
   "assistant": {
     "title": "សួរ AI",

@@ -140,27 +140,6 @@ export default defineNuxtSchema({
               icon: 'i-lucide-text',
               default: '',
             }),
-            wordmark: group({
-              title: 'Wordmark',
-              description: 'Wordmark (text logo) configuration for brand assets.',
-              icon: 'i-lucide-type',
-              fields: {
-                light: field({
-                  type: 'media',
-                  title: 'Light Mode Wordmark',
-                  description: 'Wordmark image for light mode.',
-                  icon: 'i-lucide-sun',
-                  default: '',
-                }),
-                dark: field({
-                  type: 'media',
-                  title: 'Dark Mode Wordmark',
-                  description: 'Wordmark image for dark mode.',
-                  icon: 'i-lucide-moon',
-                  default: '',
-                }),
-              },
-            }),
             class: field({
               type: 'string',
               title: 'Class',
@@ -168,17 +147,10 @@ export default defineNuxtSchema({
               icon: 'i-lucide-paintbrush',
               default: '',
             }),
-            display: field({
-              type: 'string',
-              title: 'Display',
-              description: 'Which logo variant to show in the header: "logo" for the icon or "wordmark" for the full wordmark.',
-              icon: 'i-lucide-layout',
-              default: 'logo',
-            }),
             favicon: field({
               type: 'media',
               title: 'Favicon',
-              description: 'Path to the favicon file for brand asset downloads.',
+              description: 'Path to the favicon file used in the browser tab and brand asset downloads.',
               icon: 'i-lucide-app-window',
               default: '/favicon.ico',
             }),
