@@ -81,7 +81,7 @@ export const useLogoAssets = () => {
   const appConfig = useAppConfig()
   const colorMode = useColorMode() as { value: string, forced?: boolean }
   const toast = useToast()
-  const { t } = useDocusI18n()
+  const { t } = useTockDocsI18n()
 
   const hasLogo = computed(() => !!(appConfig.header?.logo?.light || appConfig.header?.logo?.dark))
 

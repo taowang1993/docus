@@ -19,7 +19,7 @@ export interface SkillsModuleOptions {
 const SKILL_NAME_REGEX = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
 const MAX_NAME_LENGTH = 64
 
-const log = logger.withTag('Docus')
+const log = logger.withTag('TockDocs')
 
 const defaults: Required<SkillsModuleOptions> = {
   dir: 'skills',
@@ -30,7 +30,7 @@ export default defineNuxtModule<SkillsModuleOptions>({
     name: 'skills',
   },
   async setup(_inlineOptions, nuxt) {
-    const options = defu(nuxt.options.docus?.skills, defaults) as Required<SkillsModuleOptions>
+    const options = defu(nuxt.options.tockdocs?.skills, defaults) as Required<SkillsModuleOptions>
 
     const skillsDir = join(nuxt.options.rootDir, options.dir)
     if (!existsSync(skillsDir)) return

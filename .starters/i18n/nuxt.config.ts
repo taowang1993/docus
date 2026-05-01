@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  extends: ['docus'],
+  extends: ['tockdocs'],
   modules: ['@nuxtjs/i18n'],
   i18n: {
     defaultLocale: 'en',

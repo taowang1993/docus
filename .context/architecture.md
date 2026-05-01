@@ -1,20 +1,20 @@
-# Docus Architecture
+# TockDocs Architecture
 
 ## System Overview
 
-Docus is a pnpm workspace centered on a reusable Nuxt layer.
+TockDocs is a pnpm workspace centered on a reusable Nuxt layer.
 
 The workspace supports two content modes:
 
 - **legacy docs mode** — route content with locale prefixes such as `/en/...`
 - **knowledge-base mode** — route multiple docs collections under `/docs/<kb>/<locale>/...`
 
-The core idea is still the same: **build Docus once as a Nuxt layer, then reuse that layer from the docs site, the playground, and generated starter projects**.
+The core idea is still the same: **build TockDocs once as a Nuxt layer, then reuse that layer from the docs site, the playground, and generated starter projects**.
 
-- **`layer/`** is the product: the Docus theme, layouts, routing, knowledge-base/content resolution, server utilities, AI assistant, MCP tools, and shared app/runtime assets.
-- **`docs/`** is the official documentation site deployed at `docus.dev`. It extends the layer and adds KB content, Nuxt i18n, Nuxt Studio, Nuxt Skill Hub, and site-specific configuration.
+- **`layer/`** is the product: the TockDocs theme, layouts, routing, knowledge-base/content resolution, server utilities, AI assistant, MCP tools, and shared app/runtime assets.
+- **`docs/`** is the official documentation site deployed at `tockdocs.dev`. It extends the layer and adds KB content, Nuxt i18n, Nuxt Studio, Nuxt Skill Hub, and site-specific configuration.
 - **`playground/`** is a minimal local app used to validate the layer in isolation.
-- **`cli/`** publishes `create-docus`, which scaffolds new projects from `.starters/default` or `.starters/i18n`.
+- **`cli/`** publishes `create-tockdocs`, which scaffolds new projects from `.starters/default` or `.starters/i18n`.
 - **`.starters/`** contains the project templates consumed by the CLI.
 
 ## Content and routing model
@@ -28,7 +28,7 @@ That configuration is resolved by:
 - `layer/utils/knowledge-bases.ts`
 - `layer/modules/config.ts`
 
-Those files build the runtime KB metadata that is exposed through `runtimeConfig.public.docus`, including:
+Those files build the runtime KB metadata that is exposed through `runtimeConfig.public.tockdocs`, including:
 
 - `docsMode`
 - `knowledgeBases`
@@ -87,7 +87,7 @@ Root scripts coordinate common workflows:
 
 ### 2. Product layer (`layer/`)
 
-`layer/nuxt.config.ts` is the composition root for the Docus product.
+`layer/nuxt.config.ts` is the composition root for the TockDocs product.
 It wires in:
 
 - local Nuxt modules:
@@ -109,7 +109,7 @@ It wires in:
 The layer also sets:
 
 - runtime assistant provider config
-- the Docus dev server defaults (`4987`)
+- the TockDocs dev server defaults (`4987`)
 - Content markdown highlighting
 - robots, sitemap, prerender, OG image, and llms defaults
 - icon collections and i18n defaults
@@ -119,7 +119,7 @@ The layer also sets:
 - resolves `kb.yml` files
 - filters locales against real content and locale message files
 - chooses KB mode vs legacy mode
-- writes the public `docus` runtime config that the app layer consumes
+- writes the public `tockdocs` runtime config that the app layer consumes
 
 `layer/content.config.ts` and `layer/modules/routing.ts` work together so the content collections and visible routes always stay in sync.
 
@@ -136,8 +136,8 @@ The layer ships the app shell and reusable UI primitives:
 - `components/KnowledgeBaseSelect.vue` shows the KB switcher only when multiple KBs are available
 - `components/LanguageSelect.vue` shows the locale switcher only when multiple locales are available on docs routes
 - `components/KnowledgeBaseDirectory.vue` renders the KB directory landing page
-- `composables/useDocusDocs.ts` resolves the active KB, locale, collection name, and home path
-- `composables/useDocusI18n.ts` keeps locale switching aligned with the active content mode
+- `composables/useTockDocs.ts` resolves the active KB, locale, collection name, and home path
+- `composables/useTockDocsI18n.ts` keeps locale switching aligned with the active content mode
 
 The header only shows the KB selector when:
 
@@ -199,9 +199,9 @@ The assistant is intentionally **tool-grounded**. For substantive docs questions
 
 #### `docs/`
 
-The official site extends `docus` in `docs/nuxt.config.ts` and adds:
+The official site extends `tockdocs` in `docs/nuxt.config.ts` and adds:
 
-- real site metadata (`https://docus.dev` by default)
+- real site metadata (`https://tockdocs.dev` by default)
 - i18n locales (`en`, `fr`)
 - Nuxt Skill Hub integration
 - Nuxt Studio integration
@@ -221,17 +221,17 @@ The playground is a thin test harness for layer development. It disables i18n ex
 
 #### Starter templates
 
-`.starters/default` and `.starters/i18n` are the generated project baselines used by `create-docus`.
+`.starters/default` and `.starters/i18n` are the generated project baselines used by `create-tockdocs`.
 
 ## Request and Data Flow
 
 ### Docs page rendering
 
-1. a consumer app extends `docus`
-2. Docus modules register config, routes, CSS, skills, and assistant runtime pieces
-3. `layer/modules/config.ts` resolves KB mode, locale filters, and runtime `docus` metadata
+1. a consumer app extends `tockdocs`
+2. TockDocs modules register config, routes, CSS, skills, and assistant runtime pieces
+3. `layer/modules/config.ts` resolves KB mode, locale filters, and runtime `tockdocs` metadata
 4. `layer/content.config.ts` creates the correct Nuxt Content collections
-5. `useDocusDocs()` derives the active KB, locale, collection name, and route-specific home path
+5. `useTockDocs()` derives the active KB, locale, collection name, and route-specific home path
 6. navigation, TOC, SEO, OG image metadata, and edit/report links are derived from content + app config
 7. the docs layout renders header, left nav, page body, and right TOC
 
@@ -239,7 +239,7 @@ The playground is a thin test harness for layer development. It disables i18n ex
 
 1. user opens the assistant UI
 2. `useAssistant()` manages panel state and messages
-3. `AssistantPanel.vue` streams requests to `/__docus__/assistant`
+3. `AssistantPanel.vue` streams requests to `/__tockdocs__/assistant`
 4. server endpoint loads the active AI provider
 5. endpoint resolves the current KB/locale scope from the referer and connects to MCP tools (`search-pages`, `list-pages`, `get-page`)
 6. MCP tools query Nuxt Content and hybrid search helpers
@@ -248,7 +248,7 @@ The playground is a thin test harness for layer development. It disables i18n ex
 ## ASCII Architecture Diagram
 
 ```text
-                                Docus Workspace
+                                TockDocs Workspace
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ Root pnpm workspace                                                          │
 │ package.json · pnpm-workspace.yaml · scripts/ · CI                           │
@@ -258,7 +258,7 @@ The playground is a thin test harness for layer development. It disables i18n ex
                 │                               │
         ┌───────▼────────┐              ┌───────▼────────┐
         │   layer/       │              │    cli/        │
-        │ Docus Nuxt     │              │ create-docus   │
+        │ TockDocs Nuxt     │              │ create-tockdocs   │
         │ layer/product  │              │ scaffolder     │
         └───────┬────────┘              └───────┬────────┘
                 │                                uses
@@ -301,7 +301,7 @@ content/<kb>/kb.yml
 
 Assistant path
 
-User → AssistantPanel.vue → /__docus__/assistant → AI provider resolver
+User → AssistantPanel.vue → /__tockdocs__/assistant → AI provider resolver
      → referer-scoped KB/locale → MCP client/server → search-pages | list-pages | get-page
      → Nuxt Content + hybrid search → streamed grounded answer
 ```

@@ -1,7 +1,7 @@
-import { useDocusColorMode } from '../composables/useDocusColorMode'
+import { useTockDocsColorMode } from '../composables/useTockDocsColorMode'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const { forced } = useDocusColorMode()
+  const { forced } = useTockDocsColorMode()
   if (forced) {
     to.meta.colorMode = forced
   }

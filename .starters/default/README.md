@@ -1,11 +1,11 @@
-# Docus Default Starter
+# TockDocs Default Starter
 
-> A beautiful, minimal starter for creating documentation with Docus
+> A beautiful, minimal starter for creating documentation with TockDocs
 
-This is the default Docus starter template that provides everything you need to build beautiful documentation sites with Markdown and Vue components.
+This is the default TockDocs starter template that provides everything you need to build beautiful documentation sites with Markdown and Vue components.
 
 > [!TIP]
-> If you're looking for i18n support, check out the [i18n starter](https://github.com/nuxt-themes/docus/tree/main/.starters/i18n).
+> If you're looking for i18n support, check out the [i18n starter](https://github.com/nuxt-themes/tockdocs/tree/main/.starters/i18n).
 
 ## ✨ Features
 
@@ -51,21 +51,21 @@ This starter comes pre-configured with:
 - [Nuxt UI](https://ui.nuxt.com) - UI components
 - [Nuxt Image](https://image.nuxt.com/) - Optimized images
 - [Tailwind CSS 4](https://tailwindcss.com/) - Utility-first CSS
-- [Docus Layer](https://www.npmjs.com/package/docus) - Documentation theme
+- [TockDocs Layer](https://www.npmjs.com/package/tockdocs) - Documentation theme
 
 ## 📖 Documentation
 
-For detailed documentation on customizing your Docus project, visit the [Docus Documentation](https://docus.dev)
+For detailed documentation on customizing your TockDocs project, visit the [TockDocs Documentation](https://tockdocs.dev)
 
 ### 🤖 AI Assistant Skill
 
-Get started quickly with Docus by adding specialized knowledge to your AI assistant (Cursor, Claude, etc.):
+Get started quickly with TockDocs by adding specialized knowledge to your AI assistant (Cursor, Claude, etc.):
 
 ```bash
-npx skills add nuxt-content/docus
+npx skills add taowang1993/tockdocs
 ```
 
-This skill helps you create documentation faster by providing your AI assistant with best practices, MDC component usage, ready-to-use templates, writing guidelines, and configuration tips for Docus. Perfect for quickly scaffolding new documentation projects.
+This skill helps you create documentation faster by providing your AI assistant with best practices, MDC component usage, ready-to-use templates, writing guidelines, and configuration tips for TockDocs. Perfect for quickly scaffolding new documentation projects.
 
 ## 🚀 Deployment
 

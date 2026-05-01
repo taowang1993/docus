@@ -2,7 +2,7 @@
 name: review-docs
 description: |
   Review documentation for quality, clarity, SEO, and technical correctness.
-  Optimized for Docus/Nuxt Content but works with any Markdown documentation.
+  Optimized for TockDocs/Nuxt Content but works with any Markdown documentation.
   Use when asked to: "review docs", "check documentation", "audit docs",
   "validate documentation", "improve docs quality", "analyze documentation",
   "check my docs", "review my documentation pages", "validate MDC syntax",
@@ -12,13 +12,13 @@ description: |
 
 # Review Docs
 
-Comprehensive documentation review, optimized for Docus/Nuxt Content but compatible with any Markdown documentation.
+Comprehensive documentation review, optimized for TockDocs/Nuxt Content but compatible with any Markdown documentation.
 
 ## Workflow Overview
 
 This skill performs a 5-step review process:
 
-1. **Detect Project Type** - Identify Docus/Nuxt Content vs generic Markdown
+1. **Detect Project Type** - Identify TockDocs/Nuxt Content vs generic Markdown
 2. **Analyze Structure** - Map documentation organization, locales, sections
 3. **Technical Validation** - Check frontmatter, MDC syntax (if applicable), file naming
 4. **Content Quality Review** - Evaluate clarity, SEO, structure, i18n
@@ -38,14 +38,14 @@ This skill generates a **detailed report only**. After reviewing, it offers to f
 
 ## Step 1: Detect Project Type
 
-**Goal:** Determine if this is a Docus/Nuxt Content project or generic Markdown documentation.
+**Goal:** Determine if this is a TockDocs/Nuxt Content project or generic Markdown documentation.
 
 ### Detection Indicators
 
-**Check for Docus/Nuxt Content:**
+**Check for TockDocs/Nuxt Content:**
 
 1. **package.json dependencies:**
-   - `"docus"` - Docus theme
+   - `"tockdocs"` - TockDocs theme
    - `"@nuxt/content"` - Nuxt Content module
    - `"@nuxtjs/mdc"` - MDC support
 
@@ -64,9 +64,9 @@ This skill generates a **detailed report only**. After reviewing, it offers to f
 
 ### Project Type Classification
 
-**Type A: Docus/Nuxt Content Project**
+**Type A: TockDocs/Nuxt Content Project**
 
-- All Docus-specific validations apply
+- All TockDocs-specific validations apply
 - MDC component syntax checks (u- prefix requirement)
 - Nuxt Content frontmatter structure
 - Navigation files (.navigation.yml)
@@ -78,21 +78,21 @@ This skill generates a **detailed report only**. After reviewing, it offers to f
 - Generic frontmatter (title, description, date, author)
 - Standard Markdown syntax
 - Focus on content quality (SEO, clarity, structure)
-- No Docus-specific technical checks
+- No TockDocs-specific technical checks
 
 ### Detection Output
 
 After detection, note in the report:
 
 ```
-Project Type: [Docus/Nuxt Content | Generic Markdown]
-Validation Mode: [Full (Docus-specific) | Basic (Markdown-only)]
+Project Type: [TockDocs/Nuxt Content | Generic Markdown]
+Validation Mode: [Full (TockDocs-specific) | Basic (Markdown-only)]
 ```
 
 **Adapt validation steps based on detected type:**
 
-- **Type A (Docus):** Execute all steps with full validation
-- **Type B (Generic):** Skip Docus-specific checks, focus on content quality
+- **Type A (TockDocs):** Execute all steps with full validation
+- **Type B (Generic):** Skip TockDocs-specific checks, focus on content quality
 
 ---
 
@@ -181,7 +181,7 @@ Sections:
 
 **Adapt validation based on project type detected in Step 1.**
 
-### For Docus/Nuxt Content Projects (Type A)
+### For TockDocs/Nuxt Content Projects (Type A)
 
 Perform full technical validation using [references/technical-checks.md](references/technical-checks.md):
 
@@ -208,7 +208,7 @@ See [references/technical-checks.md](references/technical-checks.md) for complet
 
 ### For Generic Markdown Projects (Type B)
 
-**Simplified validation** - Skip Docus-specific checks:
+**Simplified validation** - Skip TockDocs-specific checks:
 
 **Basic Frontmatter Validation:**
 
@@ -227,7 +227,7 @@ See [references/technical-checks.md](references/technical-checks.md) for complet
 - MDC component syntax (not applicable)
 - Nuxt Content frontmatter structure
 - `.navigation.yml` files
-- Docus-specific conventions
+- TockDocs-specific conventions
 
 **Focus on:**
 
@@ -240,7 +240,7 @@ See [references/technical-checks.md](references/technical-checks.md) for complet
 
 ## Step 4: Content Quality Review
 
-**This step applies to ALL project types** (both Docus and generic Markdown).
+**This step applies to ALL project types** (both TockDocs and generic Markdown).
 
 Evaluate content quality across four dimensions. Refer to reference files for detailed checklists.
 
@@ -296,8 +296,8 @@ Create a comprehensive review report using [assets/report-template.md](assets/re
 
 **Adapt report based on project type:**
 
-- **Docus/Nuxt Content:** Include all sections (Technical, SEO, Clarity, Structure, i18n)
-- **Generic Markdown:** Focus on content quality (SEO, Clarity, Structure), omit Docus-specific technical issues
+- **TockDocs/Nuxt Content:** Include all sections (Technical, SEO, Clarity, Structure, i18n)
+- **Generic Markdown:** Focus on content quality (SEO, Clarity, Structure), omit TockDocs-specific technical issues
 
 ### Report Structure
 

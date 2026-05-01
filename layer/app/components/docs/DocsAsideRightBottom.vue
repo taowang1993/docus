@@ -3,7 +3,7 @@ const route = useRoute()
 
 const pageUrl = route.path
 const appConfig = useAppConfig()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 const { isEnabled, open } = useAssistant()
 
 const showExplainWithAi = computed(() => {

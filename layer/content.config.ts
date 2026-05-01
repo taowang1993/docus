@@ -3,13 +3,13 @@ import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 import { useNuxt } from '@nuxt/kit'
 import { join } from 'node:path'
 import { getDocsCollectionName } from './utils/docs'
-import { getDocusContentConfiguration } from './utils/knowledge-bases'
+import { getTockDocsContentConfiguration } from './utils/knowledge-bases'
 import { landingPageExists, docsFolderExists } from './utils/pages'
 
 const { options } = useNuxt()
 const cwd = join(options.rootDir, 'content')
 const locales = options.i18n?.locales
-const contentConfiguration = getDocusContentConfiguration(options.rootDir)
+const contentConfiguration = getTockDocsContentConfiguration(options.rootDir)
 
 const hasLandingPage = landingPageExists(options.rootDir)
 const hasDocsFolder = docsFolderExists(options.rootDir)

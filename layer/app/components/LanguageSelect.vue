@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale, locales, switchLocalePath } = useDocusI18n()
+const { locale, locales, switchLocalePath } = useTockDocsI18n()
 
 const currentLocaleLabel = computed(() => {
   const currentLocale = locales.value.find(localeItem => localeItem.code === locale.value)

@@ -1,6 +1,6 @@
 # Internationalization (i18n) Guidelines
 
-Guidelines for reviewing multi-language documentation consistency in Docus.
+Guidelines for reviewing multi-language documentation consistency in TockDocs.
 
 **Note:** These checks only apply if multi-language support is detected (multiple locale directories: `en/`, `fr/`, etc.)
 

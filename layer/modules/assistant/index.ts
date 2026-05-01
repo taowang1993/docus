@@ -4,12 +4,12 @@ import { defu } from 'defu'
 export interface AssistantModuleOptions {
   /**
    * API endpoint path for the assistant
-   * @default '/__docus__/assistant'
+   * @default '/__tockdocs__/assistant'
    */
   apiPath?: string
   /**
    * MCP server URL or path.
-   * - Use a path like '/mcp' to use the built-in Docus MCP server
+   * - Use a path like '/mcp' to use the built-in TockDocs MCP server
    * - Use a full URL like 'https://docs.example.com/mcp' for external MCP servers
    * @default '/mcp'
    */
@@ -28,10 +28,10 @@ export interface AssistantModuleOptions {
   model?: string
 }
 
-const log = logger.withTag('Docus')
+const log = logger.withTag('TockDocs')
 
 const defaults: Required<Pick<AssistantModuleOptions, 'apiPath' | 'mcpServer'>> & Pick<AssistantModuleOptions, 'provider' | 'model'> = {
-  apiPath: '/__docus__/assistant',
+  apiPath: '/__tockdocs__/assistant',
   mcpServer: '/mcp',
   provider: undefined,
   model: undefined,
@@ -89,10 +89,10 @@ export default defineNuxtModule<AssistantModuleOptions>({
   setup(_options, nuxt) {
     const legacyOptions = nuxt.options.assistant
     if (legacyOptions && Object.keys(legacyOptions).length > 0) {
-      log.warn('`assistant` top-level config is deprecated. Move it under `docus.assistant` in nuxt.config.ts')
+      log.warn('`assistant` top-level config is deprecated. Move it under `tockdocs.assistant` in nuxt.config.ts')
     }
 
-    const options = defu(nuxt.options.docus?.assistant, legacyOptions, defaults) as AssistantModuleOptions & {
+    const options = defu(nuxt.options.tockdocs?.assistant, legacyOptions, defaults) as AssistantModuleOptions & {
       apiPath: string
       mcpServer: string
     }

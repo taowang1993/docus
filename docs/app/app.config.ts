@@ -1,10 +1,10 @@
 export default defineAppConfig({
   header: {
-    title: 'Docus',
+    title: 'TockDocs',
     logo: {
       light: '/logo/logo-dark.svg',
       dark: '/logo/logo-light.svg',
-      alt: 'Docus Logo',
+      alt: 'TockDocs Logo',
       favicon: '/favicon.svg',
     },
   },
@@ -20,7 +20,7 @@ export default defineAppConfig({
     faqQuestions: {
       en: [
         { category: 'Getting Started', items: [
-          'How do I install Docus?',
+          'How do I install TockDocs?',
           'What is the project structure?',
           'How do I deploy my documentation?',
         ] },
@@ -37,7 +37,7 @@ export default defineAppConfig({
       ],
       fr: [
         { category: 'Démarrage', items: [
-          'Comment installer Docus ?',
+          'Comment installer TockDocs ?',
           'Quelle est la structure du projet ?',
           'Comment déployer ma documentation ?',
         ] },

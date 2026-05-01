@@ -2,7 +2,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { consola } from 'consola'
 import { getDefaultLocale, getDocsMode, getFilteredLocaleCodes, resolveDocsRoute } from '../../utils/docs'
 
-const log = consola.withTag('Docus')
+const log = consola.withTag('TockDocs')
 
 const localeFiles = import.meta.glob<{ default: Record<string, unknown> }>('../../i18n/locales/*.json')
 
@@ -13,7 +13,7 @@ export default defineNuxtPlugin(async () => {
 
   if (!i18nConfig) {
     const appConfig = useAppConfig()
-    const configuredLocale = appConfig.docus.locale || 'en'
+    const configuredLocale = appConfig.tockdocs.locale || 'en'
 
     let locale = configuredLocale
     let resolvedMessages: Record<string, unknown>

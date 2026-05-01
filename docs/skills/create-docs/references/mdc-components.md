@@ -1,6 +1,6 @@
 # MDC Components Reference
 
-Docus uses Nuxt UI components with MDC syntax.
+TockDocs uses Nuxt UI components with MDC syntax.
 
 **CRITICAL: Always use the `u-` prefix for Nuxt UI components in MDC:**
 

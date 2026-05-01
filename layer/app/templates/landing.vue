@@ -2,9 +2,9 @@
 import type { Collections } from '@nuxt/content'
 
 const route = useRoute()
-const runtimeConfig = useRuntimeConfig().public as { docus?: { hasSiteContent?: boolean } }
-const { locale, isEnabled } = useDocusI18n()
-const docs = useDocusDocs()
+const runtimeConfig = useRuntimeConfig().public as { tockdocs?: { hasSiteContent?: boolean } }
+const { locale, isEnabled } = useTockDocsI18n()
+const docs = useTockDocs()
 const site = useSiteConfig()
 const appConfig = useAppConfig()
 
@@ -20,7 +20,7 @@ type LandingPage = {
 
 const page = ref<LandingPage | null>(null)
 
-if (docs.mode.value === 'kb' && runtimeConfig.docus?.hasSiteContent) {
+if (docs.mode.value === 'kb' && runtimeConfig.tockdocs?.hasSiteContent) {
   const { data } = await useAsyncData('site_landing', () => queryCollection('site' as keyof Collections).path(route.path).first())
   page.value = data.value as LandingPage | null
 }

@@ -11,7 +11,7 @@ const links = computed(() => props.page?.body?.toc?.links || [])
 const { shouldPushContent: shouldHideToc } = useAssistant()
 const { subNavigationMode } = useSubNavigation()
 const appConfig = useAppConfig()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 
 const contentTocVariants = useUIConfig('contentToc')
 </script>

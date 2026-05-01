@@ -1,6 +1,6 @@
 # Technical Validation Guidelines
 
-Technical correctness checks for Docus documentation, focusing on MDC syntax, frontmatter structure, and component usage.
+Technical correctness checks for TockDocs documentation, focusing on MDC syntax, frontmatter structure, and component usage.
 
 ## Frontmatter Structure
 
@@ -115,12 +115,12 @@ links:
 ```yaml
 ---
 title: Installation
-description: Learn how to install Docus in your project
+description: Learn how to install TockDocs in your project
 navigation:
   icon: i-lucide-download
 seo:
-  title: Install Docus in Your Nuxt Project
-  description: Step-by-step guide to installing and configuring Docus documentation theme.
+  title: Install TockDocs in Your Nuxt Project
+  description: Step-by-step guide to installing and configuring TockDocs documentation theme.
 links:
   - label: Quick Start
     icon: i-lucide-zap
@@ -309,19 +309,19 @@ Use `::code-group` for multi-variant examples (package managers, frameworks, etc
 ::code-group
 
 ```bash [pnpm]
-pnpm add docus
+pnpm add tockdocs
 ```
 
 ```bash [npm]
-npm install docus
+npm install tockdocs
 ```
 
 ```bash [yarn]
-yarn add docus
+yarn add tockdocs
 ```
 
 ```bash [bun]
-bun add docus
+bun add tockdocs
 ```
 
 ::

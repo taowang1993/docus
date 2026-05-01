@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const docs = useDocusDocs()
+const docs = useTockDocs()
 
 const kb = computed(() => typeof route.params.kb === 'string' ? route.params.kb : undefined)
 const homePath = computed(() => docs.getKnowledgeBaseHomePath(kb.value))

@@ -1,5 +1,5 @@
 export default defineNuxtPlugin(() => {
-  const STYLE_ATTRIBUTE = 'data-docus-studio-scrollbar'
+  const STYLE_ATTRIBUTE = 'data-tockdocs-studio-scrollbar'
 
   const getStudioShadowRoot = () => document.querySelector<HTMLElement>('nuxt-studio')?.shadowRoot
 

@@ -2,8 +2,8 @@
 import { createCLI } from './cli'
 
 const cli = createCLI({
-  name: 'create-docus',
-  description: 'Create a new Docus documentation project',
+  name: 'create-tockdocs',
+  description: 'Create a new TockDocs documentation project',
   setup: {
     defaults: {},
   },

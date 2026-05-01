@@ -1,13 +1,13 @@
 import { join } from 'node:path'
 import { extendViteConfig, createResolver, useNuxt } from '@nuxt/kit'
 import { getKnowledgeBaseEntrySlug } from './utils/docs'
-import { getDocusContentConfiguration } from './utils/knowledge-bases'
+import { getTockDocsContentConfiguration } from './utils/knowledge-bases'
 
 const { resolve } = createResolver(import.meta.url)
 const DevPort = 4987
 const DevSiteUrl = process.env.NUXT_SITE_URL || `http://127.0.0.1:${DevPort}`
 
-type DocusI18nOptions = { locales?: Array<string | { code: string }> }
+type TockDocsI18nOptions = { locales?: Array<string | { code: string }> }
 
 export default defineNuxtConfig({
   modules: [
@@ -39,14 +39,14 @@ export default defineNuxtConfig({
         config.optimizeDeps.include ||= []
         config.optimizeDeps.include.push('@nuxt/content > slugify')
         config.optimizeDeps.include = config.optimizeDeps.include
-          .map(id => id.replace(/^@nuxt\/content > /, 'docus > @nuxt/content > '))
+          .map(id => id.replace(/^@nuxt\/content > /, 'tockdocs > @nuxt/content > '))
 
         // Fix @vercel/oidc ESM export issue (transitive dep of @ai-sdk/gateway)
         // Only needed when AI assistant is enabled.
         if (process.env.AI_PROVIDER === 'vercel' || process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN) {
           config.optimizeDeps.include.push('@vercel/oidc')
           config.optimizeDeps.include = config.optimizeDeps.include.map(id =>
-            id.replace(/^@vercel\/oidc$/, 'docus > @vercel/oidc'),
+            id.replace(/^@vercel\/oidc$/, 'tockdocs > @vercel/oidc'),
           )
         }
       })
@@ -131,8 +131,8 @@ export default defineNuxtConfig({
         return
       }
 
-      const contentConfiguration = getDocusContentConfiguration(nuxt.options.rootDir)
-      const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: DocusI18nOptions }).i18n
+      const contentConfiguration = getTockDocsContentConfiguration(nuxt.options.rootDir)
+      const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: TockDocsI18nOptions }).i18n
 
       const routes: string[] = []
 

@@ -29,9 +29,9 @@ pnpm add @ai-sdk/mcp @ai-sdk/vue @ai-sdk/gateway @ai-sdk/google @ai-sdk/openai-c
 export default defineNuxtConfig({
   modules: ['./modules/assistant'],
 
-  docus: {
+  tockdocs: {
     assistant: {
-      apiPath: '/__docus__/assistant',
+      apiPath: '/__tockdocs__/assistant',
       mcpServer: '/mcp',
       model: 'google/gemini-3-flash',
     },
@@ -166,12 +166,12 @@ clearMessages()
 
 ## Module Options
 
-| Option      | Type     | Default                | Description                                                                                                                        |
-| ----------- | -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `apiPath`   | `string` | `/__docus__/assistant` | API endpoint path for the chat                                                                                                     |
-| `mcpServer` | `string` | `/mcp`                 | MCP server path or full URL (e.g., `https://docs.example.com/mcp` for external servers)                                            |
-| `provider`  | `string` | auto                   | Optional provider override (`vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`) |
-| `model`     | `string` | provider default       | Optional model override for the configured provider                                                                                |
+| Option      | Type     | Default                   | Description                                                                                                                        |
+| ----------- | -------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `apiPath`   | `string` | `/__tockdocs__/assistant` | API endpoint path for the chat                                                                                                     |
+| `mcpServer` | `string` | `/mcp`                    | MCP server path or full URL (e.g., `https://docs.example.com/mcp` for external servers)                                            |
+| `provider`  | `string` | auto                      | Optional provider override (`vercel`, `openrouter`, `deepseek`, `nvidia`, `huggingface`, `groq`, `github`, `gemini`, `cloudflare`) |
+| `model`     | `string` | provider default          | Optional model override for the configured provider                                                                                |
 
 ## Components
 
@@ -222,7 +222,7 @@ Composable for syntax highlighting code blocks with Shiki.
 - Nuxt 4.x
 - Nuxt UI 3.x (for `USlideover`, `UButton`, `UTextarea`, `UChatMessages`, etc.)
 - An MCP server running (path configurable via `mcpServer`)
-- Built-in Docus MCP tools: `search-pages`, `list-pages`, and `get-page`
+- Built-in TockDocs MCP tools: `search-pages`, `list-pages`, and `get-page`
 - Server credentials for one supported provider, or Vercel AI Gateway auth
 - Optional `NUXT_PUBLIC_ASSISTANT_ENABLED=true` to expose the UI explicitly in production
 
@@ -230,7 +230,7 @@ Composable for syntax highlighting code blocks with Shiki.
 
 ### Retrieval Strategy
 
-The embedded assistant works best with the built-in Docus MCP tools:
+The embedded assistant works best with the built-in TockDocs MCP tools:
 
 - `search-pages` — full-document retrieval across titles, descriptions, headings, paths, and body text
 - `list-pages` — structure browsing by page metadata

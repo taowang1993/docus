@@ -1,15 +1,15 @@
 {
-  "name": "create-docus",
-  "description": "CLI for creating Docus documentation projects",
+  "name": "create-tockdocs",
+  "description": "CLI for creating TockDocs documentation projects",
   "version": "5.10.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nuxt-content/docus.git"
+    "url": "git+https://github.com/taowang1993/tockdocs.git"
   },
   "private": false,
   "license": "MIT",
   "bin": {
-    "create-docus": "dist/main.mjs"
+    "create-tockdocs": "dist/main.mjs"
   },
   "files": [
     "dist"

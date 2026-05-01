@@ -1,10 +1,10 @@
 {
-  "name": "docus-workspace",
+  "name": "tockdocs-workspace",
   "description": "Minimal Documentation theme and CLI for shared usage across Nuxt modules",
   "version": "5.10.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nuxt-content/docus.git"
+    "url": "git+https://github.com/taowang1993/tockdocs.git"
   },
   "private": true,
   "license": "MIT",
@@ -15,11 +15,10 @@
     "docs:build": "NODE_OPTIONS=--max-old-space-size=8192 pnpm run layer:prepare && NODE_OPTIONS=--max-old-space-size=8192 node scripts/with-env.mjs nuxt build docs --extends ../layer",
     "dev:prepare": "node scripts/with-env.mjs nuxt prepare layer && node scripts/with-env.mjs nuxt prepare docs --extends ../layer && node scripts/with-env.mjs nuxt prepare playground --extends ../layer",
     "playground:dev": "node scripts/run-dev.mjs playground",
-    "format:md": "node scripts/format-md.mjs",
-    "format:md:staged": "node scripts/format-md.mjs --staged",
     "lint": "eslint .",
+    "check:diagrams": "node scripts/check-ascii-diagrams.mjs",
     "typecheck": "node scripts/with-env.mjs nuxt typecheck layer",
-    "verify": "pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
+    "verify": "pnpm run check:diagrams && pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
     "layer:release": "release-it --config .release-it.layer.json && cd layer && npm publish",
     "cli:release": "release-it --config .release-it.cli.json && cd cli && npm publish",
     "release": "pnpm run layer:release && pnpm run cli:release && release-it",
@@ -34,7 +33,6 @@
     "eslint": "^10.2.1",
     "knip": "^6.9.0",
     "nuxt": "4.4.2",
-    "prettier": "^3.8.3",
     "release-it": "^20.0.0",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.2.7"

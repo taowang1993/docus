@@ -1,8 +1,8 @@
-# Docus assistant internals
+# TockDocs assistant internals
 
 ## Overview
 
-The Docus assistant is a docs-grounded chat surface built on top of:
+The TockDocs assistant is a docs-grounded chat surface built on top of:
 
 - **AI SDK** for chat/model orchestration
 - **MCP** for documentation tools
@@ -24,9 +24,9 @@ The UI lives in the assistant runtime components and composables:
 
 The chat panel uses `@ai-sdk/vue` + `DefaultChatTransport` and posts to `config.public.assistant.apiPath`:
 
-- default: `/__docus__/assistant`
+- default: `/__tockdocs__/assistant`
 
-The preferred module config lives under `docus.assistant` in `nuxt.config.ts`. The legacy top-level `assistant` config is still read for compatibility, but it logs a deprecation warning.
+The preferred module config lives under `tockdocs.assistant` in `nuxt.config.ts`. The legacy top-level `assistant` config is still read for compatibility, but it logs a deprecation warning.
 
 The assistant UI is enabled when:
 
@@ -50,7 +50,7 @@ That route:
 4. exposes MCP tools to the model
 5. streams the result back to the UI
 
-The MCP server target comes from `docus.assistant.mcpServer`:
+The MCP server target comes from `tockdocs.assistant.mcpServer`:
 
 - default: `/mcp`
 - it can also be an external URL such as `https://docs.example.com/mcp`
@@ -81,7 +81,7 @@ Important env vars:
 - `VERCEL_OIDC_TOKEN`
 - provider-specific key/model vars such as `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `GITHUB_TOKEN`, `GEMINI_API_KEY`, and `CLOUDFLARE_API_TOKEN`
 
-If `AI_PROVIDER` is unset, Docus auto-detects the first configured provider from runtime config or environment credentials. Vercel AI Gateway is the fallback provider when no explicit provider is set.
+If `AI_PROVIDER` is unset, TockDocs auto-detects the first configured provider from runtime config or environment credentials. Vercel AI Gateway is the fallback provider when no explicit provider is set.
 
 ## MCP tool layer
 
@@ -139,7 +139,7 @@ The primary search implementation lives in:
 
 ### Indexing
 
-For each searchable documentation page, Docus builds a per-process in-memory search index using:
+For each searchable documentation page, TockDocs builds a per-process in-memory search index using:
 
 - **FlexSearch** for primary retrieval
 - **Fuse.js** for fuzzy fallback
@@ -177,7 +177,7 @@ Current behavior:
 - `get-page` is used for deeper reads
 - simple greetings, acknowledgements, or purely meta UI questions may be answered without tools
 
-This means Docus is **tool-grounded by design**, but not absolutely tool-forced for trivial non-doc interactions.
+This means TockDocs is **tool-grounded by design**, but not absolutely tool-forced for trivial non-doc interactions.
 
 ## Logs
 
@@ -185,7 +185,7 @@ This means Docus is **tool-grounded by design**, but not absolutely tool-forced 
 
 Prefix:
 
-- `[docus-assistant]`
+- `[tockdocs-assistant]`
 
 Important events:
 
@@ -201,7 +201,7 @@ Important events:
 
 Prefix:
 
-- `[docus-docs-search]`
+- `[tockdocs-docs-search]`
 
 Important events:
 
@@ -221,17 +221,17 @@ Important events:
 
 Typical log pattern:
 
-- `[docus-assistant] ... tool_calls ... search-pages`
-- `[docus-docs-search] ... usedFuseFallback:false ...`
-- `[docus-assistant] ... request_finish ... toolCallCount > 0`
+- `[tockdocs-assistant] ... tool_calls ... search-pages`
+- `[tockdocs-docs-search] ... usedFuseFallback:false ...`
+- `[tockdocs-assistant] ... request_finish ... toolCallCount > 0`
 
 ### Fuse fallback success
 
 Typical log pattern:
 
-- `[docus-assistant] ... tool_calls ... search-pages`
-- `[docus-docs-search] ... usedFuseFallback:true ...`
-- `[docus-assistant] ... request_finish ... toolCallCount > 0`
+- `[tockdocs-assistant] ... tool_calls ... search-pages`
+- `[tockdocs-docs-search] ... usedFuseFallback:true ...`
+- `[tockdocs-assistant] ... request_finish ... toolCallCount > 0`
 
 ## Dev defaults
 

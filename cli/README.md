@@ -1,12 +1,12 @@
-[![docus](https://docus.dev/_og/s/c_Landing,title_Write+beautiful+docs+with+Markdown,description_Ship+fast+flexible+and+SEO-optimized+documentation+with+beautiful+design+out+of+the+box.+Docus+brings+together+the+best+of+the+Nuxt+ecosystem.+Powered+by+Nuxt+UI.,p_Ii9lbiI.png)](https://docus.dev)
+[![tockdocs](https://tockdocs.dev/_og/s/c_Landing,title_Write+beautiful+docs+with+Markdown,description_Ship+fast+flexible+and+SEO-optimized+documentation+with+beautiful+design+out+of+the+box.+TockDocs+brings+together+the+best+of+the+Nuxt+ecosystem.+Powered+by+Nuxt+UI.,p_Ii9lbiI.png)](https://tockdocs.dev)
 
 > CLI tool to create beautiful docs with Markdown
 
-[![npm version](https://img.shields.io/npm/v/create-docus.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/create-docus)
-[![npm downloads](https://img.shields.io/npm/dm/create-docus.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npm.chart.dev/create-docus)
-[![License](https://img.shields.io/npm/l/create-docus.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/create-docus)
+[![npm version](https://img.shields.io/npm/v/create-tockdocs.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/create-tockdocs)
+[![npm downloads](https://img.shields.io/npm/dm/create-tockdocs.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npm.chart.dev/create-tockdocs)
+[![License](https://img.shields.io/npm/l/create-tockdocs.svg?style=flat&colorA=020420&colorB=EEEEEE)](https://npmjs.com/package/create-tockdocs)
 
-The fastest way to create a new [Docus](https://docus.dev) documentation project. This CLI tool scaffolds a complete documentation website using the [`docus`](https://www.github.com/nuxt-content/docus/tree/main/layer) Nuxt layer.
+The fastest way to create a new [TockDocs](https://tockdocs.dev) documentation project. This CLI tool scaffolds a complete documentation website using the [`tockdocs`](https://www.github.com/taowang1993/tockdocs/tree/main/layer) Nuxt layer.
 
 ## 🚀 Quick Start
 
@@ -14,10 +14,10 @@ Create a new documentation project in seconds:
 
 ```bash
 # Create a new project
-npx create-docus my-docs
+npx create-tockdocs my-docs
 
 # Or create with i18n template for multi-language docs
-npx create-docus my-docs -t i18n
+npx create-tockdocs my-docs -t i18n
 
 # Navigate to your project
 cd my-docs
@@ -39,7 +39,7 @@ Creates a basic documentation project ready for single-language content.
 Use the `-t i18n` flag to create a project with internationalization support:
 
 ```bash
-npx create-docus my-docs -t i18n
+npx create-tockdocs my-docs -t i18n
 ```
 
 The i18n template includes:
@@ -78,7 +78,7 @@ my-docs/
 
 ### Optional files and folders
 
-Docus uses a layer system, you can go further and use any feature or file of a classical Nuxt project:
+TockDocs uses a layer system, you can go further and use any feature or file of a classical Nuxt project:
 
 ```
 my-docs/
@@ -127,15 +127,15 @@ Your project comes pre-configured with the best of the Nuxt ecosystem:
 - [Nuxt UI](https://ui.nuxt.com) - UI components
 - [Nuxt Image](https://image.nuxt.com/) - Optimized images
 - [Tailwind CSS 4](https://tailwindcss.com/) - Utility-first CSS
-- [Docus Layer](https://www.npmjs.com/package/docus) - Documentation theme
+- [TockDocs Layer](https://www.npmjs.com/package/tockdocs) - Documentation theme
 
 ## 🔗 Related Packages
 
-- [`docus`](https://github.com/nuxt-content/docus/tree/main/layer) - The Nuxt layer that powers your documentation
+- [`tockdocs`](https://github.com/taowang1993/tockdocs/tree/main/layer) - The Nuxt layer that powers your documentation
 
 ## 📖 Documentation
 
-For detailed documentation on customizing your Docus project, visit the [Docus Documentation](https://docus.dev)
+For detailed documentation on customizing your TockDocs project, visit the [TockDocs Documentation](https://tockdocs.dev)
 
 ## 🛠️ Development
 
@@ -147,7 +147,7 @@ To contribute to the CLI tool:
 
 ```bash
 # Clone this repository
-git clone https://github.com/nuxt-content/docus
+git clone https://github.com/taowang1993/tockdocs
 
 # Install dependencies
 pnpm install
@@ -155,10 +155,10 @@ pnpm install
 # Build the CLI
 pnpm run build
 
-# Run the dev server to run the docus docs
+# Run the dev server to run the tockdocs docs
 pnpm run dev
 ```
 
 ## 📄 License
 
-Published under the [MIT](https://github.com/nuxt-content/docus/blob/main/LICENSE) license.
+Published under the [MIT](https://github.com/taowang1993/tockdocs/blob/main/LICENSE) license.

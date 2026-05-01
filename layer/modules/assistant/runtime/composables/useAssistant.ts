@@ -31,7 +31,7 @@ function clampDesktopAssistantWidth(width: number) {
 export function useAssistant() {
   const config = useRuntimeConfig()
   const appConfig = useAppConfig()
-  const docs = useDocusDocs()
+  const docs = useTockDocs()
   const assistantRuntimeConfig = config.public.assistant as { enabled?: boolean } | undefined
   const assistantConfig = appConfig.assistant as { faqQuestions?: FaqQuestions | LocalizedFaqQuestions } | undefined
   const isEnabled = computed(() => assistantRuntimeConfig?.enabled ?? false)
