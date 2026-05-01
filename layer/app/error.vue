@@ -3,15 +3,15 @@ import type { NuxtError } from '#app'
 import type { ContentNavigationItem, PageCollections } from '@nuxt/content'
 import * as nuxtUiLocales from '@nuxt/ui/locale'
 import { transformNavigation } from './utils/navigation'
-import { useDocusColorMode } from './composables/useDocusColorMode'
+import { useTockDocsColorMode } from './composables/useTockDocsColorMode'
 
 const props = defineProps<{
   error: NuxtError
 }>()
 
-const { forced: forcedColorMode } = useDocusColorMode()
-const { locale, isEnabled, t } = useDocusI18n()
-const docs = useDocusDocs()
+const { forced: forcedColorMode } = useTockDocsColorMode()
+const { locale, isEnabled, t } = useTockDocsI18n()
+const docs = useTockDocs()
 const { open: contentSearchOpen } = useContentSearch()
 
 const nuxtUiLocale = computed(() => nuxtUiLocales[locale.value as keyof typeof nuxtUiLocales] || nuxtUiLocales.en)

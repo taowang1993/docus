@@ -3,7 +3,7 @@ import type { LocaleObject } from '@nuxtjs/i18n'
 import type { ComputedRef, Ref } from 'vue'
 import { computed, ref } from 'vue'
 
-type DocusNuxtApp = ReturnType<typeof useNuxtApp> & {
+type TockDocsNuxtApp = ReturnType<typeof useNuxtApp> & {
   $i18n?: {
     locale: Ref<string>
     t: (key: string) => string
@@ -14,10 +14,10 @@ type DocusNuxtApp = ReturnType<typeof useNuxtApp> & {
   $switchLocalePath?: (locale?: string) => string
 }
 
-export const useDocusI18n = () => {
+export const useTockDocsI18n = () => {
   const config = useRuntimeConfig().public
-  const nuxtApp = useNuxtApp() as DocusNuxtApp
-  const docs = useDocusDocs()
+  const nuxtApp = useNuxtApp() as TockDocsNuxtApp
+  const docs = useTockDocs()
   const isEnabled = ref(!!config.i18n)
 
   if (!isEnabled.value) {
@@ -37,7 +37,7 @@ export const useDocusI18n = () => {
     }
   }
 
-  const filteredLocales = ((config.docus as { filteredLocales?: LocaleObject<string>[] } | undefined)?.filteredLocales) || []
+  const filteredLocales = ((config.tockdocs as { filteredLocales?: LocaleObject<string>[] } | undefined)?.filteredLocales) || []
   const locale = computed(() => docs.activeLocale.value || nuxtApp.$i18n?.locale.value || config.i18n?.defaultLocale || 'en')
   const locales = computed(() => {
     if (docs.mode.value !== 'kb' || !docs.isDocsRoute.value || !docs.activeKnowledgeBase.value) {

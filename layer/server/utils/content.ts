@@ -120,7 +120,7 @@ export function getScopedKnowledgeBaseAndLocale(event: H3Event, explicit: { kb?:
     locale,
   })
 
-  console.info(`[docus-mcp-scope] ${JSON.stringify({
+  console.info(`[tockdocs-mcp-scope] ${JSON.stringify({
     requestPath: getRequestURL(event).pathname,
     explicitKb: explicit.kb,
     explicitLocale: explicit.locale,

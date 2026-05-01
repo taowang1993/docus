@@ -1,6 +1,6 @@
-export function useDocusColorMode() {
+export function useTockDocsColorMode() {
   const appConfig = useAppConfig()
-  const forced = (appConfig.docus as { colorMode?: string })?.colorMode
+  const forced = (appConfig.tockdocs as { colorMode?: string })?.colorMode
   return {
     forced: forced === 'light' || forced === 'dark' ? forced : undefined,
   }

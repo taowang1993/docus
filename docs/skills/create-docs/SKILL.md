@@ -4,7 +4,7 @@ description: |
   Create complete documentation sites for projects. Use when asked to:
   "create docs", "add documentation", "setup docs site", "generate docs",
   "document my project", "write docs", "initialize documentation",
-  "add a docs folder", "create a docs website". Generates Docus-based sites
+  "add a docs folder", "create a docs website". Generates TockDocs-based sites
   with search, dark mode, MCP server, and llms.txt integration.
 ---
 
@@ -142,13 +142,13 @@ Check if project needs multi-language docs:
   "name": "[project-name]-docs",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev --extends docus",
-    "build": "nuxt build --extends docus",
-    "generate": "nuxt generate --extends docus",
-    "preview": "nuxt preview --extends docus"
+    "dev": "nuxt dev --extends tockdocs",
+    "build": "nuxt build --extends tockdocs",
+    "generate": "nuxt generate --extends tockdocs",
+    "preview": "nuxt preview --extends tockdocs"
   },
   "dependencies": {
-    "docus": "latest",
+    "tockdocs": "latest",
     "better-sqlite3": "^12.5.0",
     "nuxt": "^4.2.2"
   }
@@ -162,14 +162,14 @@ Check if project needs multi-language docs:
   "name": "[project-name]-docs",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev --extends docus",
-    "build": "nuxt build --extends docus",
-    "generate": "nuxt generate --extends docus",
-    "preview": "nuxt preview --extends docus"
+    "dev": "nuxt dev --extends tockdocs",
+    "build": "nuxt build --extends tockdocs",
+    "generate": "nuxt generate --extends tockdocs",
+    "preview": "nuxt preview --extends tockdocs"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.2.1",
-    "docus": "latest",
+    "tockdocs": "latest",
     "better-sqlite3": "^12.5.0",
     "nuxt": "^4.2.2"
   }
@@ -300,7 +300,7 @@ For MDC components, see [references/mdc-components.md](references/mdc-components
 
 ## Step 4: Configure AI Integration
 
-Docus automatically includes MCP server (`/mcp`) and llms.txt generation. No configuration needed.
+TockDocs automatically includes MCP server (`/mcp`) and llms.txt generation. No configuration needed.
 
 **Do NOT add AI Integration sections to the landing page.** These features work automatically.
 
@@ -316,7 +316,7 @@ This documentation includes AI integration with MCP server and automatic `llms.t
 
 ```ts [app/app.config.ts]
 export default defineAppConfig({
-  docus: {
+  tockdocs: {
     name: '[Project Name]',
     description: '[Project description]',
     url: 'https://[docs-url]',
@@ -357,7 +357,7 @@ Create `app/assets/css/main.css`:
 
 ```ts [app/app.config.ts]
 export default defineAppConfig({
-  docus: {
+  tockdocs: {
     name: '[Project Name]',
     description: '[Project description]',
     url: 'https://[docs-url]',

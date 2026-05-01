@@ -9,7 +9,7 @@ const site = useSiteConfig()
 const requestURL = useRequestURL()
 
 const { copy, copied } = useClipboard()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 
 const siteOrigin = computed(() => site.url?.replace(/\/$/, '') || requestURL.origin)
 const markdownLink = computed(() => `${siteOrigin.value}${appBaseURL}raw${route.path}.md`)

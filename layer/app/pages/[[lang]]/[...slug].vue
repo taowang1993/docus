@@ -5,8 +5,8 @@ definePageMeta({
   layout: 'docs',
 })
 
-const { t } = useDocusI18n()
-const docs = useDocusDocs()
+const { t } = useTockDocsI18n()
+const docs = useTockDocs()
 
 if (docs.mode.value === 'kb') {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })

@@ -1,12 +1,12 @@
 {
-  "name": "docus",
-  "description": "Nuxt layer for Docus documentation theme",
+  "name": "tockdocs",
+  "description": "Nuxt layer for TockDocs documentation theme",
   "version": "5.10.0",
   "type": "module",
   "main": "./nuxt.config.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nuxt-content/docus.git"
+    "url": "git+https://github.com/taowang1993/tockdocs.git"
   },
   "private": false,
   "license": "MIT",

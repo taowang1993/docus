@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useDocusColorMode } from '../../composables/useDocusColorMode'
+import { useTockDocsColorMode } from '../../composables/useTockDocsColorMode'
 import { useSubNavigation } from '../../composables/useSubNavigation'
 
 const appConfig = useAppConfig()
 const route = useRoute()
-const { forced: forcedColorMode } = useDocusColorMode()
+const { forced: forcedColorMode } = useTockDocsColorMode()
 
 const { isEnabled: isAssistantEnabled } = useAssistant()
 const { subNavigationMode } = useSubNavigation()

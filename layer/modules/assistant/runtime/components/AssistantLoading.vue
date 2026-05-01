@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
-import { useDocusI18n } from '../../../../app/composables/useDocusI18n'
+import { useTockDocsI18n } from '../../../../app/composables/useTockDocsI18n'
 
 interface ToolCall {
   toolCallId: string
@@ -14,7 +14,7 @@ const props = defineProps<{
   isLoading?: boolean
 }>()
 
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 
 const messages = computed(() => [
   t('assistant.loading.searching'),

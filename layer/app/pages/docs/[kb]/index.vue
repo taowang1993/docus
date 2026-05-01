@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const docs = useDocusDocs()
+const docs = useTockDocs()
 
 const knowledgeBase = computed(() => {
   const kb = route.params.kb

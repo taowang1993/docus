@@ -1,13 +1,13 @@
-[![docus](https://docus.dev/_og/s/c_Landing,title_Write+beautiful+docs+with+Markdown,description_Ship+fast+flexible+and+SEO-optimized+documentation+with+beautiful+design+out+of+the+box.+Docus+brings+together+the+best+of+the+Nuxt+ecosystem.+Powered+by+Nuxt+UI.,p_Ii9lbiI.png)](https://docus.dev)
+[![tockdocs](https://tockdocs.dev/_og/s/c_Landing,title_Write+beautiful+docs+with+Markdown,description_Ship+fast+flexible+and+SEO-optimized+documentation+with+beautiful+design+out+of+the+box.+TockDocs+brings+together+the+best+of+the+Nuxt+ecosystem.+Powered+by+Nuxt+UI.,p_Ii9lbiI.png)](https://tockdocs.dev)
 
-# Docus
+# TockDocs
 
 > A minimal and beautiful Nuxt layer for documentation websites
 
-[![npm version](https://img.shields.io/npm/v/docus.svg)](https://www.npmjs.com/package/docus)
-[![npm downloads](https://img.shields.io/npm/dm/docus.svg)](https://www.npmjs.com/package/docus)
+[![npm version](https://img.shields.io/npm/v/tockdocs.svg)](https://www.npmjs.com/package/tockdocs)
+[![npm downloads](https://img.shields.io/npm/dm/tockdocs.svg)](https://www.npmjs.com/package/tockdocs)
 
-This is the official Nuxt layer for [Docus](https://docus.dev), providing a complete documentation theming. It works with the [Docus CLI](https://github.com/nuxt-content/docus/tree/main/cli) for rapid project setup.
+This is the official Nuxt layer for [TockDocs](https://tockdocs.dev), providing a complete documentation theming. It works with the [TockDocs CLI](https://github.com/taowang1993/tockdocs/tree/main/cli) for rapid project setup.
 
 ## 🚀 Features
 
@@ -20,23 +20,23 @@ This is the official Nuxt layer for [Docus](https://docus.dev), providing a comp
 - 🎨 **Customizable** - Easy theming and customization
 - ⚡ **Fast** - Optimized for performance
 - 🔧 **TypeScript** - Full TypeScript support
-- 🛠️ **CLI Integration** - Works with Docus CLI for quick project setup
+- 🛠️ **CLI Integration** - Works with TockDocs CLI for quick project setup
 
 ## 📦 Installation
 
 ```bash
-npm install docus
+npm install tockdocs
 ```
 
 ## 🏗️ Quick Setup
 
-### Option 1: Docus CLI (Recommended)
+### Option 1: TockDocs CLI (Recommended)
 
-The easiest way to get started is using the Docus CLI, which automatically sets up a project with this layer:
+The easiest way to get started is using the TockDocs CLI, which automatically sets up a project with this layer:
 
 ```bash
 # Create a new documentation project
-npx create-docus my-docs
+npx create-tockdocs my-docs
 
 # Navigate to your project
 cd my-docs
@@ -45,13 +45,13 @@ cd my-docs
 npm run dev
 ```
 
-This creates a complete documentation project pre-configured with `docus`.
+This creates a complete documentation project pre-configured with `tockdocs`.
 
 For multi-language documentation, use the i18n template:
 
 ```bash
 # Create a new i18n documentation project
-npx create-docus my-docs -t i18n
+npx create-tockdocs my-docs -t i18n
 ```
 
 ### Option 2: Manual Setup
@@ -62,7 +62,7 @@ Add the layer to your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  extends: ['docus'],
+  extends: ['tockdocs'],
 })
 ```
 
@@ -87,15 +87,15 @@ Use directly with Nuxt CLI:
 
 ```bash
 # Development
-nuxt dev --extends docus
+nuxt dev --extends tockdocs
 
 # Build
-nuxt build --extends docus
+nuxt build --extends tockdocs
 ```
 
 ## 🔗 Related Packages
 
-- [`create-docus`](https://www.npmjs.com/package/create-docus) - CLI tool to scaffold Docus projects
+- [`create-tockdocs`](https://www.npmjs.com/package/create-tockdocs) - CLI tool to scaffold TockDocs projects
 
 ## 📄 License
 
@@ -107,9 +107,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📞 Support
 
-- 📖 [Documentation](https://docus.dev)
-- 🐛 [Issues](https://github.com/nuxt-content/docus/issues)
-- 💬 [Discussions](https://github.com/nuxt-content/docus/discussions)
+- 📖 [Documentation](https://tockdocs.dev)
+- 🐛 [Issues](https://github.com/taowang1993/tockdocs/issues)
+- 💬 [Discussions](https://github.com/taowang1993/tockdocs/discussions)
 
 ---
 

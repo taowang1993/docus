@@ -3,7 +3,7 @@ import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 
 const config = useRuntimeConfig()
-const { t, locale } = useDocusI18n()
+const { t, locale } = useTockDocsI18n()
 const isEnabled = computed(() => config.public.assistant?.enabled ?? false)
 
 const input = ref('')
@@ -11,12 +11,12 @@ const input = ref('')
 const suggestedQuestionsMap: Record<string, string[]> = {
   en: [
     'How do I get started?',
-    'What is Docus?',
+    'What is TockDocs?',
     'How to customize the theme?',
   ],
   fr: [
     'Comment démarrer ?',
-    'Qu\'est-ce que Docus ?',
+    'Qu\'est-ce que TockDocs ?',
     'Comment personnaliser le thème ?',
   ],
 }

@@ -62,7 +62,7 @@ function getOpenRouterHeaders(siteUrl: string) {
   return siteUrl.startsWith('https://')
     ? {
         'HTTP-Referer': siteUrl,
-        'X-Title': 'Docus',
+        'X-Title': 'TockDocs',
       }
     : undefined
 }

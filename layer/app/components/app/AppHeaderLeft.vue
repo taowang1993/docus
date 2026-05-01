@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const appConfig = useAppConfig()
 const site = useSiteConfig()
-const { isEnabled, locales, localePath } = useDocusI18n()
-const docs = useDocusDocs()
+const { isEnabled, locales, localePath } = useTockDocsI18n()
+const docs = useTockDocs()
 
 const brandName = computed(() => appConfig.header?.title || site.name || '')
 const homePath = computed(() => docs.isKnowledgeBaseMode.value ? '/' : localePath('/'))

@@ -4,12 +4,12 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { inferSiteURL, getPackageJsonMetadata } from '../utils/meta'
 import { getGitBranch, getGitEnv, getLocalGitInfo } from '../utils/git'
-import { getDocusContentConfiguration } from '../utils/knowledge-bases'
+import { getTockDocsContentConfiguration } from '../utils/knowledge-bases'
 
-const log = logger.withTag('Docus')
+const log = logger.withTag('TockDocs')
 
 type I18nLocale = string | { code: string, name?: string }
-type DocusI18nOptions = { locales?: I18nLocale[], strategy?: string }
+type TockDocsI18nOptions = { locales?: I18nLocale[], strategy?: string }
 type RegisterModuleOptions = {
   langDir: string
   locales: Array<{ code: string, name: string, file: string }>
@@ -25,7 +25,7 @@ export default defineNuxtModule({
     const meta = await getPackageJsonMetadata(dir)
     const gitInfo = await getLocalGitInfo(dir) || getGitEnv()
     const siteName = (typeof nuxt.options.site === 'object' && nuxt.options.site?.name) || meta.name || gitInfo?.name || ''
-    const contentConfiguration = getDocusContentConfiguration(dir)
+    const contentConfiguration = getTockDocsContentConfiguration(dir)
     const availableKnowledgeBaseLocales = new Set(contentConfiguration.knowledgeBases.flatMap(kb => kb.locales))
 
     nuxt.options.llms = defu(nuxt.options.llms, {
@@ -61,15 +61,15 @@ export default defineNuxtModule({
       branch: getGitBranch(),
     })
 
-    const forcedColorMode = (nuxt.options.appConfig.docus as Record<string, unknown>)?.colorMode as string | undefined
+    const forcedColorMode = (nuxt.options.appConfig.tockdocs as Record<string, unknown>)?.colorMode as string | undefined
     if (forcedColorMode === 'light' || forcedColorMode === 'dark') {
       nuxt.options.colorMode = defu({ preference: forcedColorMode, fallback: forcedColorMode }, nuxt.options.colorMode || {}) as typeof nuxt.options.colorMode
     }
 
-    const typedNuxtOptions = nuxt.options as typeof nuxt.options & { i18n?: false | DocusI18nOptions }
+    const typedNuxtOptions = nuxt.options as typeof nuxt.options & { i18n?: false | TockDocsI18nOptions }
     const i18nOptions = typedNuxtOptions.i18n
 
-    const baseRuntimeDocusConfig = {
+    const baseRuntimeTockDocsConfig = {
       docsMode: contentConfiguration.mode,
       knowledgeBases: contentConfiguration.knowledgeBases.map(({ sourceDir: _sourceDir, ...knowledgeBase }) => knowledgeBase),
       defaultKnowledgeBase: contentConfiguration.knowledgeBases[0]?.id,
@@ -105,9 +105,9 @@ export default defineNuxtModule({
         strategy: contentConfiguration.mode === 'kb' ? 'no_prefix' : 'prefix',
       }
 
-      nuxt.options.runtimeConfig.public.docus = defu(nuxt.options.runtimeConfig.public.docus, {
+      nuxt.options.runtimeConfig.public.tockdocs = defu(nuxt.options.runtimeConfig.public.tockdocs, {
         filteredLocales,
-        ...baseRuntimeDocusConfig,
+        ...baseRuntimeTockDocsConfig,
       })
 
       const registerI18nModule = nuxt.hook as unknown as (name: string, callback: (register: (options: RegisterModuleOptions) => void) => void) => void
@@ -136,7 +136,7 @@ export default defineNuxtModule({
       })
     }
     else {
-      nuxt.options.runtimeConfig.public.docus = defu(nuxt.options.runtimeConfig.public.docus, baseRuntimeDocusConfig)
+      nuxt.options.runtimeConfig.public.tockdocs = defu(nuxt.options.runtimeConfig.public.tockdocs, baseRuntimeTockDocsConfig)
     }
   },
 })

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { AnimatePresence, motion } from 'motion-v'
-import { useDocusI18n } from '../../../../app/composables/useDocusI18n'
+import { useTockDocsI18n } from '../../../../app/composables/useTockDocsI18n'
 
 const route = useRoute()
 const appConfig = useAppConfig()
 const { open, isOpen } = useAssistant()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 const input = ref('')
 const isVisible = ref(true)
 const inputRef = ref<HTMLTextAreaElement | null>(null)

@@ -4,7 +4,7 @@ import type { UIMessage } from 'ai'
 import { Chat } from '@ai-sdk/vue'
 import { DefaultChatTransport } from 'ai'
 import { createReusableTemplate } from '@vueuse/core'
-import { useDocusI18n } from '../../../../app/composables/useDocusI18n'
+import { useTockDocsI18n } from '../../../../app/composables/useTockDocsI18n'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const components: Record<string, any> = {
@@ -16,7 +16,7 @@ const [DefineChatContent, ReuseChatContent] = createReusableTemplate<{ showExpan
 const { isOpen, isExpanded, isMobile, isResizing, panelWidth, toggleExpanded, setDesktopWidth, setResizing, messages, pendingMessage, clearPending, faqQuestions } = useAssistant()
 const config = useRuntimeConfig()
 const toast = useToast()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 const input = ref('')
 
 const displayPanelTitle = computed(() => t('assistant.panelTitle'))

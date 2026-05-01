@@ -1,6 +1,6 @@
 # SEO Review Guidelines
 
-Comprehensive SEO best practices for Docus documentation sites.
+Comprehensive SEO best practices for TockDocs documentation sites.
 
 ## Page Titles
 
@@ -21,8 +21,8 @@ Comprehensive SEO best practices for Docus documentation sites.
 
 | Poor          | Better        | Great                                  |
 | ------------- | ------------- | -------------------------------------- |
-| Installation  | Install       | Install Docus in Your Nuxt Project     |
-| Configuration | Configure     | Configure Docus Theme Settings         |
+| Installation  | Install       | Install TockDocs in Your Nuxt Project  |
+| Configuration | Configure     | Configure TockDocs Theme Settings      |
 | API           | API Reference | API Reference: Composables and Helpers |
 
 ## Meta Descriptions
@@ -42,11 +42,11 @@ Comprehensive SEO best practices for Docus documentation sites.
 
 ### Examples
 
-✅ Good (145 chars): "Learn how to install and configure Docus in your Nuxt project. Set up your documentation site with search, dark mode, and AI integration."
+✅ Good (145 chars): "Learn how to install and configure TockDocs in your Nuxt project. Set up your documentation site with search, dark mode, and AI integration."
 
-❌ Too short (42 chars): "Documentation setup guide for Docus theme"
+❌ Too short (42 chars): "Documentation setup guide for TockDocs theme"
 
-❌ Too long (185 chars): "This comprehensive guide will walk you through the complete process of installing, configuring, and customizing the Docus documentation theme for your Nuxt application with all features."
+❌ Too long (185 chars): "This comprehensive guide will walk you through the complete process of installing, configuring, and customizing the TockDocs documentation theme for your Nuxt application with all features."
 
 ## Heading Structure
 
@@ -214,7 +214,7 @@ height="400"
 
 ### Keyword Stuffing
 
-❌ "Docus Docus documentation Docus theme Docus guide"
+❌ "TockDocs TockDocs documentation TockDocs theme TockDocs guide"
 ✅ Natural language with keywords integrated contextually
 
 ### Broken Internal Links

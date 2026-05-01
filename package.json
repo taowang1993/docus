@@ -1,10 +1,10 @@
 {
-  "name": "docus-workspace",
+  "name": "tockdocs-workspace",
   "description": "Minimal Documentation theme and CLI for shared usage across Nuxt modules",
   "version": "5.10.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nuxt-content/docus.git"
+    "url": "git+https://github.com/taowang1993/tockdocs.git"
   },
   "private": true,
   "license": "MIT",

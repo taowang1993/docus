@@ -1,10 +1,10 @@
-const siteUrl = process.env.NUXT_SITE_URL || 'https://docus.dev'
+const siteUrl = process.env.NUXT_SITE_URL || 'https://tockdocs.dev'
 
 export default defineNuxtConfig({
-  extends: ['docus'],
+  extends: ['tockdocs'],
   modules: ['@nuxtjs/i18n', 'nuxt-skill-hub', 'nuxt-studio'],
   site: {
-    name: 'Docus',
+    name: 'TockDocs',
     url: siteUrl,
   },
   mdc: {
@@ -31,15 +31,15 @@ export default defineNuxtConfig({
   },
   llms: {
     domain: siteUrl,
-    title: 'Docus',
+    title: 'TockDocs',
     description: 'Write beautiful docs with Markdown.',
     full: {
-      title: 'Docus',
+      title: 'TockDocs',
       description: 'Write beautiful docs with Markdown.',
     },
   },
   mcp: {
-    name: 'Docus documentation',
+    name: 'TockDocs documentation',
     browserRedirect: '/docs/platform/en/ai/mcp',
   },
   skillHub: {
@@ -51,8 +51,8 @@ export default defineNuxtConfig({
     route: '/admin',
     repository: {
       provider: 'github',
-      owner: 'nuxt-content',
-      repo: 'docus',
+      owner: 'taowang1993',
+      repo: 'tockdocs',
       rootDir: 'docs',
     },
   },

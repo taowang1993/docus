@@ -249,9 +249,9 @@ export default defineNuxtSchema({
         }),
       },
     }),
-    docus: group({
-      title: 'Docus',
-      description: 'Docus configuration.',
+    tockdocs: group({
+      title: 'TockDocs',
+      description: 'TockDocs configuration.',
       icon: 'i-lucide-settings',
       fields: {
         locale: field({

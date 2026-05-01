@@ -1,33 +1,33 @@
 import type { AssistantModuleOptions } from './modules/assistant'
 import type { SkillsModuleOptions } from './modules/skills'
 
-export interface DocusNuxtConfig {
+export interface TockDocsNuxtConfig {
   assistant?: AssistantModuleOptions
   skills?: SkillsModuleOptions
 }
 
 declare module '@nuxt/schema' {
   interface NuxtConfig {
-    docus?: DocusNuxtConfig
-    /** @deprecated Use `docus.assistant` instead */
+    tockdocs?: TockDocsNuxtConfig
+    /** @deprecated Use `tockdocs.assistant` instead */
     assistant?: AssistantModuleOptions
   }
   interface NuxtOptions {
-    docus?: DocusNuxtConfig
-    /** @deprecated Use `docus.assistant` instead */
+    tockdocs?: TockDocsNuxtConfig
+    /** @deprecated Use `tockdocs.assistant` instead */
     assistant?: AssistantModuleOptions
   }
 }
 
 declare module 'nuxt/schema' {
   interface NuxtConfig {
-    docus?: DocusNuxtConfig
-    /** @deprecated Use `docus.assistant` instead */
+    tockdocs?: TockDocsNuxtConfig
+    /** @deprecated Use `tockdocs.assistant` instead */
     assistant?: AssistantModuleOptions
   }
   interface NuxtOptions {
-    docus?: DocusNuxtConfig
-    /** @deprecated Use `docus.assistant` instead */
+    tockdocs?: TockDocsNuxtConfig
+    /** @deprecated Use `tockdocs.assistant` instead */
     assistant?: AssistantModuleOptions
   }
 }

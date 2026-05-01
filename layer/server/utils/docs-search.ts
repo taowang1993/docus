@@ -28,7 +28,7 @@ type SearchResultCandidate = {
   fuseScore?: number
 }
 
-export type DocusSearchResult = {
+export type TockDocsSearchResult = {
   title: string
   description: string
   path: string
@@ -67,7 +67,7 @@ const fuseOptions: IFuseOptions<SearchIndexDocument> = {
 let docsSearchPromise: Promise<DocsSearchIndex> | null = null
 
 function logDocsSearch(step: string, data: Record<string, unknown>) {
-  console.info(`[docus-docs-search] ${JSON.stringify({ step, ...data })}`)
+  console.info(`[tockdocs-docs-search] ${JSON.stringify({ step, ...data })}`)
 }
 
 function normalizeWhitespace(value: string) {
@@ -339,7 +339,7 @@ async function getDocsSearch(event: H3Event) {
   return docsSearchPromise
 }
 
-function toSearchResult(event: H3Event, doc: SearchIndexDocument, query: string): DocusSearchResult {
+function toSearchResult(event: H3Event, doc: SearchIndexDocument, query: string): TockDocsSearchResult {
   return {
     title: doc.title,
     description: doc.description,
@@ -361,7 +361,7 @@ export async function searchDocs(event: H3Event, {
   limit?: number
   kb?: string
   locale?: string
-}): Promise<DocusSearchResult[]> {
+}): Promise<TockDocsSearchResult[]> {
   const trimmedQuery = query.trim()
   if (!trimmedQuery) {
     return []

@@ -4,7 +4,7 @@ const props = defineProps<{
 }>()
 
 const { isOpen, toggle } = useAssistant()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 
 const label = computed(() => t('assistant.title'))
 const testId = computed(() => props.mobile ? 'ask-ai-btn-mobile' : 'ask-ai-btn')

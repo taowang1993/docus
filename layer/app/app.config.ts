@@ -1,5 +1,5 @@
 export default defineAppConfig({
-  docus: {
+  tockdocs: {
     locale: 'en',
     colorMode: '',
   },

@@ -8,7 +8,7 @@ import { createAssistantChatModel, getAssistantProviderConfig } from '../utils/a
 const MAX_STEPS = 10
 
 function logAssistant(step: string, data: Record<string, unknown>) {
-  console.info(`[docus-assistant] ${JSON.stringify({ step, ...data })}`)
+  console.info(`[tockdocs-assistant] ${JSON.stringify({ step, ...data })}`)
 }
 
 function createLocalFetch(event: H3Event): typeof fetch {

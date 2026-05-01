@@ -1,5 +1,5 @@
 {
-  "name": "docus",
+  "name": "tockdocs",
   "description": "An AI-powered Knowledge Management System.",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "@nuxtjs/i18n": "^10.2.4",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "docus": "workspace:*",
+    "tockdocs": "workspace:*",
     "nuxt": "4.4.2",
     "nuxt-studio": "^1.6.0",
     "tailwindcss": "^4.2.3"

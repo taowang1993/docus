@@ -1,19 +1,19 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from 'yaml'
-import type { DocusKnowledgeBase } from './docs'
+import type { TockDocsKnowledgeBase } from './docs'
 
-export interface ResolvedKnowledgeBase extends DocusKnowledgeBase {
+export interface ResolvedKnowledgeBase extends TockDocsKnowledgeBase {
   sourceDir: string
 }
 
-export interface DocusContentConfiguration {
+export interface TockDocsContentConfiguration {
   mode: 'legacy' | 'kb'
   knowledgeBases: ResolvedKnowledgeBase[]
   hasSiteContent: boolean
 }
 
-type KnowledgeBaseConfig = Partial<DocusKnowledgeBase> & {
+type KnowledgeBaseConfig = Partial<TockDocsKnowledgeBase> & {
   locales?: Array<string | { code?: string }>
 }
 
@@ -102,7 +102,7 @@ export function resolveKnowledgeBases(rootDir: string): ResolvedKnowledgeBase[] 
   return knowledgeBases.sort((left, right) => left.title.localeCompare(right.title))
 }
 
-export function getDocusContentConfiguration(rootDir: string): DocusContentConfiguration {
+export function getTockDocsContentConfiguration(rootDir: string): TockDocsContentConfiguration {
   const knowledgeBases = resolveKnowledgeBases(rootDir)
   const hasSiteContent = existsSync(join(rootDir, 'content', 'site'))
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const docs = useDocusDocs()
+const docs = useTockDocs()
 
 const knowledgeBases = computed(() => docs.knowledgeBases.value)
 const currentKnowledgeBase = computed(() => docs.activeKnowledgeBase.value)

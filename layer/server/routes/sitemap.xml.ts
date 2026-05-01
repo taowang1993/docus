@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   const collections = [...getAllDocsCollectionNames(publicConfig)]
 
   if (getDocsMode(publicConfig) === 'legacy') {
-    const availableLocales = publicConfig.docus?.filteredLocales?.map(locale => locale.code) || []
+    const availableLocales = publicConfig.tockdocs?.filteredLocales?.map(locale => locale.code) || []
 
     if (availableLocales.length > 0) {
       collections.push(...availableLocales.map(locale => `landing_${locale}`))

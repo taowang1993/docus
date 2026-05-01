@@ -1,8 +1,8 @@
 import { createResolver, defineNuxtModule, extendPages } from '@nuxt/kit'
-import { getDocusContentConfiguration } from '../utils/knowledge-bases'
+import { getTockDocsContentConfiguration } from '../utils/knowledge-bases'
 import { landingPageExists } from '../utils/pages'
 
-type DocusI18nOptions = { locales?: Array<string | { code: string }> }
+type TockDocsI18nOptions = { locales?: Array<string | { code: string }> }
 type NuxtPage = { file?: string, children?: NuxtPage[] }
 
 function removePagesByFile(pages: NuxtPage[], file: string) {
@@ -26,24 +26,24 @@ export default defineNuxtModule({
   },
   async setup(_options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
-    const contentConfiguration = getDocusContentConfiguration(nuxt.options.rootDir)
+    const contentConfiguration = getTockDocsContentConfiguration(nuxt.options.rootDir)
 
-    const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: DocusI18nOptions }).i18n
+    const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: TockDocsI18nOptions }).i18n
     const isI18nEnabled = !!i18nOptions?.locales
     const isKnowledgeBaseMode = contentConfiguration.mode === 'kb'
 
     nuxt.hook('imports:extend', (imports) => {
-      if (!imports.some(i => i.name === 'useDocusI18n')) {
+      if (!imports.some(i => i.name === 'useTockDocsI18n')) {
         imports.push({
-          name: 'useDocusI18n',
-          from: resolve('../app/composables/useDocusI18n'),
+          name: 'useTockDocsI18n',
+          from: resolve('../app/composables/useTockDocsI18n'),
         })
       }
 
-      if (!imports.some(i => i.name === 'useDocusDocs')) {
+      if (!imports.some(i => i.name === 'useTockDocs')) {
         imports.push({
-          name: 'useDocusDocs',
-          from: resolve('../app/composables/useDocusDocs'),
+          name: 'useTockDocs',
+          from: resolve('../app/composables/useTockDocs'),
         })
       }
     })

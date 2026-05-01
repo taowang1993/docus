@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const site = useSiteConfig()
 const appConfig = useAppConfig()
-const docs = useDocusDocs()
+const docs = useTockDocs()
 
 const entries = computed(() => docs.knowledgeBases.value.map(knowledgeBase => ({
   ...knowledgeBase,

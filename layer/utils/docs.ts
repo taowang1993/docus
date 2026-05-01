@@ -1,6 +1,6 @@
 import { joinURL } from 'ufo'
 
-export interface DocusKnowledgeBase {
+export interface TockDocsKnowledgeBase {
   id: string
   title: string
   description: string
@@ -15,15 +15,15 @@ export interface DocusKnowledgeBase {
 
 type LocaleEntry = string | { code: string }
 
-type DocusPublicRuntimeConfig = {
+type TockDocsPublicRuntimeConfig = {
   i18n?: {
     defaultLocale?: string
     locales?: LocaleEntry[]
   }
-  docus?: {
+  tockdocs?: {
     docsMode?: 'legacy' | 'kb'
     filteredLocales?: Array<{ code: string, name?: string }>
-    knowledgeBases?: DocusKnowledgeBase[]
+    knowledgeBases?: TockDocsKnowledgeBase[]
     defaultKnowledgeBase?: string
     hasSiteContent?: boolean
   }
@@ -51,27 +51,27 @@ export function normalizeCollectionSegment(value: string) {
   return value.replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '')
 }
 
-export function getKnowledgeBases(config: DocusPublicRuntimeConfig): DocusKnowledgeBase[] {
-  return Array.isArray(config.docus?.knowledgeBases)
-    ? config.docus.knowledgeBases
+export function getKnowledgeBases(config: TockDocsPublicRuntimeConfig): TockDocsKnowledgeBase[] {
+  return Array.isArray(config.tockdocs?.knowledgeBases)
+    ? config.tockdocs.knowledgeBases
     : []
 }
 
-export function getDocsMode(config: DocusPublicRuntimeConfig): 'legacy' | 'kb' {
-  if (config.docus?.docsMode === 'kb') {
+export function getDocsMode(config: TockDocsPublicRuntimeConfig): 'legacy' | 'kb' {
+  if (config.tockdocs?.docsMode === 'kb') {
     return 'kb'
   }
 
   return getKnowledgeBases(config).length > 0 ? 'kb' : 'legacy'
 }
 
-export function hasSiteContent(config: DocusPublicRuntimeConfig): boolean {
-  return Boolean(config.docus?.hasSiteContent)
+export function hasSiteContent(config: TockDocsPublicRuntimeConfig): boolean {
+  return Boolean(config.tockdocs?.hasSiteContent)
 }
 
-export function getFilteredLocaleCodes(config: DocusPublicRuntimeConfig): string[] {
-  if (Array.isArray(config.docus?.filteredLocales) && config.docus.filteredLocales.length > 0) {
-    return unique(config.docus.filteredLocales.map(locale => locale.code))
+export function getFilteredLocaleCodes(config: TockDocsPublicRuntimeConfig): string[] {
+  if (Array.isArray(config.tockdocs?.filteredLocales) && config.tockdocs.filteredLocales.length > 0) {
+    return unique(config.tockdocs.filteredLocales.map(locale => locale.code))
   }
 
   if (Array.isArray(config.i18n?.locales) && config.i18n.locales.length > 0) {
@@ -81,12 +81,12 @@ export function getFilteredLocaleCodes(config: DocusPublicRuntimeConfig): string
   return unique(getKnowledgeBases(config).flatMap(kb => kb.locales))
 }
 
-export function getDefaultLocale(config: DocusPublicRuntimeConfig): string {
+export function getDefaultLocale(config: TockDocsPublicRuntimeConfig): string {
   return config.i18n?.defaultLocale || getFilteredLocaleCodes(config)[0] || 'en'
 }
 
-export function getDefaultKnowledgeBase(config: DocusPublicRuntimeConfig): string | undefined {
-  const configuredDefault = config.docus?.defaultKnowledgeBase
+export function getDefaultKnowledgeBase(config: TockDocsPublicRuntimeConfig): string | undefined {
+  const configuredDefault = config.tockdocs?.defaultKnowledgeBase
   if (configuredDefault && getKnowledgeBases(config).some(kb => kb.id === configuredDefault)) {
     return configuredDefault
   }
@@ -94,7 +94,7 @@ export function getDefaultKnowledgeBase(config: DocusPublicRuntimeConfig): strin
   return getKnowledgeBases(config)[0]?.id
 }
 
-export function getKnowledgeBase(config: DocusPublicRuntimeConfig, kbId?: string): DocusKnowledgeBase | undefined {
+export function getKnowledgeBase(config: TockDocsPublicRuntimeConfig, kbId?: string): TockDocsKnowledgeBase | undefined {
   const knowledgeBases = getKnowledgeBases(config)
   if (knowledgeBases.length === 0) {
     return undefined
@@ -112,7 +112,7 @@ export function getKnowledgeBase(config: DocusPublicRuntimeConfig, kbId?: string
 }
 
 export function resolveKnowledgeBaseLocale(
-  config: DocusPublicRuntimeConfig,
+  config: TockDocsPublicRuntimeConfig,
   kbId?: string,
   locale?: string,
 ): string {
@@ -133,7 +133,7 @@ export function resolveKnowledgeBaseLocale(
   return locale || getDefaultLocale(config)
 }
 
-export function getKnowledgeBaseEntrySlug(knowledgeBase?: Pick<DocusKnowledgeBase, 'entry'>) {
+export function getKnowledgeBaseEntrySlug(knowledgeBase?: Pick<TockDocsKnowledgeBase, 'entry'>) {
   return knowledgeBase?.entry?.split('/').filter(Boolean) || []
 }
 
@@ -157,7 +157,7 @@ export function getDocsCollectionName({
   return 'docs'
 }
 
-export function getAllDocsCollectionNames(config: DocusPublicRuntimeConfig): string[] {
+export function getAllDocsCollectionNames(config: TockDocsPublicRuntimeConfig): string[] {
   const mode = getDocsMode(config)
 
   if (mode === 'kb') {
@@ -174,7 +174,7 @@ export function getAllDocsCollectionNames(config: DocusPublicRuntimeConfig): str
     : ['docs']
 }
 
-export function getDefaultDocsCollectionName(config: DocusPublicRuntimeConfig): string {
+export function getDefaultDocsCollectionName(config: TockDocsPublicRuntimeConfig): string {
   const mode = getDocsMode(config)
 
   if (mode === 'kb') {
@@ -220,7 +220,7 @@ export function buildDocsPath({
   return cleanSlug.length > 0 ? joinURL('/', ...cleanSlug) : '/'
 }
 
-export function resolveDocsRoute(path: string, config: DocusPublicRuntimeConfig): ResolvedDocsRoute {
+export function resolveDocsRoute(path: string, config: TockDocsPublicRuntimeConfig): ResolvedDocsRoute {
   const cleanPath = path.split('?')[0] || '/'
   const segments = cleanPath.split('/').filter(Boolean)
   const mode = getDocsMode(config)
@@ -303,7 +303,7 @@ export function resolveDocsRoute(path: string, config: DocusPublicRuntimeConfig)
   }
 }
 
-export function getCollectionFromPath(path: string, config: DocusPublicRuntimeConfig): string {
+export function getCollectionFromPath(path: string, config: TockDocsPublicRuntimeConfig): string {
   const resolved = resolveDocsRoute(path, config)
 
   if (resolved.collectionName) {
@@ -313,7 +313,7 @@ export function getCollectionFromPath(path: string, config: DocusPublicRuntimeCo
   return getDefaultDocsCollectionName(config)
 }
 
-export function switchLocaleInPath(path: string, targetLocale: string, config: DocusPublicRuntimeConfig): string {
+export function switchLocaleInPath(path: string, targetLocale: string, config: TockDocsPublicRuntimeConfig): string {
   const resolved = resolveDocsRoute(path, config)
 
   if (resolved.mode === 'kb') {
@@ -346,7 +346,7 @@ export function switchLocaleInPath(path: string, targetLocale: string, config: D
   })
 }
 
-export function switchKnowledgeBaseInPath(path: string, targetKb: string, config: DocusPublicRuntimeConfig): string {
+export function switchKnowledgeBaseInPath(path: string, targetKb: string, config: TockDocsPublicRuntimeConfig): string {
   if (getDocsMode(config) !== 'kb') {
     return path
   }

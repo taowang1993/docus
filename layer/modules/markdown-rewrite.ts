@@ -2,10 +2,10 @@ import { defineNuxtModule, logger } from '@nuxt/kit'
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
 
-const log = logger.withTag('Docus')
+const log = logger.withTag('TockDocs')
 
 type I18nLocale = string | { code: string }
-type DocusI18nOptions = { locales?: I18nLocale[] }
+type TockDocsI18nOptions = { locales?: I18nLocale[] }
 
 export default defineNuxtModule({
   meta: {
@@ -53,7 +53,7 @@ export default defineNuxtModule({
         ]
 
         // Check if i18n is enabled
-        const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: DocusI18nOptions }).i18n
+        const i18nOptions = (nuxt.options as typeof nuxt.options & { i18n?: TockDocsI18nOptions }).i18n
         const isI18nEnabled = !!i18nOptions?.locales
         let localeCodes: string[] = []
 

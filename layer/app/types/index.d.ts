@@ -4,7 +4,7 @@ export type { FaqCategory, FaqQuestions, LocalizedFaqQuestions } from '../../mod
 
 declare module 'nuxt/schema' {
   interface AppConfig {
-    docus: {
+    tockdocs: {
       locale: string
     }
     seo: {

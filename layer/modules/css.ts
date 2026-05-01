@@ -17,7 +17,7 @@ export default defineNuxtModule({
     const assistantDir = resolver.resolve('../modules/assistant')
 
     const cssTemplate = addTemplate({
-      filename: 'docus.css',
+      filename: 'tockdocs.css',
       getContents: () => {
         return `@import ${JSON.stringify(tailwindPath)};
 @import ${JSON.stringify(uiPath)};

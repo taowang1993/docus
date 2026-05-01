@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 const { subNavigationMode, sidebarNavigation, currentSection } = useSubNavigation()
-const { t } = useDocusI18n()
+const { t } = useTockDocsI18n()
 
 const contentNavVariants = useUIConfig('contentNavigation')
 const contentTocVariants = useUIConfig('contentToc')

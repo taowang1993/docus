@@ -1,6 +1,6 @@
 # Clarity Review Guidelines
 
-Guidelines for evaluating content clarity and readability in Docus documentation.
+Guidelines for evaluating content clarity and readability in TockDocs documentation.
 
 ## Voice and Tone
 

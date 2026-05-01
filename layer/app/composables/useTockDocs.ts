@@ -12,7 +12,7 @@ import {
   switchLocaleInPath,
 } from '../../utils/docs'
 
-export const useDocusDocs = () => {
+export const useTockDocs = () => {
   const route = useRoute()
   const config = useRuntimeConfig().public as Parameters<typeof getDocsMode>[0]
 

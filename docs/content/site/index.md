@@ -1,12 +1,12 @@
 ---
 seo:
-  title: Docus
+  title: TockDocs
   description: An AI-powered Knowledge Management System
 ---
 
 ::u-page-hero{class="!pt-6 sm:!pt-8 lg:!pt-12 !pb-4 sm:!pb-6 lg:!pb-8 [&>[data-slot=container]]:!py-12 [&>[data-slot=container]]:!gap-6"}
 #title
-Docus
+TockDocs
 
 #description
 An AI-powered Knowledge Management System
@@ -15,11 +15,15 @@ An AI-powered Knowledge Management System
 ::u-page-section{class="pt-0 [&>[data-slot=container]]:!py-0"}
 :::u-page-grid{class="lg:grid-cols-2 gap-4 mt-2"}
 ::::u-page-card
+
 ---
+
 spotlight: true
 icon: i-lucide-layout-dashboard
 to: /docs/platform/en/getting-started/installation
+
 ---
+
 #title
 Platform docs
 
@@ -27,12 +31,14 @@ Platform docs
 Product docs for configuration, authoring, AI tooling, and deployment.
 ::::
 
-::::u-page-card
----
+## ::::u-page-card
+
 spotlight: true
 icon: i-lucide-file-text
 to: /docs/parser/en/parser/best-document-parsing-apis-2026
+
 ---
+
 #title
 Parser docs
 
@@ -43,17 +49,21 @@ Document parsing comparisons, RAG ingestion guides, and enterprise document inte
 
 :::u-page-grid{class="mt-4 lg:mt-6"}
 ::::u-page-card
+
 ---
+
 spotlight: true
 class: group col-span-2 lg:col-span-1
 target: \_blank
 to: https://nuxt.com
+
 ---
+
 #title
 Built with [Nuxt](https://nuxt.com)
 
 #description
-Optimized by the most famous Vue framework. Docus gives you everything you need to build fast, performant, and SEO-friendly websites.
+Optimized by the most famous Vue framework. TockDocs gives you everything you need to build fast, performant, and SEO-friendly websites.
 
 #header
 :floating-nuxt
@@ -81,7 +91,7 @@ Optimized by the most famous Vue framework. Docus gives you everything you need 
     Powered by [Nuxt UI](https://ui.nuxt.com)
 
     #description
-    Beautiful out of the box, minimal by design but highly customizable. Docus leverages Nuxt UI to give you the best docs writing experience with zero boilerplate, just focus on your content.
+    Beautiful out of the box, minimal by design but highly customizable. TockDocs leverages Nuxt UI to give you the best docs writing experience with zero boilerplate, just focus on your content.
     ::::
 
     ::::u-page-card
@@ -195,7 +205,7 @@ Optimized by the most famous Vue framework. Docus gives you everything you need 
     Built-in navigation and [full-text search]{.text-primary}
 
     #description
-    Only focus on ordering your content, Docus handles the search modal and auto-generates the side navigation for you.
+    Only focus on ordering your content, TockDocs handles the search modal and auto-generates the side navigation for you.
     ::::
 
     ::::u-page-card
@@ -237,7 +247,7 @@ Optimized by the most famous Vue framework. Docus gives you everything you need 
     [Nuxt Image](https://image.nuxt.com) optimization
 
     #description
-    Docus automatically converts Markdown images to use `<NuxtImg>` .
+    TockDocs automatically converts Markdown images to use `<NuxtImg>` .
     ::::
 
     ::::u-page-card
@@ -333,7 +343,7 @@ Optimized by the most famous Vue framework. Docus gives you everything you need 
           icon: i-simple-icons-github
           size: lg
           target: _blank
-          to: https://github.com/nuxt-content/docus
+          to: https://github.com/taowang1993/tockdocs
           variant: outline
           ---
           View on GitHub
@@ -345,7 +355,7 @@ Optimized by the most famous Vue framework. Docus gives you everything you need 
     [Ready]{.text-primary} to start?
 
     #description
-    Explore all the features that make Docus the perfect documentation solution.
+    Explore all the features that make TockDocs the perfect documentation solution.
     ::::
 
 :::

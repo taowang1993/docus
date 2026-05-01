@@ -1,6 +1,6 @@
 id: platform
 title: Platform
-description: Core Docus platform documentation covering configuration, authoring, AI tooling, and deployment.
+description: Core TockDocs platform documentation covering configuration, authoring, AI tooling, and deployment.
 icon: i-lucide-layout-dashboard
 defaultLocale: en
 entry: getting-started/installation

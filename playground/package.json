@@ -1,11 +1,11 @@
 {
   "name": "playground",
   "scripts": {
-    "dev": "nuxt dev --extends docus",
-    "build": "nuxt build --extends docus"
+    "dev": "nuxt dev --extends tockdocs",
+    "build": "nuxt build --extends tockdocs"
   },
   "dependencies": {
-    "docus": "latest",
+    "tockdocs": "latest",
     "better-sqlite3": "^12.5.0",
     "nuxt": "^4.3.1"
   }

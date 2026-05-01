@@ -2,15 +2,15 @@
 import type { ContentNavigationItem, PageCollections } from '@nuxt/content'
 import * as nuxtUiLocales from '@nuxt/ui/locale'
 import { transformNavigation } from './utils/navigation'
-import { useDocusColorMode } from './composables/useDocusColorMode'
+import { useTockDocsColorMode } from './composables/useTockDocsColorMode'
 import { useSubNavigation } from './composables/useSubNavigation'
 
 const appConfig = useAppConfig()
 const { seo } = appConfig
-const { forced: forcedColorMode } = useDocusColorMode()
+const { forced: forcedColorMode } = useTockDocsColorMode()
 const site = useSiteConfig()
-const { locale, isEnabled } = useDocusI18n()
-const docs = useDocusDocs()
+const { locale, isEnabled } = useTockDocsI18n()
+const docs = useTockDocs()
 const { isEnabled: isAssistantEnabled, isResizing: isAssistantResizing, panelWidth: assistantPanelWidth, shouldPushContent } = useAssistant()
 const { open: contentSearchOpen } = useContentSearch()
 
@@ -20,7 +20,7 @@ const dir = computed(() => nuxtUiLocale.value.dir)
 const collectionName = computed(() => docs.collectionName.value)
 const faviconUrl = computed(() => appConfig.header?.logo?.favicon || '/favicon.svg')
 const faviconType = computed(() => /\.svg(?:[?#]|$)/i.test(faviconUrl.value) ? 'image/svg+xml' : 'image/x-icon')
-const themeAwareFavicons = useState('docus-theme-favicons', () => ({
+const themeAwareFavicons = useState('tockdocs-theme-favicons', () => ({
   dark: false,
   light: false,
 }))
@@ -124,7 +124,7 @@ function closeContentSearch() {
       :class="[
         'will-change-[margin-right]',
         isAssistantResizing ? 'transition-none' : 'transition-[margin-right] duration-200 ease-linear',
-        { 'docus-sub-header': subNavigationMode === 'header' },
+        { 'tockdocs-sub-header': subNavigationMode === 'header' },
       ]"
       :style="{ marginRight: shouldPushContent ? `${assistantPanelWidth}px` : '0' }"
     >
@@ -161,7 +161,7 @@ function closeContentSearch() {
 
 <style>
 @media (min-width: 1024px) {
-  .docus-sub-header {
+  .tockdocs-sub-header {
     --ui-header-height: 112px;
   }
 }

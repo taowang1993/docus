@@ -43,7 +43,7 @@ export interface UseSeoOptions {
 export function useSeo(options: UseSeoOptions) {
   const route = useRoute()
   const site = useSiteConfig()
-  const { locale, locales, isEnabled: isI18nEnabled, switchLocalePath } = useDocusI18n()
+  const { locale, locales, isEnabled: isI18nEnabled, switchLocalePath } = useTockDocsI18n()
 
   const title = computed(() => toValue(options.title))
   const description = computed(() => toValue(options.description))
