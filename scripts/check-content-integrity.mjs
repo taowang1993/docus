@@ -202,8 +202,12 @@ function analyzeSource(filePath) {
     }
 
     if (pendingComponentFence && isPropLikeLine) {
-      tokens.add(trimmed)
-      isGuarded = true
+      assert.ok(
+        pendingComponentFence.hasInlineProps,
+        `${filePath}:${pendingComponentFence.lineNumber}: component frontmatter is missing before a property-like line.`,
+      )
+      pendingComponentFence = null
+      continue
     }
 
     if (pendingComponentFence && trimmed) {
@@ -216,10 +220,6 @@ function analyzeSource(filePath) {
         continue
       }
 
-      if (trimmed) {
-        tokens.add(trimmed)
-        isGuarded = true
-      }
       continue
     }
 
@@ -240,6 +240,7 @@ function analyzeSource(filePath) {
       pendingComponentFence = {
         lineNumber: index + 1,
         hasBlankLine: false,
+        hasInlineProps: /\{/.test(trimmed),
       }
     }
   }
