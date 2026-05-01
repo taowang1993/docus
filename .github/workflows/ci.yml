@@ -55,4 +55,10 @@ jobs:
 
       - name: Publish CLI and Layer
         if: github.repository == 'taowang1993/tockdocs'
-        run: npx pkg-pr-new publish --compact './cli' './layer'
+        run: |
+          if [ "$GITHUB_REPOSITORY" != "taowang1993/tockdocs" ]; then
+            echo "Skipping pkg-pr-new publish outside taowang1993/tockdocs"
+            exit 0
+          fi
+
+          npx pkg-pr-new publish --compact './cli' './layer'
