@@ -54,10 +54,10 @@ jobs:
         working-directory: ./cli
 
       - name: Publish CLI and Layer
-        if: github.repository == 'taowang1993/tockdocs'
+        if: github.repository == 'nuxt-content/docus'
         run: |
-          if [ "$GITHUB_REPOSITORY" != "taowang1993/tockdocs" ]; then
-            echo "Skipping pkg-pr-new publish outside taowang1993/tockdocs"
+          if [ "$GITHUB_REPOSITORY" != "nuxt-content/docus" ]; then
+            echo "Skipping pkg-pr-new publish outside nuxt-content/docus"
             exit 0
           fi
 
