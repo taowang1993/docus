@@ -66,7 +66,7 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 Markdown files are formatted with Prettier in your editor.
 
 - Save Markdown files in VS Code to auto-format them.
-- Avoid repo-wide Markdown formatting commands or scripts; they can reflow ASCII diagrams.
+- Avoid repo-wide Markdown formatting commands or scripts; they can reflow ASCII diagrams. If you intentionally change the hand-aligned diagrams, run `pnpm run check:diagrams` to verify them.
 
 ## Deployment
 
@@ -113,7 +113,7 @@ CI (`.github/workflows/ci.yml`) installs dependencies, prepares Nuxt types, lint
                 │                               │
         ┌───────▼────────┐              ┌───────▼────────┐
         │   layer/       │              │    cli/        │
-        │ TockDocs Nuxt │              │ create-tockdocs │
+        │ TockDocs Nuxt  │              │ create-tockdocs│
         │ layer/product  │              │ scaffolder     │
         └───────┬────────┘              └───────┬────────┘
                 │                              uses
