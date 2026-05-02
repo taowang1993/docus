@@ -7,7 +7,7 @@ import { formatOgDescription } from '../app/utils/ogImage'
 import { inferSiteURL, getPackageJsonMetadata } from '../utils/meta'
 import { getGitBranch, getGitEnv, getLocalGitInfo } from '../utils/git'
 import { landingPageExists } from '../utils/pages'
-import { getTockDocsContentConfiguration } from '../utils/knowledge-bases'
+import { getTockDocsContentConfiguration, type TockDocsContentConfiguration } from '../utils/knowledge-bases'
 
 const log = logger.withTag('TockDocs')
 
@@ -64,16 +64,18 @@ export default defineNuxtModule({
       branch: getGitBranch(),
     })
 
-    if (!landingPageExists(dir) && contentConfiguration.mode === 'kb' && contentConfiguration.hasSiteContent) {
-      const landingSeo = readLandingSeo(dir)
-      const landingTitle = landingSeo?.title || nuxt.options.appConfig.seo?.title || siteName
-      const landingDescription = landingSeo?.description || nuxt.options.appConfig.seo?.description || ''
-      addPrerenderRoutes([
-        buildOgImagePath('Landing', {
-          title: landingTitle,
-          description: formatOgDescription(landingTitle, landingDescription),
-        }),
-      ])
+    const landingOgImageRoute = getLandingOgImagePrerenderRoute({
+      rootDir: dir,
+      contentConfiguration,
+      siteName,
+      seo: {
+        title: nuxt.options.appConfig.seo?.title,
+        description: nuxt.options.appConfig.seo?.description,
+      },
+    })
+
+    if (landingOgImageRoute) {
+      addPrerenderRoutes([landingOgImageRoute])
     }
 
     const forcedColorMode = (nuxt.options.appConfig.tockdocs as Record<string, unknown>)?.colorMode as string | undefined
@@ -155,6 +157,33 @@ export default defineNuxtModule({
     }
   },
 })
+
+type LandingOgImagePrerenderOptions = {
+  rootDir: string
+  contentConfiguration: Pick<TockDocsContentConfiguration, 'mode' | 'hasSiteContent'>
+  siteName: string
+  seo?: { title?: string, description?: string }
+}
+
+export function getLandingOgImagePrerenderRoute({
+  rootDir,
+  contentConfiguration,
+  siteName,
+  seo,
+}: LandingOgImagePrerenderOptions): string | null {
+  if (landingPageExists(rootDir) || contentConfiguration.mode !== 'kb' || !contentConfiguration.hasSiteContent) {
+    return null
+  }
+
+  const landingSeo = readLandingSeo(rootDir)
+  const landingTitle = landingSeo?.title || seo?.title || siteName
+  const landingDescription = landingSeo?.description || seo?.description || ''
+
+  return buildOgImagePath('Landing', {
+    title: landingTitle,
+    description: formatOgDescription(landingTitle, landingDescription),
+  })
+}
 
 function readLandingSeo(rootDir: string): { title?: string, description?: string } | null {
   const landingContentPath = join(rootDir, 'content', 'site', 'index.md')

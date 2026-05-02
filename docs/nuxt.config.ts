@@ -1,4 +1,6 @@
-const siteUrl = process.env.NUXT_SITE_URL || 'https://tockdocs.dev'
+import { trimTrailingSlash } from '../layer/utils/meta'
+
+const siteUrl = trimTrailingSlash(process.env.NUXT_SITE_URL || 'https://tockdocs.dev')
 
 export default defineNuxtConfig({
   extends: ['tockdocs'],

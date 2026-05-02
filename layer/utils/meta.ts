@@ -2,6 +2,10 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { withHttps } from 'ufo'
 
+export function trimTrailingSlash(url: string) {
+  return url.replace(/\/+$/, '')
+}
+
 export function inferSiteURL() {
   // https://github.com/unjs/std-env/issues/59
   const url = (
@@ -15,7 +19,7 @@ export function inferSiteURL() {
     || process.env.CF_PAGES_URL // Cloudflare Pages
   )
 
-  return url ? withHttps(url) : undefined
+  return url ? trimTrailingSlash(withHttps(url)) : undefined
 }
 
 export async function getPackageJsonMetadata(dir: string) {

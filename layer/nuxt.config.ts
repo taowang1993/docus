@@ -1,11 +1,12 @@
 import { join } from 'node:path'
 import { extendViteConfig, createResolver, useNuxt } from '@nuxt/kit'
 import { getKnowledgeBaseEntrySlug } from './utils/docs'
+import { trimTrailingSlash } from './utils/meta'
 import { getTockDocsContentConfiguration } from './utils/knowledge-bases'
 
 const { resolve } = createResolver(import.meta.url)
 const DevPort = 4987
-const DevSiteUrl = process.env.NUXT_SITE_URL || `http://127.0.0.1:${DevPort}`
+const DevSiteUrl = trimTrailingSlash(process.env.NUXT_SITE_URL || `http://127.0.0.1:${DevPort}`)
 
 type TockDocsI18nOptions = { locales?: Array<string | { code: string }> }
 

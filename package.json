@@ -19,6 +19,7 @@
     "lint": "eslint .",
     "check:diagrams": "node scripts/check-ascii-diagrams.mjs",
     "check:content-integrity": "node scripts/check-content-integrity.mjs",
+    "test:regression": "tsx --test layer/modules/config.test.ts",
     "precommit": "pnpm run check:diagrams && pnpm run lint && pnpm run docs:build",
     "typecheck": "node scripts/with-env.mjs nuxt typecheck layer",
     "verify": "pnpm run check:diagrams && pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
