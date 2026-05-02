@@ -34,7 +34,7 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 | ----------------------------- | ---------------------------- |
 | NUXT_PORT                     | Local Dev Port               |
 | NUXT_APP_BASE_URL             | Deployment Base Path         |
-| NUXT_SITE_URL                 | Canonical Site URL           |
+| NUXT_SITE_URL                 | Canonical Site URL (must be origin-only, no trailing slash) |
 | AI_PROVIDER                   | Assistant Provider           |
 | AI_MODEL                      | Model Override               |
 | AI_GATEWAY_API_KEY            | Vercel AI Gateway            |
@@ -73,7 +73,7 @@ Important deployment facts:
 - Verification command: `pnpm run verify`
 - Site config is defined in `docs/nuxt.config.ts`
 - Nitro prerendering, sitemap generation, robots output, OG image generation, `llms.txt` support, and the Vercel `/tmp/contents.sqlite` setup are configured through the layer
-- Set `NUXT_SITE_URL` to the public deployment URL for the site (for example `https://tockdocs-pi-nine.vercel.app`)
+- Set `NUXT_SITE_URL` to the public deployment origin for the site (for example `https://tockdocs-pi-nine.vercel.app`) and do not include a trailing slash; `nuxt-llms` concatenates `/llms-full.txt` directly from this value
 - Keep `NUXT_APP_BASE_URL=/` for the site root unless the site is hosted under a subpath
 
 ### Nuxt Studio
