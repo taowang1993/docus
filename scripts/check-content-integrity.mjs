@@ -182,6 +182,15 @@ function analyzeSource(filePath) {
     assert.ok(!/^#{1,6}\s+:{2,}[a-z0-9][\w-]*/i.test(trimmed), `${filePath}:${index + 1}: component fence was converted into a heading.`)
     assert.ok(!/^#{1,6}\s+#(?:title|description|header|footer|default|code)$/.test(trimmed), `${filePath}:${index + 1}: slot marker was converted into a heading.`)
     assert.notStrictEqual(trimmed, 'target: \\_blank', `${filePath}:${index + 1}: escaped _blank leaked into component props.`)
+    assert.ok(!/https?:\/\/[^)\s]+\/(?:_og|_ipx)\//i.test(trimmed), `${filePath}:${index + 1}: same-site generated asset URLs should use relative paths.`)
+
+    const componentFenceMatch = trimmed.match(/^:{2,}[a-z0-9][\w-]*(?:\{[^}\n]*\})?/i)
+    if (componentFenceMatch) {
+      assert.ok(
+        !trimmed.slice(componentFenceMatch[0].length).trim(),
+        `${filePath}:${index + 1}: component fence has trailing content on the same line.`,
+      )
+    }
 
     if (pendingComponentFence && !trimmed) {
       pendingComponentFence.hasBlankLine = true
@@ -228,7 +237,7 @@ function analyzeSource(filePath) {
     }
 
     const isSlotMarker = /^#(?:title|description|header|footer|default)$/.test(trimmed)
-    const isComponentFence = /^:{2,}[a-z0-9][\w-]*/i.test(trimmed)
+    const isComponentFence = Boolean(componentFenceMatch)
 
     if (isSlotMarker) {
       tokens.add(trimmed)
