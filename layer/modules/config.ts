@@ -1,9 +1,12 @@
-import { createResolver, defineNuxtModule, logger } from '@nuxt/kit'
+import { addPrerenderRoutes, createResolver, defineNuxtModule, logger } from '@nuxt/kit'
 import { defu } from 'defu'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { parse as parseYaml } from 'yaml'
+import { formatOgDescription } from '../app/utils/ogImage'
 import { inferSiteURL, getPackageJsonMetadata } from '../utils/meta'
 import { getGitBranch, getGitEnv, getLocalGitInfo } from '../utils/git'
+import { landingPageExists } from '../utils/pages'
 import { getTockDocsContentConfiguration } from '../utils/knowledge-bases'
 
 const log = logger.withTag('TockDocs')
@@ -60,6 +63,18 @@ export default defineNuxtModule({
       url: gitInfo?.url,
       branch: getGitBranch(),
     })
+
+    if (!landingPageExists(dir) && contentConfiguration.mode === 'kb' && contentConfiguration.hasSiteContent) {
+      const landingSeo = readLandingSeo(dir)
+      const landingTitle = landingSeo?.title || nuxt.options.appConfig.seo?.title || siteName
+      const landingDescription = landingSeo?.description || nuxt.options.appConfig.seo?.description || ''
+      addPrerenderRoutes([
+        buildOgImagePath('Landing', {
+          title: landingTitle,
+          description: formatOgDescription(landingTitle, landingDescription),
+        }),
+      ])
+    }
 
     const forcedColorMode = (nuxt.options.appConfig.tockdocs as Record<string, unknown>)?.colorMode as string | undefined
     if (forcedColorMode === 'light' || forcedColorMode === 'dark') {
@@ -140,3 +155,86 @@ export default defineNuxtModule({
     }
   },
 })
+
+function readLandingSeo(rootDir: string): { title?: string, description?: string } | null {
+  const landingContentPath = join(rootDir, 'content', 'site', 'index.md')
+
+  if (!existsSync(landingContentPath)) {
+    return null
+  }
+
+  const rawContent = readFileSync(landingContentPath, 'utf8').replace(/\r/g, '')
+  const frontmatterMatch = rawContent.match(/^---\n([\s\S]*?)\n---/)
+  if (!frontmatterMatch?.[1]) {
+    return null
+  }
+
+  try {
+    const frontmatter = parseYaml(frontmatterMatch[1]) as Record<string, unknown> | null
+    const seo = frontmatter?.seo as Record<string, unknown> | undefined
+
+    const title = typeof seo?.title === 'string'
+      ? seo.title
+      : typeof frontmatter?.title === 'string'
+        ? frontmatter.title
+        : undefined
+
+    const description = typeof seo?.description === 'string'
+      ? seo.description
+      : typeof frontmatter?.description === 'string'
+        ? frontmatter.description
+        : undefined
+
+    if (!title && !description) {
+      return null
+    }
+
+    return { title, description }
+  }
+  catch {
+    return null
+  }
+}
+
+function buildOgImagePath(component: string, options: { title?: string, description?: string, headline?: string }): string {
+  const params = [`c_${encodeOgImageValue(component)}`]
+
+  if (options.title) {
+    params.push(`title_${encodeOgImageValue(options.title)}`)
+  }
+
+  if (options.description) {
+    params.push(`description_${encodeOgImageValue(options.description)}`)
+  }
+
+  if (options.headline) {
+    params.push(`headline_${encodeOgImageValue(options.headline)}`)
+  }
+
+  return `/_og/s/${params.join(',')}.png`
+}
+
+function hasNonAscii(value: string): boolean {
+  for (const char of value) {
+    if ((char.codePointAt(0) || 0) > 0x7F) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function encodeOgImageValue(value: string): string {
+  if (hasNonAscii(value)) {
+    return `~${Buffer.from(value, 'utf8').toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '~')}`
+  }
+
+  const escaped = value.startsWith('~') ? `~${value}` : value
+  const encoded = encodeURIComponent(escaped.replace(/_/g, '__')).replace(/%20/g, '+')
+
+  if (encoded.includes('%')) {
+    return `~${Buffer.from(value, 'utf8').toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '~')}`
+  }
+
+  return encoded
+}

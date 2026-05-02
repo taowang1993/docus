@@ -2,15 +2,49 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 const docsContentDir = resolve(repoRoot, 'docs/content')
-const docsOutputDir = resolve(repoRoot, 'docs/.output/public')
-const docsServerEntry = resolve(repoRoot, 'docs/.output/server/index.mjs')
+const docsBuildOutputs = [
+  {
+    label: 'Nuxt build output',
+    publicDir: resolve(repoRoot, 'docs/.output/public'),
+    serverEntry: resolve(repoRoot, 'docs/.output/server/index.mjs'),
+    serverKind: 'node-entry',
+  },
+  {
+    label: 'Vercel build output',
+    publicDir: resolve(repoRoot, 'docs/.vercel/output/static'),
+    serverEntry: resolve(repoRoot, 'docs/.vercel/output/functions/__fallback.func/index.mjs'),
+    serverKind: 'node-listener',
+  },
+]
+
+function resolveBuiltDocsOutput() {
+  const preferredOutputs = process.env.VERCEL
+    ? [docsBuildOutputs[1], docsBuildOutputs[0]]
+    : docsBuildOutputs
+
+  for (const output of preferredOutputs) {
+    if (existsSync(output.publicDir)) {
+      return output
+    }
+  }
+
+  return null
+}
+
+const docsBuildOutput = resolveBuiltDocsOutput()
 
 assert.ok(existsSync(docsContentDir), `Missing docs content directory: ${docsContentDir}`)
-assert.ok(existsSync(docsOutputDir), `Missing built docs output: ${docsOutputDir}. Run the docs build before this check.`)
+assert.ok(
+  docsBuildOutput,
+  `Missing built docs output: ${docsBuildOutputs.map(output => output.publicDir).join(' or ')}. Run the docs build before this check.`,
+)
+
+const docsOutputDir = docsBuildOutput.publicDir
+const docsServerEntry = docsBuildOutput.serverEntry
 
 function walkFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -376,21 +410,37 @@ async function getDocsServer() {
     return activeDocsServer
   }
 
+  assert.ok(docsServerEntry, `Missing built docs server entry for ${docsOutputDir}.`)
   assert.ok(existsSync(docsServerEntry), `Missing built docs server entry: ${docsServerEntry}`)
 
   const port = 4100 + Math.floor(Math.random() * 1000)
   const baseUrl = `http://127.0.0.1:${port}`
-  const child = spawn(process.execPath, [docsServerEntry], {
-    cwd: repoRoot,
-    stdio: 'ignore',
-    env: {
-      ...process.env,
-      HOST: '127.0.0.1',
-      PORT: String(port),
-      NITRO_HOST: '127.0.0.1',
-      NITRO_PORT: String(port),
-    },
-  })
+  const child = docsBuildOutput.serverKind === 'node-listener'
+    ? spawn(process.execPath, ['--input-type=module', '--eval', `import http from 'node:http'
+import listener from ${JSON.stringify(pathToFileURL(docsServerEntry).href)}
+http.createServer(listener).listen(${port}, '127.0.0.1')
+`], {
+        cwd: repoRoot,
+        stdio: 'ignore',
+        env: {
+          ...process.env,
+          HOST: '127.0.0.1',
+          PORT: String(port),
+          NITRO_HOST: '127.0.0.1',
+          NITRO_PORT: String(port),
+        },
+      })
+    : spawn(process.execPath, [docsServerEntry], {
+        cwd: repoRoot,
+        stdio: 'ignore',
+        env: {
+          ...process.env,
+          HOST: '127.0.0.1',
+          PORT: String(port),
+          NITRO_HOST: '127.0.0.1',
+          NITRO_PORT: String(port),
+        },
+      })
 
   await waitForServer(baseUrl)
   activeDocsServer = { child, baseUrl }
