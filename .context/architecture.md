@@ -112,6 +112,7 @@ The layer also sets:
 - the TockDocs dev server defaults (`4987`)
 - Content markdown highlighting
 - robots, sitemap, prerender, OG image, and llms defaults
+- `nuxt-og-image` in `zeroRuntime` mode so OG assets are generated at build time
 - icon collections and i18n defaults
 
 `layer/modules/config.ts` is especially important because it:
@@ -223,6 +224,8 @@ The playground is a thin test harness for layer development. It disables i18n ex
 
 `.starters/default` and `.starters/i18n` are the generated project baselines used by `create-tockdocs`.
 
+Both starters currently scaffold **legacy mode** projects. Knowledge-base mode is opt-in and is enabled later by adding `content/<kb>/kb.yml` files (plus optional `content/site/` landing content).
+
 ## Request and Data Flow
 
 ### Docs page rendering
@@ -321,4 +324,6 @@ User → AssistantPanel.vue → /__tockdocs__/assistant → AI provider resolver
 - Default local dev port is `4987`.
 - `scripts/run-dev.mjs` and `scripts/with-env.mjs` load `.env` / `.env.local` before invoking Nuxt commands.
 - In development, the assistant UI is enabled automatically; in production it requires explicit enablement or valid provider credentials.
+- OG images are generated in `zeroRuntime` mode. Inline `/_og/...` examples embedded in docs content must therefore point to prerendered image files that actually exist in the build output; in KB mode their encoded `p_` route paths must match `/docs/<kb>/<locale>/...` routes.
+- Consumer apps that render Takumi-based OG images in development should include `@takumi-rs/core` in the consumer app dependencies because the OG worker resolves that module from the app root.
 - CI validates prepare, lint, typecheck, and package build/publish readiness from GitHub Actions.

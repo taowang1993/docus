@@ -1,4 +1,4 @@
-[![tockdocs](https://tockdocs.dev/_og/s/c_Landing,title_Write+beautiful+docs+with+Markdown,description_Ship+fast+flexible+and+SEO-optimized+documentation+with+beautiful+design+out+of+the+box.+TockDocs+brings+together+the+best+of+the+Nuxt+ecosystem.+Powered+by+Nuxt+UI.,p_Ii9lbiI.png)](https://tockdocs.dev)
+[![tockdocs](https://tockdocs.dev/_og/s/c_Landing,title_TockDocs,description_An+AI-powered+Knowledge+Management+System.png)](https://tockdocs.dev)
 
 # TockDocs
 

@@ -151,12 +151,31 @@ function createCodeFenceState(line) {
   return match ? match[1][0].repeat(match[1].length) : null
 }
 
+function decodeOgRoutePath(encodedPath) {
+  const padded = encodedPath.padEnd(Math.ceil(encodedPath.length / 4) * 4, '=')
+  return JSON.parse(Buffer.from(padded, 'base64').toString('utf8'))
+}
+
+function extractOgImages(line) {
+  return [...line.matchAll(/(\/_og\/s\/[^)\s]+\.png)/gi)].map((match) => {
+    const imagePath = match[1]
+    const encodedRoutePath = imagePath.match(/,p_([\w+/-]+)\.png/i)?.[1]
+
+    return {
+      imagePath,
+      routePath: encodedRoutePath ? decodeOgRoutePath(encodedRoutePath) : null,
+    }
+  })
+}
+
 function analyzeSource(filePath) {
   const rawSource = readFileSync(filePath, 'utf8').replace(/\r/g, '')
   const allLines = rawSource.split('\n')
   const { bodyLines, frontmatter } = stripPageFrontmatter(allLines)
 
   const tokens = new Set()
+  const ogImagePaths = new Set()
+  const ogRoutePaths = new Set()
   let isGuarded = false
   let codeFence = null
   let pendingComponentFence = null
@@ -183,6 +202,13 @@ function analyzeSource(filePath) {
     assert.ok(!/^#{1,6}\s+#(?:title|description|header|footer|default|code)$/.test(trimmed), `${filePath}:${index + 1}: slot marker was converted into a heading.`)
     assert.notStrictEqual(trimmed, 'target: \\_blank', `${filePath}:${index + 1}: escaped _blank leaked into component props.`)
     assert.ok(!/https?:\/\/[^)\s]+\/(?:_og|_ipx)\//i.test(trimmed), `${filePath}:${index + 1}: same-site generated asset URLs should use relative paths.`)
+
+    for (const { imagePath, routePath } of extractOgImages(trimmed)) {
+      ogImagePaths.add(imagePath)
+      if (routePath) {
+        ogRoutePaths.add(routePath)
+      }
+    }
 
     const componentFenceMatch = trimmed.match(/^:{2,}[a-z0-9][\w-]*(?:\{[^}\n]*\})?/i)
     if (componentFenceMatch) {
@@ -258,6 +284,8 @@ function analyzeSource(filePath) {
     filePath,
     isGuarded,
     tokens: [...tokens],
+    ogImagePaths: [...ogImagePaths],
+    ogRoutePaths: [...ogRoutePaths],
     frontmatter,
   }
 }
@@ -332,11 +360,27 @@ async function renderRouteViaServer(routePath) {
 
 const knowledgeBaseConfigs = getKnowledgeBaseConfigs()
 const markdownFiles = walkFiles(docsContentDir)
-const guardedPages = markdownFiles
-  .map(analyzeSource)
-  .filter(page => page.isGuarded)
+const analyzedPages = markdownFiles.map(analyzeSource)
+const validRoutePaths = new Set(markdownFiles.map(filePath => deriveRoutePath(filePath, knowledgeBaseConfigs)))
+const guardedPages = analyzedPages.filter(page => page.isGuarded)
 
 assert.ok(guardedPages.length > 0, 'No guarded MDC pages were detected under docs/content.')
+
+for (const page of analyzedPages) {
+  for (const ogImagePath of page.ogImagePaths) {
+    assert.ok(
+      existsSync(join(docsOutputDir, ogImagePath.replace(/^\//, ''))),
+      `${page.filePath}: embedded OG image was not prerendered: ${ogImagePath}. In zeroRuntime mode, inline OG examples must reference generated image files that exist in the build output.`,
+    )
+  }
+
+  for (const ogRoutePath of page.ogRoutePaths) {
+    assert.ok(
+      validRoutePaths.has(ogRoutePath),
+      `${page.filePath}: embedded OG image targets missing route ${ogRoutePath}. Update the encoded p_ path for the current content architecture.`,
+    )
+  }
+}
 
 try {
   for (const page of guardedPages) {
