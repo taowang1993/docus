@@ -168,6 +168,43 @@ function extractOgImages(line) {
   })
 }
 
+function collapseWhitespace(text) {
+  return text.trim().split(/\s+/u).join(' ')
+}
+
+function normalizeInlineMarkdown(text) {
+  return collapseWhitespace(text
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[*_~]/g, '')
+    .replace(/\\(.)/g, '$1'))
+}
+
+function decodeHtmlEntities(text) {
+  return text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, '\'')
+}
+
+function extractVisibleText(html) {
+  return collapseWhitespace(decodeHtmlEntities(html)
+    .replace(/<[^>]+>/g, ' '))
+}
+
+function hasTrailingInlineAdmonition(text) {
+  if (!(text.startsWith('- ') || text.startsWith('* '))) {
+    return false
+  }
+
+  return [' :tip[', ' :note[', ' :warning[', ' :caution['].some(token => text.includes(token))
+}
+
 function analyzeSource(filePath) {
   const rawSource = readFileSync(filePath, 'utf8').replace(/\r/g, '')
   const allLines = rawSource.split('\n')
@@ -176,6 +213,7 @@ function analyzeSource(filePath) {
   const tokens = new Set()
   const ogImagePaths = new Set()
   const ogRoutePaths = new Set()
+  const headings = new Set()
   let isGuarded = false
   let codeFence = null
   let pendingComponentFence = null
@@ -200,6 +238,8 @@ function analyzeSource(filePath) {
     assert.notStrictEqual(trimmed, '## ::::u-page-card', `${filePath}: component fence was converted into a heading.`)
     assert.ok(!/^#{1,6}\s+:{2,}[a-z0-9][\w-]*/i.test(trimmed), `${filePath}:${index + 1}: component fence was converted into a heading.`)
     assert.ok(!/^#{1,6}\s+#(?:title|description|header|footer|default|code)$/.test(trimmed), `${filePath}:${index + 1}: slot marker was converted into a heading.`)
+    assert.ok(!/^\\:{2,}/.test(trimmed), `${filePath}:${index + 1}: escaped component fence leaked into prose.`)
+    assert.ok(!hasTrailingInlineAdmonition(trimmed), `${filePath}:${index + 1}: admonition shorthand should be on its own line, not appended to list content.`)
     assert.notStrictEqual(trimmed, 'target: \\_blank', `${filePath}:${index + 1}: escaped _blank leaked into component props.`)
     assert.ok(!/https?:\/\/[^)\s]+\/(?:_og|_ipx)\//i.test(trimmed), `${filePath}:${index + 1}: same-site generated asset URLs should use relative paths.`)
 
@@ -265,6 +305,13 @@ function analyzeSource(filePath) {
     const isSlotMarker = /^#(?:title|description|header|footer|default)$/.test(trimmed)
     const isComponentFence = Boolean(componentFenceMatch)
 
+    if (/^#{2,6} /.test(trimmed)) {
+      const normalizedHeading = normalizeInlineMarkdown(trimmed.replace(/^#{2,6} /, ''))
+      if (normalizedHeading) {
+        headings.add(normalizedHeading)
+      }
+    }
+
     if (isSlotMarker) {
       tokens.add(trimmed)
       isGuarded = true
@@ -283,6 +330,7 @@ function analyzeSource(filePath) {
   return {
     filePath,
     isGuarded,
+    headings: [...headings],
     tokens: [...tokens],
     ogImagePaths: [...ogImagePaths],
     ogRoutePaths: [...ogRoutePaths],
@@ -390,11 +438,19 @@ try {
       ? readFileSync(builtHtmlPath, 'utf8')
       : await renderRouteViaServer(routePath)
     const renderedHtml = stripNonVisibleHtml(renderedSource)
+    const renderedVisibleText = extractVisibleText(renderedHtml)
 
     for (const token of page.tokens) {
       assert.ok(
         !renderedHtml.includes(token),
         `${page.filePath}: raw MDC token leaked into rendered HTML for ${routePath}: ${token}`,
+      )
+    }
+
+    for (const heading of page.headings) {
+      assert.ok(
+        renderedVisibleText.includes(heading),
+        `${page.filePath}: rendered output for ${routePath} is missing heading text from the source: ${heading}`,
       )
     }
   }

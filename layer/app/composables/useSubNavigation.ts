@@ -15,9 +15,18 @@ export function useSubNavigation(providedNavigation?: Ref<ContentNavigationItem[
 
   const isDocsPage = computed(() => route.meta.layout === 'docs')
 
+  const previewSubNavigationMode = computed(() => {
+    if (!isDocsPage.value) return undefined
+
+    const rawValue = route.query.__previewSubnav
+    const value = Array.isArray(rawValue) ? rawValue[0] : rawValue
+
+    return value === 'header' || value === 'aside' ? value : undefined
+  })
+
   const subNavigationMode = computed(() => {
     if (!isDocsPage.value) return undefined
-    return (appConfig.navigation as { sub?: 'header' | 'aside' } | undefined)?.sub
+    return previewSubNavigationMode.value ?? (appConfig.navigation as { sub?: 'header' | 'aside' } | undefined)?.sub
   })
 
   const currentSection = computed(() => {
