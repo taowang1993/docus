@@ -2,7 +2,9 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const ports = [4987, 3000, 3001]
+// Only clean up the root dev port so we do not terminate sibling projects
+// that intentionally use 3000 or 3001.
+const ports = [4987]
 const processPatterns = [
   'scripts/run-dev.mjs docs',
   'scripts/run-dev.mjs playground',

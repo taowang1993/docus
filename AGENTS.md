@@ -61,6 +61,8 @@ The repo loads `.env` / `.env.local` through `scripts/run-dev.mjs` and `scripts/
 | STUDIO_GITHUB_MODERATORS      | Nuxt Studio Access Allowlist |
 | NUXT_PUBLIC_ASSISTANT_ENABLED | Force Enable Assistant       |
 
+The local dev launcher exits if port 4987 is occupied; it does not fall back to 3000 or 3001.
+
 ## Deployment
 
 ### Docs Site

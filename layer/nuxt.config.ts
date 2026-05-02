@@ -124,6 +124,11 @@ export default defineNuxtConfig({
       vercel: '2025-07-14',
     },
   },
+  vite: {
+    server: {
+      strictPort: true,
+    },
+  },
   hooks: {
     'nitro:config'(nitroConfig) {
       const nuxt = useNuxt()

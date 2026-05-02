@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { isPortFree } from './dev-port.mjs'
 
 for (const envPath of [resolve('.env'), resolve('.env.local')]) {
   if (existsSync(envPath)) {
@@ -26,6 +27,12 @@ const env = {
 
 if (!env.NUXT_SITE_URL) {
   delete env.NUXT_SITE_URL
+}
+
+if (!(await isPortFree(port, host))) {
+  throw new Error(
+    `Port ${port} is already in use on host "${host}". Stop the process using ${port} and rerun TockDocs; this launcher will not fall back to 3000 or 3001.`,
+  )
 }
 
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
