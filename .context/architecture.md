@@ -87,6 +87,8 @@ Root scripts coordinate common workflows:
 - `pnpm run docs:build` → runs source MDC lint, builds the docs app while extending `../layer`, then runs the rendered-output content integrity smoke test
 - `pnpm run verify` → prepare + lint + typecheck + docs build
 
+Docs validation is intentionally two-layered: source MDC lint fails fast on malformed `.md` / `.mdc`, while `check:content-integrity` remains as the rendered-output backstop.
+
 ### 2. Product layer (`layer/`)
 
 `layer/nuxt.config.ts` is the composition root for the TockDocs product.
