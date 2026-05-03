@@ -6,15 +6,16 @@ const { name: siteName } = useSiteConfig()
 const primaryColor = appConfig.ui?.colors?.primary ?? 'emerald'
 const logoPath = appConfig.header?.logo?.dark || appConfig.header?.logo?.light
 
-const logoSvg = await fetchLogoSvg(logoPath)
+const logoDataUrl = await fetchLogoDataUrl(logoPath)
 
-async function fetchLogoSvg(path?: string): Promise<string> {
+async function fetchLogoDataUrl(path?: string): Promise<string> {
   if (!path) return ''
   try {
     const { url: siteUrl } = useSiteConfig()
     const url = path.startsWith('http') ? path : `${siteUrl}${path}`
     const svg = await $fetch<string>(url, { responseType: 'text' })
-    return svg.replace('<svg', '<svg width="48" height="48"')
+    const sizedSvg = svg.replace('<svg', '<svg width="48" height="48"')
+    return `data:image/svg+xml;base64,${Buffer.from(sizedSvg).toString('base64')}`
   }
   catch {
     return ''
@@ -31,14 +32,14 @@ async function fetchLogoSvg(path?: string): Promise<string> {
 
     <div class="flex-1 flex flex-col justify-center w-full">
       <div
-        v-if="logoSvg"
+        v-if="logoDataUrl"
         class="flex justify-center mb-8"
       >
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div
+        <img
           class="w-[48px] h-[48px]"
-          v-html="logoSvg"
-        />
+          :src="logoDataUrl"
+          alt=""
+        >
       </div>
       <div
         v-if="title"

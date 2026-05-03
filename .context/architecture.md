@@ -82,7 +82,9 @@ Root scripts coordinate common workflows:
 
 - `pnpm run dev` → runs the docs site in dev mode
 - `pnpm run dev:prepare` → prepares layer, docs, and playground Nuxt types
-- `pnpm run docs:build` → builds the docs app while extending `../layer`
+- `pnpm run check:mdc-source` → parses all `docs/content/**/*.md{,c}` files with the real MDC runtime before the build
+- `pnpm run check:mdc-source:staged` → validates staged new/modified docs content files during pre-commit
+- `pnpm run docs:build` → runs source MDC lint, builds the docs app while extending `../layer`, then runs the rendered-output content integrity smoke test
 - `pnpm run verify` → prepare + lint + typecheck + docs build
 
 ### 2. Product layer (`layer/`)
