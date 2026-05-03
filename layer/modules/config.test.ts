@@ -4,8 +4,8 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
-import { getLandingOgImagePrerenderRoute } from './config.ts'
-import { trimTrailingSlash } from '../utils/meta.ts'
+import { getLandingOgImagePrerenderRoute } from './config'
+import { trimTrailingSlash } from '../utils/meta'
 
 test('prerenders the landing OG image from site content on KB builds', async () => {
   const rootDir = await mkdtemp(join(tmpdir(), 'tockdocs-og-'))

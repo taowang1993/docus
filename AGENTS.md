@@ -199,6 +199,7 @@ TockDocs is organized as a **layered monorepo**:
 
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes unless the user explicitly asks for it.
 - Before every commit, run `pnpm run precommit`. The repo installs a versioned Git pre-commit hook from `.githooks/pre-commit`; do not bypass it.
+- Before pushing or updating a PR, run the CI-equivalent checks locally: `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm --dir cli run build`.
 - Keep Markdown edits targeted. Do not run repo-wide Markdown formatting commands that can reflow ASCII diagrams; `pnpm run check:diagrams` verifies those snapshots.
 - Knowledge-base changes are route + content changes. Keep `docs/content/<kb>/kb.yml`, localized content paths, and landing/docs links aligned with the public `/docs/<kb>/<locale>/...` routes.
 - When opening or updating a PR, use `.github/PR.md` as the source template. If it is missing, copy the current draft from `.github/workflows/PR.md` first.
