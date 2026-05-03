@@ -49,6 +49,8 @@ Those files build the runtime KB metadata that is exposed through `runtimeConfig
   - fallback `docs` collection when i18n is disabled
   - landing collections for root pages when needed
 
+`layer/content.config.ts` also declares an optional `config` JSON field on docs collections so Mermaid frontmatter overrides are parsed as objects.
+
 ### Routing
 
 `layer/modules/routing.ts` swaps routes based on the content mode:
@@ -104,6 +106,7 @@ It wires in:
 - upstream Nuxt modules:
   - `@nuxt/ui`
   - `@nuxt/content`
+  - `@barzhsieh/nuxt-content-mermaid`
   - `@nuxt/image`
   - `@nuxtjs/robots`
   - `@nuxtjs/mcp-toolkit`
@@ -211,6 +214,7 @@ The official site extends `tockdocs` in `docs/nuxt.config.ts` and adds:
 - Nuxt Skill Hub integration
 - Nuxt Studio integration
 - docs-specific app config and content
+- Mermaid rendering hoisted into the layer via `@barzhsieh/nuxt-content-mermaid`
 - MCP browser redirect settings for the public docs site
 
 The docs content currently includes two KBs:
@@ -235,12 +239,13 @@ Both starters currently scaffold **legacy mode** projects. Knowledge-base mode i
 ### Docs page rendering
 
 1. a consumer app extends `tockdocs`
-2. TockDocs modules register config, routes, CSS, skills, and assistant runtime pieces
+2. TockDocs modules register config, routes, CSS, skills, assistant runtime pieces, and layer-wide Mermaid rendering via `@barzhsieh/nuxt-content-mermaid`
 3. `layer/modules/config.ts` resolves KB mode, locale filters, and runtime `tockdocs` metadata
-4. `layer/content.config.ts` creates the correct Nuxt Content collections
-5. `useTockDocs()` derives the active KB, locale, collection name, and route-specific home path
-6. navigation, TOC, SEO, OG image metadata, and edit/report links are derived from content + app config
-7. the docs layout renders header, left nav, page body, and right TOC
+4. `layer/content.config.ts` creates the correct Nuxt Content collections and exposes the optional `config` field needed by Mermaid frontmatter overrides
+5. `@barzhsieh/nuxt-content-mermaid` rewrites top-level `mermaid` fences to `<Mermaid>` components during `content:file:beforeParse`
+6. `useTockDocs()` derives the active KB, locale, collection name, and route-specific home path
+7. navigation, TOC, SEO, OG image metadata, and edit/report links are derived from content + app config
+8. the docs layout renders header, left nav, page body, and right TOC
 
 ### Assistant grounding
 
@@ -288,7 +293,7 @@ content/<kb>/kb.yml
         ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ Nuxt modules                                                                 │
-│ config · routing · markdown-rewrite · skills · css · assistant               │
+│ config · routing · markdown-rewrite · skills · css · assistant · mermaid    │
 └───────────────┬───────────────────────────────┬──────────────────────────────┘
                 │                               │
                 │ registers                     │ exposes

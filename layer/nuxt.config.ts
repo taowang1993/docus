@@ -27,6 +27,7 @@ export default defineNuxtConfig({
       })
     },
     '@nuxt/ui',
+    '@barzhsieh/nuxt-content-mermaid',
     '@nuxt/content',
     '@nuxt/image',
     '@nuxtjs/robots',
@@ -125,6 +126,25 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    // The Mermaid Nuxt module injects optimizeDeps entries rooted at its own package
+    // name, but TockDocs is consumed through a Nuxt layer. Pre-bundle Mermaid and its
+    // CJS deps through the published layer package so Vite resolves the exact module
+    // graph used at runtime.
+    optimizeDeps: {
+      include: [
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > mermaid',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > @braintree/sanitize-url',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs/plugin/isoWeek.js',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs/plugin/customParseFormat.js',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs/plugin/advancedFormat.js',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs/plugin/duration.js',
+      ],
+      needsInterop: [
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > @braintree/sanitize-url',
+        'tockdocs > @barzhsieh/nuxt-content-mermaid > dayjs',
+      ],
+    },
     server: {
       strictPort: true,
     },

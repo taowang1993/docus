@@ -6,9 +6,11 @@ defineProps<{
   links?: ContentTocLink[]
 }>()
 
+const route = useRoute()
 const { subNavigationMode, sidebarNavigation, currentSection } = useSubNavigation()
 const { t } = useTockDocsI18n()
 
+const navigationKey = computed(() => `${route.path}:${sidebarNavigation.value?.map(item => item.path).join('|') || 'navigation-empty'}`)
 const contentNavVariants = useUIConfig('contentNavigation')
 const contentTocVariants = useUIConfig('contentToc')
 
@@ -41,12 +43,12 @@ const tocDrawerOpen = ref(false)
 
       <template #body>
         <UContentNavigation
+          :key="navigationKey"
           :navigation="sidebarNavigation"
           :highlight="contentNavVariants.highlight ?? true"
           :highlight-color="contentNavVariants.highlightColor"
           :variant="contentNavVariants.variant ?? 'link'"
           :color="contentNavVariants.color"
-          default-open
           trailing-icon="i-lucide-chevron-right"
           :ui="{ linkTrailingIcon: 'group-data-[state=open]:rotate-90' }"
         />

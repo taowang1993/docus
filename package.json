@@ -42,11 +42,24 @@
     "nuxt": "4.4.2",
     "release-it": "^20.0.0",
     "typescript": "^6.0.3",
+    "vscode-jsonrpc": "8.2.0",
+    "vscode-languageserver-protocol": "3.17.5",
+    "vscode-languageserver-types": "3.17.5",
     "vue-tsc": "^3.2.7"
   },
   "resolutions": {
     "unimport": "5.6.0",
     "better-sqlite3": "12.9.0"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@barzhsieh/nuxt-content-mermaid@2.2.3": {
+        "dependencies": {
+          "@braintree/sanitize-url": "7.1.2",
+          "dayjs": "1.11.20"
+        }
+      }
+    }
   },
   "packageManager": "pnpm@10.33.0"
 }

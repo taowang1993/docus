@@ -1,18 +1,22 @@
 import type { ComputedRef, Ref } from 'vue'
-import type { Collections, ContentNavigationItem, DocsCollectionItem } from '@nuxt/content'
+import type { Collections, DocsCollectionItem } from '@nuxt/content'
 import { findPageHeadline } from '@nuxt/content/utils'
 import { kebabCase } from 'scule'
 
 export async function useDocsPage(collectionName: Ref<string> | ComputedRef<string>) {
   const route = useRoute()
   const appConfig = useAppConfig()
-  const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
   const { shouldPushContent: shouldHideToc } = useAssistant()
+  const routePath = route.path
+  const routeKey = kebabCase(routePath)
+  const navigationAsyncData = useDocsNavigation(collectionName)
+  const { data: navigation } = navigationAsyncData
 
-  const [{ data: page }, { data: surround }] = await Promise.all([
-    useAsyncData(kebabCase(route.path), () => queryCollection(collectionName.value as keyof Collections).path(route.path).first() as Promise<DocsCollectionItem>),
-    useAsyncData(`${kebabCase(route.path)}-surround`, () => {
-      return queryCollectionItemSurroundings(collectionName.value as keyof Collections, route.path, {
+  const [, { data: page }, { data: surround }] = await Promise.all([
+    navigationAsyncData,
+    useAsyncData(routeKey, () => queryCollection(collectionName.value as keyof Collections).path(routePath).first() as Promise<DocsCollectionItem>),
+    useAsyncData(`${routeKey}-surround`, () => {
+      return queryCollectionItemSurroundings(collectionName.value as keyof Collections, routePath, {
         fields: ['description'],
       })
     }),
@@ -24,12 +28,8 @@ export async function useDocsPage(collectionName: Ref<string> | ComputedRef<stri
 
   const title = computed(() => page.value?.seo?.title || page.value?.title)
   const description = computed(() => page.value?.seo?.description || page.value?.description)
-  const headline = ref(findPageHeadline(navigation?.value, page.value?.path))
-  const breadcrumbs = computed(() => findPageBreadcrumbs(navigation?.value, page.value?.path || ''))
-
-  watch(() => navigation?.value, () => {
-    headline.value = findPageHeadline(navigation?.value, page.value?.path) || headline.value
-  })
+  const headline = computed(() => findPageHeadline(navigation.value, routePath))
+  const breadcrumbs = computed(() => findPageBreadcrumbs(navigation.value, routePath))
 
   const github = computed(() => appConfig.github ? appConfig.github : null)
 
@@ -38,13 +38,15 @@ export async function useDocsPage(collectionName: Ref<string> | ComputedRef<stri
       return undefined
     }
 
+    const contentStem = page.value.stem.replace(/^docs\//, '')
+
     return [
       github.value.url,
       'edit',
       github.value.branch,
       github.value.rootDir,
       'content',
-      `${page.value.stem}.${page.value.extension}`,
+      `${contentStem}.${page.value.extension}`,
     ].filter(Boolean).join('/')
   })
 

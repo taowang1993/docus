@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { ContentNavigationItem, PageCollections } from '@nuxt/content'
+import type { PageCollections } from '@nuxt/content'
 import * as nuxtUiLocales from '@nuxt/ui/locale'
-import { transformNavigation } from './utils/navigation'
 import { useTockDocsColorMode } from './composables/useTockDocsColorMode'
 import { useSubNavigation } from './composables/useSubNavigation'
 
@@ -9,7 +8,7 @@ const appConfig = useAppConfig()
 const { seo } = appConfig
 const { forced: forcedColorMode } = useTockDocsColorMode()
 const site = useSiteConfig()
-const { locale, isEnabled } = useTockDocsI18n()
+const { locale } = useTockDocsI18n()
 const docs = useTockDocs()
 const { isEnabled: isAssistantEnabled, isResizing: isAssistantResizing, panelWidth: assistantPanelWidth, shouldPushContent } = useAssistant()
 const { open: contentSearchOpen } = useContentSearch()
@@ -94,10 +93,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-const navigationAsyncData = useAsyncData(() => `navigation_${collectionName.value}`, () => queryCollectionNavigation(collectionName.value as keyof PageCollections), {
-  transform: (data: ContentNavigationItem[]) => transformNavigation(data, isEnabled.value, locale.value, docs.mode.value, docs.activeKnowledgeBase.value?.id),
-  watch: [collectionName],
-})
+const navigationAsyncData = useDocsNavigation(collectionName)
 const { data: navigation } = navigationAsyncData
 
 provide('navigation', navigation)

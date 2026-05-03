@@ -15,13 +15,14 @@ const hasLandingPage = landingPageExists(options.rootDir)
 const hasDocsFolder = docsFolderExists(options.rootDir)
 
 const createDocsSchema = () => z.object({
+  config: z.record(z.unknown()).optional(),
   links: z.array(z.object({
     label: z.string(),
     icon: z.string(),
     to: z.string(),
     target: z.string().optional(),
   })).optional(),
-})
+}).passthrough()
 
 let collections: Record<string, DefinedCollection>
 
