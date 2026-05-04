@@ -92,7 +92,7 @@ defineShortcuts(shortcuts)
                 </div>
 
                 <UChatPromptSubmit
-                  size="xs"
+                  size="sm"
                   class="shrink-0"
                   :disabled="!input.trim()"
                 />

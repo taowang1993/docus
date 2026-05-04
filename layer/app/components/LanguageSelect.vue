@@ -1,13 +1,22 @@
 <script setup lang="ts">
+const route = useRoute()
+const popoverOpen = ref(false)
 const { locale, locales, switchLocalePath } = useTockDocsI18n()
 
 const currentLocale = computed(() => locales.value.find(localeItem => localeItem.code === locale.value))
 const currentLocaleLabel = computed(() => currentLocale.value?.code?.toUpperCase() || locale.value.toUpperCase())
 const currentLocaleAriaLabel = computed(() => currentLocale.value?.name || currentLocaleLabel.value)
+
+watch(() => route.fullPath, () => {
+  popoverOpen.value = false
+})
 </script>
 
 <template>
-  <UPopover :content="{ align: 'start', sideOffset: 8 }">
+  <UPopover
+    v-model:open="popoverOpen"
+    :content="{ align: 'start', sideOffset: 8 }"
+  >
     <template #default="{ open }">
       <UButton
         color="neutral"
@@ -42,6 +51,7 @@ const currentLocaleAriaLabel = computed(() => currentLocale.value?.name || curre
             class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-highlighted"
             :class="localeItem.code === locale ? 'bg-elevated font-medium text-highlighted' : 'text-muted'"
             :aria-current="localeItem.code === locale ? 'page' : undefined"
+            @click="popoverOpen = false"
           >
             <span class="min-w-0 flex-1 truncate">
               {{ localeItem.name }}

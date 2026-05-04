@@ -3,15 +3,34 @@ import type { LocaleObject } from '@nuxtjs/i18n'
 import type { ComputedRef, Ref } from 'vue'
 import { computed, ref } from 'vue'
 
+function getMessageValue(messages: Record<string, unknown> | undefined, key: string): string | undefined {
+  if (!messages) {
+    return undefined
+  }
+
+  const value = key.split('.').reduce<unknown>((acc, segment) => {
+    if (!acc || typeof acc !== 'object') {
+      return undefined
+    }
+
+    return (acc as Record<string, unknown>)[segment]
+  }, messages)
+
+  return typeof value === 'string' ? value : undefined
+}
+
 type TockDocsNuxtApp = ReturnType<typeof useNuxtApp> & {
   $i18n?: {
     locale: Ref<string>
     t: (key: string) => string
+    te?: (key: string, locale?: string) => boolean
   }
   $locale?: string
   $localeMessages?: Record<string, unknown>
   $localePath?: (path: string) => string
   $switchLocalePath?: (locale?: string) => string
+  $tockdocsLocaleMessages?: Ref<Record<string, unknown>>
+  $tockdocsFallbackLocaleMessages?: Ref<Record<string, unknown>>
 }
 
 export const useTockDocsI18n = () => {
@@ -47,7 +66,16 @@ export const useTockDocsI18n = () => {
     const availableLocales = new Set(docs.activeKnowledgeBase.value.locales)
     return filteredLocales.filter(localeItem => availableLocales.has(localeItem.code))
   })
-  const t = nuxtApp.$i18n?.t || ((key: string) => key)
+  const t = (key: string): string => {
+    if (nuxtApp.$i18n?.te?.(key, locale.value)) {
+      return nuxtApp.$i18n.t(key)
+    }
+
+    return getMessageValue(nuxtApp.$tockdocsLocaleMessages?.value, key)
+      || getMessageValue(nuxtApp.$tockdocsFallbackLocaleMessages?.value, key)
+      || (typeof nuxtApp.$i18n?.te === 'function' ? key : nuxtApp.$i18n?.t?.(key))
+      || key
+  }
   const localePath = (path: string) => docs.mode.value === 'kb'
     ? path
     : nuxtApp.$localePath?.(path) || path

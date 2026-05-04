@@ -198,6 +198,7 @@ TockDocs is organized as a **layered monorepo**:
 ## Development Guidelines
 
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes unless the user explicitly asks for it.
+- Be careful with `ClientOnly`: only wrap components that truly require browser-only APIs. Wrapping header, navigation, or other primary interactive UI in `ClientOnly` can delay first paint, cause missing controls on refresh, and create SSR/client rendering inconsistencies. Prefer SSR-safe rendering plus small client-only fallbacks when possible.
 - Before every commit, run `pnpm run precommit`. The repo installs a versioned Git pre-commit hook from `.githooks/pre-commit`; do not bypass it.
 - Before pushing or updating a PR, run the CI-equivalent checks locally: `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm --dir cli run build`.
 - Keep Markdown edits targeted. Do not run repo-wide Markdown formatting commands that can reflow ASCII diagrams; `pnpm run check:diagrams` verifies those snapshots.

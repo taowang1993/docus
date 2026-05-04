@@ -5,6 +5,35 @@ import { getDefaultLocale, getDocsMode, getFilteredLocaleCodes, resolveDocsRoute
 const log = consola.withTag('TockDocs')
 
 const localeFiles = import.meta.glob<{ default: Record<string, unknown> }>('../../i18n/locales/*.json')
+const localeCache = new Map<string, Record<string, unknown>>()
+
+function resolveLocaleFileKey(locale: string): string | undefined {
+  const normalizedLocale = locale.toLowerCase()
+  const exactMatch = Object.keys(localeFiles).find(key => key.toLowerCase().endsWith(`/${normalizedLocale}.json`))
+  if (exactMatch) {
+    return exactMatch
+  }
+
+  const baseLocale = normalizedLocale.split('-')[0]
+  return Object.keys(localeFiles).find(key => key.toLowerCase().endsWith(`/${baseLocale}.json`))
+}
+
+async function loadLocaleMessages(locale: string): Promise<Record<string, unknown>> {
+  const localeFileKey = resolveLocaleFileKey(locale) || '../../i18n/locales/en.json'
+
+  if (localeCache.has(localeFileKey)) {
+    return localeCache.get(localeFileKey) || {}
+  }
+
+  const localeLoader = localeFiles[localeFileKey]
+  if (!localeLoader) {
+    return {}
+  }
+
+  const localeModule = await localeLoader()
+  localeCache.set(localeFileKey, localeModule.default)
+  return localeModule.default
+}
 
 export default defineNuxtPlugin(async () => {
   const nuxtApp = useNuxtApp()
@@ -14,30 +43,13 @@ export default defineNuxtPlugin(async () => {
   if (!i18nConfig) {
     const appConfig = useAppConfig()
     const configuredLocale = appConfig.tockdocs.locale || 'en'
+    const locale = resolveLocaleFileKey(configuredLocale) ? configuredLocale : 'en'
 
-    let locale = configuredLocale
-    let resolvedMessages: Record<string, unknown>
-
-    const localeKey = `../../i18n/locales/${configuredLocale}.json`
-    const localeLoader = localeFiles[localeKey]
-
-    if (localeLoader) {
-      const localeModule = await localeLoader()
-      resolvedMessages = localeModule.default
-    }
-    else {
+    if (locale !== configuredLocale) {
       log.warn(`Missing locale file for "${configuredLocale}". Falling back to "en".`)
-      locale = 'en'
-      const fallbackKey = '../../i18n/locales/en.json'
-      const fallbackLoader = localeFiles[fallbackKey]
-      if (fallbackLoader) {
-        const fallbackModule = await fallbackLoader()
-        resolvedMessages = fallbackModule.default
-      }
-      else {
-        resolvedMessages = {} as Record<string, unknown>
-      }
     }
+
+    const resolvedMessages = await loadLocaleMessages(locale)
 
     nuxtApp.provide('locale', locale)
     nuxtApp.provide('localeMessages', resolvedMessages)
@@ -48,19 +60,27 @@ export default defineNuxtPlugin(async () => {
   const docsMode = getDocsMode(publicConfig)
   const defaultLocale = getDefaultLocale(publicConfig)
   const filteredLocales = getFilteredLocaleCodes(publicConfig)
+  const tockdocsLocaleMessages = ref<Record<string, unknown>>({})
+  const tockdocsFallbackLocaleMessages = ref<Record<string, unknown>>({})
 
-  function syncLocale(path: string) {
+  nuxtApp.provide('tockdocsLocaleMessages', tockdocsLocaleMessages)
+  nuxtApp.provide('tockdocsFallbackLocaleMessages', tockdocsFallbackLocaleMessages)
+
+  async function syncLocale(path: string) {
     const resolved = resolveDocsRoute(path, publicConfig)
     const nextLocale = resolved.locale || defaultLocale
 
     if (nuxtApp.$i18n?.locale.value !== nextLocale) {
       nuxtApp.$i18n.locale.value = nextLocale
     }
+
+    tockdocsLocaleMessages.value = await loadLocaleMessages(nextLocale)
   }
 
-  syncLocale(useRoute().path)
+  tockdocsFallbackLocaleMessages.value = await loadLocaleMessages(defaultLocale)
+  await syncLocale(useRoute().path)
 
-  addRouteMiddleware((to: RouteLocationNormalized) => {
+  addRouteMiddleware(async (to: RouteLocationNormalized) => {
     if (docsMode === 'legacy' && to.path === '/') {
       const cookieLocale = useCookie('i18n_redirected').value || i18nConfig.defaultLocale || defaultLocale
       return navigateTo(`/${cookieLocale}`)
@@ -73,6 +93,6 @@ export default defineNuxtPlugin(async () => {
       }
     }
 
-    syncLocale(to.path)
+    await syncLocale(to.path)
   })
 })

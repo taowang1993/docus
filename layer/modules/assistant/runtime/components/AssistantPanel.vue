@@ -356,7 +356,7 @@ onBeforeUnmount(() => {
             </div>
             <UChatPromptSubmit
               class="ml-auto"
-              size="xs"
+              size="sm"
               :status="chat.status"
               @stop="chat.stop()"
               @reload="chat.regenerate()"
