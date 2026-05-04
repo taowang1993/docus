@@ -10,11 +10,13 @@ const { forced: forcedColorMode } = useTockDocsColorMode()
 const { isEnabled: isAssistantEnabled } = useAssistant()
 const { classes: headerLayout, isAssistantDocked: assistantDocked } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
-const headerMenuOpen = ref(false)
+// Standalone ref decoupled from UHeader's internal state so the sidebar
+// stays open across client-side navigations (e.g. selector clicks).
+const menuOpen = ref(false)
 
 watch(assistantDocked, (value) => {
   if (value) {
-    headerMenuOpen.value = false
+    menuOpen.value = false
   }
 }, { immediate: true })
 
@@ -41,7 +43,6 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
 <template>
   <UHeader
-    v-model:open="headerMenuOpen"
     :ui="headerMenuUi"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
   >
@@ -122,14 +123,14 @@ const links = computed(() => appConfig.github && appConfig.github.url
       </template>
     </template>
 
-    <template #toggle="{ open, toggle }">
+    <template #toggle>
       <div
         v-if="!assistantDocked"
         :class="[headerLayout.drawerOnly, 'shrink-0']"
       >
         <IconMenuToggle
-          :open="open"
-          @click="toggle"
+          :open="menuOpen"
+          @click="menuOpen = !menuOpen"
         />
       </div>
     </template>
@@ -142,5 +143,5 @@ const links = computed(() => appConfig.github && appConfig.github.url
     </template>
   </UHeader>
 
-  <AppHeaderMenu v-model="headerMenuOpen" />
+  <AppHeaderMenu v-model="menuOpen" />
 </template>
