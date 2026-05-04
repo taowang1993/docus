@@ -17,7 +17,6 @@ TockDocs brings the best of the Nuxt ecosystem into one CLI.
 
 #links
 :::u-button
-
 ---
 
 color: neutral
@@ -31,7 +30,6 @@ Get started
 :::
 
 :::u-button
-
 ---
 
 color: neutral
@@ -52,11 +50,10 @@ Shipped with many features
 
 #features
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://nuxt.com
 
 ---
@@ -69,11 +66,10 @@ Optimized by the most famous Vue framework. TockDocs gives you everything you ne
 :::
 
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://ui.nuxt.com/
 
 ---
@@ -86,11 +82,10 @@ Beautiful out of the box, minimal by design but highly customizable. TockDocs le
 :::
 
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://content.nuxt.com
 
 ---
@@ -103,11 +98,10 @@ The only thing you need to take care about is writing your content. Write your p
 :::
 
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://nuxt.com/docs/guide/directory-structure/app-config
 
 ---
@@ -120,11 +114,10 @@ Update colors, social links, header logos and component styles globally using th
 :::
 
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://content.nuxt.com/studio
 
 ---
@@ -137,11 +130,10 @@ Edit your content in production with zero Markdown knowledge required. Let your 
 :::
 
 :::u-page-feature
-
 ---
 
 icon: i-simple-icons-nuxt
-target: \_blank
+target: _blank
 to: https://ui.nuxt.com/components/content-search
 
 ---

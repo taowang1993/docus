@@ -184,9 +184,9 @@ Optimized by the most famous Vue framework. TockDocs gives you everything you ne
       width: 859
       alt: Built-in navigation and full-text search
       class: rounded-lg
-      dark: /landing/dark/command-menu.png
+      dark: /landing/dark/command-menu.webp
       format: webp
-      light: /landing/light/command-menu.png
+      light: /landing/light/command-menu.webp
       loading: lazy
       ---
       :::::
@@ -205,7 +205,7 @@ Optimized by the most famous Vue framework. TockDocs gives you everything you ne
     target: _blank
     ---
       :::::browser-frame
-      :video{.rounded-md controls loop playsinline src="https://res.cloudinary.com/nuxt/video/upload/v1767647099/studio/studio-demo_eiofld.mp4"}
+      :site-image{src="/_og/s/c_Studio.png" alt="Nuxt Studio preview" class="rounded-md w-full h-auto" loading="lazy"}
       :::::
 
     #title

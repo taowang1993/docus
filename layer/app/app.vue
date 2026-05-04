@@ -114,7 +114,9 @@ function closeContentSearch() {
 
 <template>
   <UApp :locale="nuxtUiLocale">
-    <NuxtLoadingIndicator color="var(--ui-primary)" />
+    <ClientOnly>
+      <NuxtLoadingIndicator color="var(--ui-primary)" />
+    </ClientOnly>
 
     <div
       :class="[

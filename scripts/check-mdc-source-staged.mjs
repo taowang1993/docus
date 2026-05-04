@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
 import { relative } from 'node:path'
 import {
-  docsContentDir,
+  getWorkspaceMarkdownContentDirs,
   lintMarkdownFiles,
   repoRoot,
   resolveMarkdownTargets,
 } from './lib/mdc-source-lint.mjs'
 
-assert.ok(existsSync(docsContentDir), `Missing docs content directory: ${docsContentDir}`)
+const workspaceContentDirs = getWorkspaceMarkdownContentDirs()
+assert.ok(workspaceContentDirs.length > 0, 'Missing workspace content directories to lint.')
 
 function getStagedPaths() {
-  const output = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '--', 'docs/content'], {
+  const output = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '--', ...workspaceContentDirs.map(directory => relative(repoRoot, directory))], {
     cwd: repoRoot,
     encoding: 'utf8',
   })
@@ -27,7 +27,7 @@ const stagedPaths = getStagedPaths()
 const markdownFiles = resolveMarkdownTargets(stagedPaths)
 
 if (!markdownFiles.length) {
-  console.log('No staged docs/content markdown files to lint.')
+  console.log('No staged workspace markdown files to lint.')
   process.exit(0)
 }
 

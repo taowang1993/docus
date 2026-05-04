@@ -43,6 +43,17 @@ Works.
   })
 })
 
+test('flags empty headings', async () => {
+  await withTempMarkdown('###\n', async (filePath) => {
+    const issues = await lintMarkdownSource({
+      filePath,
+      ...dependencies,
+    })
+
+    assert.equal(issues.some(issue => issue.ruleId === 'empty-heading'), true)
+  })
+})
+
 test('flags component fences converted into headings', async () => {
   await withTempMarkdown('## :::note\n', async (filePath) => {
     const issues = await lintMarkdownSource({
@@ -51,6 +62,17 @@ test('flags component fences converted into headings', async () => {
     })
 
     assert.equal(issues.some(issue => issue.ruleId === 'headingized-component-fence'), true)
+  })
+})
+
+test('flags component property lines converted into headings', async () => {
+  await withTempMarkdown('## class: "foo"\n', async (filePath) => {
+    const issues = await lintMarkdownSource({
+      filePath,
+      ...dependencies,
+    })
+
+    assert.equal(issues.some(issue => issue.ruleId === 'headingized-component-prop'), true)
   })
 })
 
@@ -87,6 +109,17 @@ test('flags invalid component frontmatter YAML', async () => {
   })
 })
 
+test('flags escaped _blank inside component frontmatter', async () => {
+  await withTempMarkdown('::note\n---\ntarget: \\_blank\n---\nBody\n::\n', async (filePath) => {
+    const issues = await lintMarkdownSource({
+      filePath,
+      ...dependencies,
+    })
+
+    assert.equal(issues.some(issue => issue.ruleId === 'escaped-blank-target'), true)
+  })
+})
+
 test('flags slot markers outside components', async () => {
   await withTempMarkdown('#title\nHello\n', async (filePath) => {
     const issues = await lintMarkdownSource({
@@ -109,23 +142,44 @@ test('flags malformed component fence syntax', async () => {
   })
 })
 
-test('resolveMarkdownTargets includes new markdown files from docs/content inputs', () => {
-  const directory = mkdtempSync(join(tmpdir(), 'tockdocs-mdc-targets-'))
-  const contentDir = join(directory, 'docs/content')
-  const relativeFilePath = 'docs/content/new-page.mdc'
-  const filePath = join(directory, relativeFilePath)
-
-  try {
-    mkdirSync(contentDir, { recursive: true })
-    writeFileSync(filePath, '::note\nHello\n::\n')
-
-    const resolved = resolveMarkdownTargets([relativeFilePath], {
-      rootDir: directory,
-      contentDir,
+test('flags orphan component-like property lines', async () => {
+  await withTempMarkdown('class: "foo"\n', async (filePath) => {
+    const issues = await lintMarkdownSource({
+      filePath,
+      ...dependencies,
     })
 
-    assert.deepStrictEqual(resolved, [filePath])
-    assert.notEqual(filePath.startsWith(docsContentDir), true)
+    assert.equal(issues.some(issue => issue.ruleId === 'orphan-component-prop-line'), true)
+  })
+})
+
+test('resolveMarkdownTargets includes files from every workspace content root', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'tockdocs-mdc-targets-'))
+  const contentDirs = [
+    join(directory, 'docs/content'),
+    join(directory, 'playground/content'),
+    join(directory, '.starters/default/content'),
+  ]
+  const relativeFilePaths = [
+    'docs/content/new-page.mdc',
+    'playground/content/example.md',
+    '.starters/default/content/starter.md',
+  ]
+  const filePaths = relativeFilePaths.map(relativeFilePath => join(directory, relativeFilePath))
+
+  try {
+    for (const [index, contentDir] of contentDirs.entries()) {
+      mkdirSync(contentDir, { recursive: true })
+      writeFileSync(filePaths[index], '::note\nHello\n::\n')
+    }
+
+    const resolved = resolveMarkdownTargets(relativeFilePaths, {
+      rootDir: directory,
+      contentDirs,
+    })
+
+    assert.deepStrictEqual(resolved, [...filePaths].sort())
+    assert.notEqual(filePaths[0].startsWith(docsContentDir), true)
   }
   finally {
     rmSync(directory, { recursive: true, force: true })

@@ -1,25 +1,73 @@
 <script lang="ts" setup>
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
 const { title, description } = defineProps<{ title?: string, description?: string }>()
 
 const appConfig = useAppConfig()
 const { name: siteName } = useSiteConfig()
 const primaryColor = appConfig.ui?.colors?.primary ?? 'emerald'
 const logoPath = appConfig.header?.logo?.dark || appConfig.header?.logo?.light
+const logoDataUrl = ref('')
 
-const logoDataUrl = await fetchLogoDataUrl(logoPath)
+if (logoPath) {
+  onServerPrefetch(async () => {
+    logoDataUrl.value = await resolveLogoDataUrl(logoPath)
+  })
+}
 
-async function fetchLogoDataUrl(path?: string): Promise<string> {
+async function resolveLogoDataUrl(path?: string): Promise<string> {
   if (!path) return ''
+
+  const localLogoDataUrl = readLocalLogoDataUrl(path)
+  if (localLogoDataUrl) {
+    return localLogoDataUrl
+  }
+
   try {
     const { url: siteUrl } = useSiteConfig()
     const url = path.startsWith('http') ? path : `${siteUrl}${path}`
     const svg = await $fetch<string>(url, { responseType: 'text' })
-    const sizedSvg = svg.replace('<svg', '<svg width="48" height="48"')
-    return `data:image/svg+xml;base64,${Buffer.from(sizedSvg).toString('base64')}`
+    return encodeSvgDataUrl(svg)
   }
   catch {
     return ''
   }
+}
+
+function readLocalLogoDataUrl(path: string): string {
+  if (path.startsWith('http')) {
+    return ''
+  }
+
+  const normalizedPath = path.replace(/^\//, '')
+  const candidates = [
+    join(process.cwd(), 'public', normalizedPath),
+    join(process.cwd(), 'docs', 'public', normalizedPath),
+    join(process.cwd(), 'playground', 'public', normalizedPath),
+    join(process.cwd(), 'layer', 'app', 'public', normalizedPath),
+  ]
+
+  for (const candidate of candidates) {
+    if (!existsSync(candidate)) {
+      continue
+    }
+
+    try {
+      const svg = readFileSync(candidate, 'utf8')
+      return encodeSvgDataUrl(svg)
+    }
+    catch {
+      // Continue trying other candidates.
+    }
+  }
+
+  return ''
+}
+
+function encodeSvgDataUrl(svg: string): string {
+  const sizedSvg = svg.replace('<svg', '<svg width="48" height="48"')
+  return `data:image/svg+xml;base64,${Buffer.from(sizedSvg).toString('base64')}`
 }
 </script>
 

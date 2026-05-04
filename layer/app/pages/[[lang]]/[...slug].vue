@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DocsCollectionItem } from '@nuxt/content'
+import type { DocsCollectionItem } from '../../types'
 
 definePageMeta({
   layout: 'docs',

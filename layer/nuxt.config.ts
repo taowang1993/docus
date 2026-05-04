@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { extendViteConfig, createResolver, useNuxt } from '@nuxt/kit'
 import { getKnowledgeBaseEntrySlug } from './utils/docs'
@@ -7,6 +8,26 @@ import { getTockDocsContentConfiguration } from './utils/knowledge-bases'
 const { resolve } = createResolver(import.meta.url)
 const DevPort = 4987
 const DevSiteUrl = trimTrailingSlash(process.env.NUXT_SITE_URL || `http://127.0.0.1:${DevPort}`)
+const iconScanPattern = '**/*.{vue,ts,js,mjs,md,yml,yaml}'
+const layerIconScanInclude = [
+  resolve('./app'),
+  resolve('./modules'),
+]
+  .filter(target => existsSync(target))
+  .map(target => join(target, iconScanPattern))
+
+function resolveIconScanInclude(rootDir: string, srcDir: string) {
+  return [...new Set([
+    join(rootDir, 'app'),
+    join(rootDir, 'content'),
+    join(srcDir, 'app'),
+    join(srcDir, 'content'),
+    resolve('./app'),
+    resolve('./modules'),
+  ]
+    .filter(target => existsSync(target))
+    .map(target => join(target, iconScanPattern)))]
+}
 
 type TockDocsI18nOptions = { locales?: Array<string | { code: string }> }
 
@@ -21,10 +42,27 @@ export default defineNuxtConfig({
       const nuxt = useNuxt()
       nuxt.options.icon ||= {}
       nuxt.options.icon.customCollections ||= []
+      nuxt.options.icon.clientBundle ||= {}
+
+      const existingScan = typeof nuxt.options.icon.clientBundle.scan === 'object' && nuxt.options.icon.clientBundle.scan
+        ? nuxt.options.icon.clientBundle.scan
+        : {}
+      const existingGlobInclude = Array.isArray(existingScan.globInclude)
+        ? existingScan.globInclude
+        : []
+
       nuxt.options.icon.customCollections.push({
         prefix: 'custom',
         dir: join(nuxt.options.srcDir, 'assets/icons'),
       })
+
+      nuxt.options.icon.clientBundle.scan = {
+        ...existingScan,
+        globInclude: [...new Set([
+          ...existingGlobInclude,
+          ...resolveIconScanInclude(nuxt.options.rootDir, nuxt.options.srcDir),
+        ])],
+      }
     },
     '@nuxt/ui',
     '@barzhsieh/nuxt-content-mermaid',
@@ -182,6 +220,7 @@ export default defineNuxtConfig({
       nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
       nitroConfig.prerender.routes.push(...routes)
       nitroConfig.prerender.routes.push('/sitemap.xml')
+      nitroConfig.prerender.routes.push('/_og/s/c_Studio.png')
     },
   },
   i18n: {
@@ -195,7 +234,24 @@ export default defineNuxtConfig({
       },
     ],
     clientBundle: {
-      scan: true,
+      icons: [
+        'lucide:arrow-up',
+        'lucide:copy',
+        'lucide:hash',
+        'lucide:info',
+        'lucide:lightbulb',
+        'lucide:monitor',
+        'lucide:moon',
+        'lucide:sparkles',
+        'lucide:sun',
+        'lucide:terminal',
+        'lucide:trash-2',
+        'simple-icons:github',
+        'vscode-icons:file-type-nuxt',
+      ],
+      scan: {
+        globInclude: layerIconScanInclude,
+      },
       includeCustomCollections: true,
     },
     provider: 'iconify',
