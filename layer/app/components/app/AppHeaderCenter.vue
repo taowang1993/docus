@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { useHeaderLayout } from '../../composables/useHeaderLayout'
-import { useShortcutDisplayKeys } from '../../composables/useShortcutDisplayKeys'
 
 const { showAskAiButton = false } = defineProps<{
   showAskAiButton?: boolean
 }>()
 
 const { isAssistantDocked, classes: headerLayout } = useHeaderLayout()
-const { displayKeys } = useShortcutDisplayKeys()
-const searchKbds = computed(() => isAssistantDocked.value ? [] : displayKeys('meta_k'))
 </script>
 
 <template>
@@ -16,7 +13,6 @@ const searchKbds = computed(() => isAssistantDocked.value ? [] : displayKeys('me
     <UContentSearchButton
       v-if="!isAssistantDocked"
       :collapsed="false"
-      :kbds="searchKbds"
       size="lg"
       class="min-w-0 flex-1"
     />

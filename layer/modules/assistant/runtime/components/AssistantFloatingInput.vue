@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { AnimatePresence, motion } from 'motion-v'
 import { useTockDocsI18n } from '../../../../app/composables/useTockDocsI18n'
-import { useShortcutDisplayKeys } from '../../../../app/composables/useShortcutDisplayKeys'
 
 const route = useRoute()
 const appConfig = useAppConfig()
 const { open, isOpen } = useAssistant()
 const { t } = useTockDocsI18n()
-const { displayKeys } = useShortcutDisplayKeys()
 const input = ref('')
 const isVisible = ref(true)
 const inputRef = ref<HTMLTextAreaElement | null>(null)
@@ -17,7 +15,11 @@ const isFloatingInputEnabled = computed(() => appConfig.assistant?.floatingInput
 const focusInputShortcut = computed(() => appConfig.assistant?.shortcuts?.focusInput || 'meta_i')
 const placeholder = computed(() => t('assistant.placeholder'))
 
-const shortcutDisplayKeys = computed(() => displayKeys(focusInputShortcut.value))
+const shortcutDisplayKeys = computed(() => {
+  const shortcut = focusInputShortcut.value
+  const parts = shortcut.split('_')
+  return parts.map((part: string) => part === 'meta' ? 'meta' : part.toUpperCase())
+})
 
 function handleSubmit() {
   if (!input.value.trim()) return

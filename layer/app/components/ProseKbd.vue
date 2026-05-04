@@ -6,14 +6,11 @@ const props = defineProps<{
 }>()
 
 defineSlots()
-
-const { displayKey } = useShortcutDisplayKeys()
-const resolvedValue = computed(() => displayKey(props.value))
 </script>
 
 <template>
   <UKbd
-    :value="resolvedValue"
+    :value="props.value"
     class="align-text-top"
     :class="props.class"
     :ui="props.ui"
