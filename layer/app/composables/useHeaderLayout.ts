@@ -5,7 +5,7 @@ const HEADER_LAYOUT_CLASSES = {
     desktopAskAiButton: 'hidden shrink-0 sm:inline-flex',
     mobileAskAiButton: 'shrink-0 lg:hidden',
     drawerOnly: 'lg:hidden',
-    headerSelectors: 'hidden sm:flex items-center gap-1.5',
+    headerSelectors: 'hidden lg:flex items-center gap-1.5',
   },
   docked: {
     center: 'hidden lg:flex min-w-0 flex-1',
