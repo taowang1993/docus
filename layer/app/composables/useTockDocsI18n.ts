@@ -2,35 +2,18 @@ import { useNuxtApp, useRuntimeConfig } from '#imports'
 import type { LocaleObject } from '@nuxtjs/i18n'
 import type { ComputedRef, Ref } from 'vue'
 import { computed, ref } from 'vue'
-
-function getMessageValue(messages: Record<string, unknown> | undefined, key: string): string | undefined {
-  if (!messages) {
-    return undefined
-  }
-
-  const value = key.split('.').reduce<unknown>((acc, segment) => {
-    if (!acc || typeof acc !== 'object') {
-      return undefined
-    }
-
-    return (acc as Record<string, unknown>)[segment]
-  }, messages)
-
-  return typeof value === 'string' ? value : undefined
-}
+import { getLocaleMessageValue, resolveLocaleMessages } from '../../utils/locale-messages'
 
 type TockDocsNuxtApp = ReturnType<typeof useNuxtApp> & {
   $i18n?: {
     locale: Ref<string>
     t: (key: string) => string
-    te?: (key: string, locale?: string) => boolean
+    messages?: Ref<Record<string, Record<string, unknown>>>
   }
   $locale?: string
   $localeMessages?: Record<string, unknown>
   $localePath?: (path: string) => string
   $switchLocalePath?: (locale?: string) => string
-  $tockdocsLocaleMessages?: Ref<Record<string, unknown>>
-  $tockdocsFallbackLocaleMessages?: Ref<Record<string, unknown>>
 }
 
 export const useTockDocsI18n = () => {
@@ -50,8 +33,7 @@ export const useTockDocsI18n = () => {
       localePath: (path: string) => path,
       switchLocalePath: () => {},
       t: (key: string): string => {
-        const path = key.split('.')
-        return path.reduce((acc: unknown, curr) => (acc as Record<string, unknown>)?.[curr], localeMessages) as string
+        return getLocaleMessageValue(localeMessages, key) || key
       },
     }
   }
@@ -67,13 +49,14 @@ export const useTockDocsI18n = () => {
     return filteredLocales.filter(localeItem => availableLocales.has(localeItem.code))
   })
   const t = (key: string): string => {
-    if (nuxtApp.$i18n?.te?.(key, locale.value)) {
-      return nuxtApp.$i18n.t(key)
-    }
+    const currentLocale = locale.value
+    const defaultLocale = config.i18n?.defaultLocale || 'en'
+    const i18nMessages = nuxtApp.$i18n?.messages?.value
 
-    return getMessageValue(nuxtApp.$tockdocsLocaleMessages?.value, key)
-      || getMessageValue(nuxtApp.$tockdocsFallbackLocaleMessages?.value, key)
-      || (typeof nuxtApp.$i18n?.te === 'function' ? key : nuxtApp.$i18n?.t?.(key))
+    return getLocaleMessageValue(i18nMessages?.[currentLocale], key)
+      || getLocaleMessageValue(i18nMessages?.[defaultLocale], key)
+      || getLocaleMessageValue(resolveLocaleMessages(currentLocale), key)
+      || getLocaleMessageValue(resolveLocaleMessages(defaultLocale), key)
       || key
   }
   const localePath = (path: string) => docs.mode.value === 'kb'

@@ -205,7 +205,7 @@ Optimized by the most famous Vue framework. TockDocs gives you everything you ne
     target: _blank
     ---
       :::::browser-frame
-      :site-image{src="/_og/s/c_Studio.png" alt="Nuxt Studio preview" class="rounded-md w-full h-auto" loading="lazy"}
+      :site-image{src="/documentation/nuxt-studio-preview.avif" alt="Nuxt Studio preview" class="rounded-md w-full h-auto" loading="lazy"}
       :::::
 
     #title
