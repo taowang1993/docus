@@ -16,9 +16,9 @@ const currentLabel = computed(() => currentKnowledgeBase.value?.title || 'Knowle
         :label="currentLabel"
         aria-haspopup="menu"
         :aria-expanded="open"
-        class="h-9 rounded-lg bg-default px-3 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
+        class="h-9 rounded-lg bg-default px-2.5 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
         :class="open ? 'text-highlighted ring-default' : 'text-default'"
-        :ui="{ label: 'truncate max-w-32' }"
+        :ui="{ label: 'truncate max-w-24 sm:max-w-32' }"
       >
         <template #trailing>
           <UIcon

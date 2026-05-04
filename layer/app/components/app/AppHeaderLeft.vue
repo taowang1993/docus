@@ -15,32 +15,20 @@ const showLanguageSelect = computed(() => isEnabled.value && locales.value.lengt
     <NuxtLink
       :to="homePath"
       :aria-label="brandName"
-      class="flex items-center gap-3"
+      class="flex shrink-0 items-center gap-3"
     >
       <AppHeaderLogo />
-      <span class="text-xl font-bold">
+      <span class="shrink-0 whitespace-nowrap text-xl font-bold">
         {{ brandName }}
       </span>
     </NuxtLink>
 
     <template v-if="showKnowledgeBaseSelect">
-      <ClientOnly>
-        <KnowledgeBaseSelect />
-
-        <template #fallback>
-          <div class="h-9 w-32 shrink-0 animate-pulse rounded-lg bg-neutral-200 dark:bg-neutral-800" />
-        </template>
-      </ClientOnly>
+      <KnowledgeBaseSelect class="min-w-0 shrink" />
     </template>
 
     <template v-if="showLanguageSelect">
-      <ClientOnly>
-        <LanguageSelect />
-
-        <template #fallback>
-          <div class="h-9 w-24 shrink-0 animate-pulse rounded-lg bg-neutral-200 dark:bg-neutral-800" />
-        </template>
-      </ClientOnly>
+      <LanguageSelect class="shrink-0" />
     </template>
   </div>
 </template>

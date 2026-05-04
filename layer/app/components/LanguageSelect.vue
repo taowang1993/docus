@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const { locale, locales, switchLocalePath } = useTockDocsI18n()
 
-const currentLocaleLabel = computed(() => {
-  const currentLocale = locales.value.find(localeItem => localeItem.code === locale.value)
-
-  return currentLocale?.name || locale.value.toUpperCase()
-})
+const currentLocale = computed(() => locales.value.find(localeItem => localeItem.code === locale.value))
+const currentLocaleLabel = computed(() => currentLocale.value?.code?.toUpperCase() || locale.value.toUpperCase())
+const currentLocaleAriaLabel = computed(() => currentLocale.value?.name || currentLocaleLabel.value)
 </script>
 
 <template>
@@ -16,11 +14,12 @@ const currentLocaleLabel = computed(() => {
         variant="ghost"
         size="sm"
         :label="currentLocaleLabel"
+        :aria-label="currentLocaleAriaLabel"
         aria-haspopup="menu"
         :aria-expanded="open"
-        class="h-9 rounded-lg bg-default px-3 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
+        class="h-9 rounded-lg bg-default px-2.5 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
         :class="open ? 'text-highlighted ring-default' : 'text-default'"
-        :ui="{ label: 'truncate' }"
+        :ui="{ label: 'truncate max-w-8' }"
       >
         <template #trailing>
           <UIcon
