@@ -18,12 +18,11 @@ watch(assistantDocked, (value) => {
   }
 }, { immediate: true })
 
-// Keep the header menu above the docked assistant sidebar.
 const headerMenuUi = computed(() => ({
   center: headerLayout.value.center,
   right: 'flex min-w-0 items-center gap-1 shrink-0',
-  content: assistantDocked.value ? `${headerLayout.value.drawerOnly} lg:block z-[71]` : 'z-[71]',
-  overlay: assistantDocked.value ? `${headerLayout.value.drawerOnly} lg:block z-[70]` : 'z-[70]',
+  overlay: 'hidden',
+  content: 'hidden',
 }))
 
 const showAskAiButton = computed(() => isAssistantEnabled.value && route.meta.layout === 'docs')
@@ -135,10 +134,6 @@ const links = computed(() => appConfig.github && appConfig.github.url
       </div>
     </template>
 
-    <template #body>
-      <AppHeaderBody />
-    </template>
-
     <template
       v-if="subNavigationMode === 'header'"
       #bottom
@@ -146,4 +141,6 @@ const links = computed(() => appConfig.github && appConfig.github.url
       <AppHeaderBottom />
     </template>
   </UHeader>
+
+  <AppHeaderMenu v-model="headerMenuOpen" />
 </template>

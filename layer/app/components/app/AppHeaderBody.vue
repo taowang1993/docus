@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
-import { useHeaderLayout } from '../../composables/useHeaderLayout'
 
 const route = useRoute()
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
@@ -9,16 +8,15 @@ const navigationKey = computed(() => `${route.path}:${navigation.value?.map(item
 const contentNavVariants = useUIConfig('contentNavigation')
 const { isEnabled, locales } = useTockDocsI18n()
 const docs = useTockDocs()
-const { classes: headerLayout } = useHeaderLayout()
 const showKnowledgeBaseSelect = computed(() => docs.isKnowledgeBaseMode.value && docs.knowledgeBases.value.length > 1 && docs.isDocsRoute.value)
 const showLanguageSelect = computed(() => isEnabled.value && locales.value.length > 1 && (!docs.isKnowledgeBaseMode.value || docs.isDocsRoute.value))
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 px-2">
     <div
       v-if="showKnowledgeBaseSelect || showLanguageSelect"
-      :class="['flex flex-wrap items-center gap-2 px-2 pt-2', headerLayout.drawerOnly]"
+      class="flex flex-wrap items-center gap-2 px-4 pt-4"
     >
       <KnowledgeBaseSelect
         v-if="showKnowledgeBaseSelect"
