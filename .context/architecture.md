@@ -328,6 +328,25 @@ User → AssistantPanel.vue → /__tockdocs__/assistant → AI provider resolver
 - **Hybrid search**: FlexSearch handles primary indexing while Fuse.js improves typo tolerance and fuzzy recovery.
 - **Static-friendly output**: prerender, robots, sitemap, OG image, and llms defaults support documentation-site deployment patterns.
 
+## Header Responsive Layout
+
+Breakpoints: `sm` = 640px, `lg` = 1024px.
+
+### AI Sidebar Off
+
+- ≥1024px: selectors + search input + lg AI button + theme + github
+- 640–1023px: selectors + magnifying glass + sm AI button + theme + github + hamburger
+- <640px: magnifying glass + sm AI button + theme + github + hamburger
+
+### AI Sidebar On (docked)
+
+- ≥1024px: selectors + search input + lg AI button + theme + github
+- <1024px: selectors + magnifying glass + sm AI button + theme + github
+
+### AI Sidebar On (docked expanded)
+
+Same as docked; sidebar is 520px instead of 352px.
+
 ## Operational Notes
 
 - Default local dev port is `4987`.
