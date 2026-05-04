@@ -2,6 +2,13 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
+test('derives assistant docking state from the docs-aware header layout composable', () => {
+  const source = readFileSync(new URL('./AppHeader.vue', import.meta.url), 'utf8')
+
+  assert.match(source, /const \{ classes: headerLayout, isAssistantDocked: assistantDocked \} = useHeaderLayout\(\)/)
+  assert.doesNotMatch(source, /shouldPushContent: assistantDocked/)
+})
+
 test('hides the header menu toggle while the assistant sidebar is docked', () => {
   const source = readFileSync(new URL('./AppHeader.vue', import.meta.url), 'utf8')
   const toggleStart = source.indexOf('<template #toggle')

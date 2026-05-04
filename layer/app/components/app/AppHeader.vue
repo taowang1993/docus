@@ -7,8 +7,8 @@ const appConfig = useAppConfig()
 const route = useRoute()
 const { forced: forcedColorMode } = useTockDocsColorMode()
 
-const { isEnabled: isAssistantEnabled, shouldPushContent: assistantDocked } = useAssistant()
-const { classes: headerLayout } = useHeaderLayout()
+const { isEnabled: isAssistantEnabled } = useAssistant()
+const { classes: headerLayout, isAssistantDocked: assistantDocked } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
 const headerMenuOpen = ref(false)
 
