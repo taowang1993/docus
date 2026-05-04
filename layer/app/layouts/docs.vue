@@ -1,9 +1,13 @@
+<script setup lang="ts">
+const { shouldPushContent: assistantDocked } = useAssistant()
+</script>
+
 <template>
   <UMain>
-    <UContainer>
+    <UContainer :class="assistantDocked ? 'px-2 sm:px-3 lg:px-5' : ''">
       <UPage>
         <template #left>
-          <UPageAside>
+          <UPageAside class="lg:!ps-0 lg:!pe-0 lg:!ms-0">
             <DocsAsideLeftTop />
             <DocsAsideLeftBody />
           </UPageAside>

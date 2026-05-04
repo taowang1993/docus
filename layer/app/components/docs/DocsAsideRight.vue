@@ -26,7 +26,6 @@ function sanitizeTocLinks(links: ContentTocLink[] = []): ContentTocLink[] {
 
 const links = computed(() => sanitizeTocLinks((props.page?.body?.toc?.links || []) as ContentTocLink[]))
 
-const { shouldPushContent: shouldHideToc } = useAssistant()
 const { subNavigationMode } = useSubNavigation()
 const appConfig = useAppConfig()
 const { t } = useTockDocsI18n()
@@ -37,7 +36,7 @@ const contentTocVariants = useUIConfig('contentToc')
 <template>
   <div>
     <UContentToc
-      v-if="links.length && !shouldHideToc"
+      v-if="links.length"
       :highlight="contentTocVariants.highlight ?? true"
       :highlight-color="contentTocVariants.highlightColor"
       :highlight-variant="contentTocVariants.highlightVariant"

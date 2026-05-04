@@ -201,7 +201,7 @@ TockDocs is organized as a **layered monorepo**:
 - Be careful with `ClientOnly`: only wrap components that truly require browser-only APIs. Wrapping header, navigation, or other primary interactive UI in `ClientOnly` can delay first paint, cause missing controls on refresh, and create SSR/client rendering inconsistencies. Prefer SSR-safe rendering plus small client-only fallbacks when possible.
 - Before every commit, run `pnpm run precommit`. The repo installs a versioned Git pre-commit hook from `.githooks/pre-commit`; do not bypass it.
 - Before pushing or updating a PR, run the CI-equivalent checks locally: `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm --dir cli run build`.
-- Keep Markdown edits targeted. Do not run repo-wide Markdown formatting commands that can reflow ASCII diagrams; `pnpm run check:diagrams` verifies those snapshots.
+- Keep Markdown edits targeted. Do not run repo-wide Markdown formatting commands that can reflow hand-aligned ASCII diagrams.
 - For every content Markdown/MDC edit under `docs/content`, `playground/content`, or `.starters/*/content`, run `pnpm run check:mdc-source <touched-files>` before moving on; if the change affects docs rendering, routes, or generated output, also run `pnpm run check:content-integrity`.
 - Optimize for Vercel bills: prefer static or prerendered images, keep large raster assets out of Nitro runtime functions, and move heavyweight reusable images to S3 or another CDN instead of serving them from `public/` when possible.
 - If you add OG images, keep them zero-runtime/prerendered whenever possible; avoid browser-screenshot renderers or any runtime image generation on Vercel unless there is no practical alternative.

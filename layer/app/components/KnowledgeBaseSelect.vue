@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const { compact = false } = defineProps<{
+  compact?: boolean
+}>()
+
 const route = useRoute()
 const popoverOpen = ref(false)
 const docs = useTockDocs()
@@ -25,9 +29,13 @@ watch(() => route.fullPath, () => {
         :label="currentLabel"
         aria-haspopup="menu"
         :aria-expanded="open"
-        class="h-9 rounded-lg bg-default px-2.5 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
-        :class="open ? 'text-highlighted ring-default' : 'text-default'"
-        :ui="{ label: 'truncate max-w-24 sm:max-w-32' }"
+        :class="[
+          compact
+            ? 'h-9 rounded-lg bg-default px-2 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default'
+            : 'h-9 rounded-lg bg-default px-2.5 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default',
+          open ? 'text-highlighted ring-default' : 'text-default',
+        ]"
+        :ui="{ label: compact ? 'truncate max-w-20 sm:max-w-24' : 'truncate max-w-24 sm:max-w-32' }"
       >
         <template #trailing>
           <UIcon

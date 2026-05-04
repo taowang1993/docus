@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useHeaderLayout } from '../../composables/useHeaderLayout'
+
 const appConfig = useAppConfig()
 const site = useSiteConfig()
 const { isEnabled, locales, localePath } = useTockDocsI18n()
 const docs = useTockDocs()
+const { isAssistantDocked } = useHeaderLayout()
 
 const brandName = computed(() => appConfig.header?.title || site.name || '')
 const homePath = computed(() => docs.isKnowledgeBaseMode.value ? '/' : localePath('/'))
@@ -15,20 +18,26 @@ const showLanguageSelect = computed(() => isEnabled.value && locales.value.lengt
     <NuxtLink
       :to="homePath"
       :aria-label="brandName"
-      class="flex shrink-0 items-center gap-3"
+      class="flex min-w-0 shrink items-center gap-2.5 sm:gap-3"
     >
       <AppHeaderLogo />
-      <span class="shrink-0 whitespace-nowrap text-xl font-bold">
+      <span class="min-w-0 truncate text-xl font-bold">
         {{ brandName }}
       </span>
     </NuxtLink>
 
     <template v-if="showKnowledgeBaseSelect">
-      <KnowledgeBaseSelect class="min-w-0 shrink" />
+      <KnowledgeBaseSelect
+        :compact="isAssistantDocked"
+        class="min-w-0 shrink"
+      />
     </template>
 
     <template v-if="showLanguageSelect">
-      <LanguageSelect class="shrink-0" />
+      <LanguageSelect
+        :compact="isAssistantDocked"
+        class="shrink-0"
+      />
     </template>
   </div>
 </template>

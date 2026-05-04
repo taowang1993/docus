@@ -7,7 +7,7 @@ import { kebabCase } from 'scule'
 export async function useDocsPage(collectionName: Ref<string> | ComputedRef<string>) {
   const route = useRoute()
   const appConfig = useAppConfig()
-  const { shouldPushContent: shouldHideToc } = useAssistant()
+  const { shouldPushContent: assistantDocked } = useAssistant()
   const routePath = route.path
   const routeKey = kebabCase(routePath)
   const navigationAsyncData = useDocsNavigation(collectionName)
@@ -62,6 +62,6 @@ export async function useDocsPage(collectionName: Ref<string> | ComputedRef<stri
     breadcrumbs,
     github,
     editLink,
-    shouldHideToc,
+    assistantDocked,
   }
 }

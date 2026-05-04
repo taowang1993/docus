@@ -68,7 +68,7 @@ The local dev launcher exits if port 4987 is occupied; it does not fall back to 
 Markdown files are formatted with Prettier in your editor.
 
 - Save Markdown files in VS Code to auto-format them.
-- Avoid repo-wide Markdown formatting commands or scripts; they can reflow ASCII diagrams. If you intentionally change the hand-aligned diagrams, run `pnpm run check:diagrams` to verify them.
+- Avoid repo-wide Markdown formatting commands or scripts; they can reflow hand-aligned ASCII diagrams.
 
 ## Deployment
 

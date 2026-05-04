@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHeaderLayout } from '../../composables/useHeaderLayout'
 import { useTockDocsColorMode } from '../../composables/useTockDocsColorMode'
 import { useSubNavigation } from '../../composables/useSubNavigation'
 
@@ -7,6 +8,7 @@ const route = useRoute()
 const { forced: forcedColorMode } = useTockDocsColorMode()
 
 const { isEnabled: isAssistantEnabled } = useAssistant()
+const { classes: headerLayout } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
 
 const showAskAiButton = computed(() => isAssistantEnabled.value && route.meta.layout === 'docs')
@@ -25,7 +27,13 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
 <template>
   <UHeader
-    :ui="{ center: 'min-w-0 flex-1', right: 'flex items-center gap-1 shrink-0' }"
+    :ui="{
+      center: headerLayout.center,
+      right: 'flex min-w-0 items-center gap-1 shrink-0',
+      toggle: headerLayout.drawerOnly,
+      content: headerLayout.drawerOnly,
+      overlay: headerLayout.drawerOnly,
+    }"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
   >
     <AppHeaderCenter :show-ask-ai-button="showAskAiButton" />
@@ -39,13 +47,13 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
       <UContentSearchButton
         size="lg"
-        class="shrink-0 lg:hidden"
+        :class="headerLayout.searchButton"
       />
 
       <AskAiButton
         v-if="showAskAiButton"
         mobile
-        class="shrink-0 sm:hidden"
+        :class="headerLayout.mobileAskAiButton"
       />
 
       <ClientOnly v-if="!forcedColorMode">
@@ -108,7 +116,7 @@ const links = computed(() => appConfig.github && appConfig.github.url
     <template #toggle="{ open, toggle }">
       <IconMenuToggle
         :open="open"
-        class="lg:hidden"
+        :class="headerLayout.drawerOnly"
         @click="toggle"
       />
     </template>

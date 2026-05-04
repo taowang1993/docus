@@ -7,6 +7,7 @@ definePageMeta({
 
 const { t } = useTockDocsI18n()
 const docs = useTockDocs()
+const { isOpen: assistantOpen } = useAssistant()
 
 if (!docs.isDocsRoute.value || !docs.activeKnowledgeBase.value || !docs.activeLocale.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
@@ -21,7 +22,7 @@ const {
   breadcrumbs,
   github,
   editLink,
-  shouldHideToc,
+  assistantDocked,
 } = await useDocsPage(docs.collectionName)
 
 useSeo({
@@ -42,7 +43,7 @@ defineOgImage('Docs', {
 <template>
   <UPage
     v-if="page"
-    :key="`page-${shouldHideToc}`"
+    :class="assistantDocked ? 'lg:gap-5' : ''"
   >
     <UPageHeader
       :title="page.title"
@@ -101,7 +102,7 @@ defineOgImage('Docs', {
     </UPageBody>
 
     <template
-      v-if="page?.body?.toc?.links?.length && !shouldHideToc"
+      v-if="page?.body?.toc?.links?.length && !assistantOpen"
       #right
     >
       <DocsAsideRight
