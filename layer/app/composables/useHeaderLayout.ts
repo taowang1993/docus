@@ -12,16 +12,16 @@ const HEADER_LAYOUT_CLASSES = {
     searchButton: 'shrink-0 lg:hidden',
     desktopAskAiButton: 'hidden shrink-0 lg:inline-flex',
     mobileAskAiButton: 'shrink-0 lg:hidden',
-    drawerOnly: 'min-[1400px]:hidden',
-    headerSelectors: 'flex items-center gap-1.5',
+    drawerOnly: 'lg:hidden',
+    headerSelectors: 'hidden lg:flex items-center gap-1.5',
   },
   dockedExpanded: {
     center: 'hidden lg:flex min-w-0 flex-1',
     searchButton: 'shrink-0 lg:hidden',
     desktopAskAiButton: 'hidden shrink-0 lg:inline-flex',
     mobileAskAiButton: 'shrink-0 lg:hidden',
-    drawerOnly: 'min-[1560px]:hidden',
-    headerSelectors: 'flex items-center gap-1.5',
+    drawerOnly: 'lg:hidden',
+    headerSelectors: 'hidden lg:flex items-center gap-1.5',
   },
 } as const
 

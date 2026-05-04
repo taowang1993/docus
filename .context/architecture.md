@@ -340,7 +340,7 @@ Breakpoints: `sm` = 640px, `lg` = 1024px.
 ### AI Sidebar On (docked)
 
 - ≥1024px: selectors + search input + lg AI button + theme + github
-- <1024px: selectors + magnifying glass + sm AI button + theme + github
+- <1024px: magnifying glass + sm AI button + theme + github + hamburger (selectors in TOC sidebar)
 
 ### AI Sidebar On (docked expanded)
 

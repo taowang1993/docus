@@ -8,7 +8,7 @@ const appConfig = useAppConfig()
 const route = useRoute()
 const { forced: forcedColorMode } = useTockDocsColorMode()
 
-const { isEnabled: isAssistantEnabled } = useAssistant()
+const { isEnabled: isAssistantEnabled, isOpen: aiOpen } = useAssistant()
 const { classes: headerLayout, isAssistantDocked: assistantDocked } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
 const isMobile = useMediaQuery('(max-width: 767px)')
@@ -132,13 +132,10 @@ const links = computed(() => appConfig.github && appConfig.github.url
     </template>
 
     <template #toggle>
-      <div
-        v-if="!assistantDocked"
-        :class="[headerLayout.drawerOnly, 'shrink-0']"
-      >
+      <div :class="[headerLayout.drawerOnly, 'shrink-0']">
         <IconMenuToggle
           :open="menuOpen"
-          @click="menuOpen = !menuOpen"
+          @click="aiOpen ? (aiOpen = false, menuOpen = !menuOpen) : (menuOpen = !menuOpen)"
         />
       </div>
     </template>
