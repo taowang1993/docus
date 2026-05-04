@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMediaQuery } from '@vueuse/core'
 import { useHeaderLayout } from '../../composables/useHeaderLayout'
 import { useTockDocsColorMode } from '../../composables/useTockDocsColorMode'
 import { useSubNavigation } from '../../composables/useSubNavigation'
@@ -10,9 +11,15 @@ const { forced: forcedColorMode } = useTockDocsColorMode()
 const { isEnabled: isAssistantEnabled } = useAssistant()
 const { classes: headerLayout, isAssistantDocked: assistantDocked } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
+const isMobile = useMediaQuery('(max-width: 767px)')
 // Standalone ref decoupled from UHeader's internal state so the sidebar
 // stays open across client-side navigations (e.g. selector clicks).
 const menuOpen = ref(false)
+
+// Push the header right edge left when the TOC sidebar is open on desktop.
+const headerStyle = computed(() => ({
+  marginRight: menuOpen.value && !isMobile.value ? '352px' : '0',
+}))
 
 watch(assistantDocked, (value) => {
   if (value) {
@@ -45,6 +52,7 @@ const links = computed(() => appConfig.github && appConfig.github.url
   <UHeader
     :ui="headerMenuUi"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
+    :style="headerStyle"
   >
     <AppHeaderCenter :show-ask-ai-button="showAskAiButton" />
 
