@@ -125,6 +125,7 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
     <template #toggle="{ open, toggle }">
       <div
+        v-if="!assistantDocked"
         :class="[headerLayout.drawerOnly, 'shrink-0']"
       >
         <IconMenuToggle

@@ -22,7 +22,7 @@
     "check:mdc-source:staged": "node scripts/check-mdc-source-staged.mjs",
     "check:content-integrity": "node scripts/check-content-integrity.mjs",
     "test:mdc-source": "node --test scripts/lib/mdc-source-lint.test.mjs",
-    "test:regression": "tsx --test layer/modules/config.test.ts",
+    "test:regression": "tsx --test layer/modules/config.test.ts layer/app/components/app/AppHeader.test.ts",
     "precommit": "pnpm run check:mdc-source:staged && pnpm run check:i18n && pnpm run lint && pnpm run docs:build",
     "typecheck": "node scripts/with-env.mjs nuxt typecheck layer",
     "verify": "pnpm run check:i18n && pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
