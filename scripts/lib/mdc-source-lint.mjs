@@ -6,6 +6,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 export const repoRoot = fileURLToPath(new URL('../..', import.meta.url))
 export const docsContentDir = resolve(repoRoot, 'docs/content')
+export const playgroundContentDir = resolve(repoRoot, 'playground/content')
+export const startersDefaultContentDir = resolve(repoRoot, '.starters/default/content')
+export const startersI18nContentDir = resolve(repoRoot, '.starters/i18n/content')
+
+export function getWorkspaceMarkdownContentDirs(rootDir = repoRoot) {
+  return [
+    resolve(rootDir, 'docs/content'),
+    resolve(rootDir, 'playground/content'),
+    resolve(rootDir, '.starters/default/content'),
+    resolve(rootDir, '.starters/i18n/content'),
+  ].filter(existsSync)
+}
 
 export const defaultMarkdownParserOptions = {
   remark: {
@@ -20,15 +32,19 @@ export const defaultMarkdownParserOptions = {
   highlight: false,
 }
 
-const SLOT_MARKER_RE = /^#(?:title|description|header|footer|default|code)$/
+const SLOT_MARKERS = ['title', 'description', 'header', 'footer', 'default', 'code', 'links', 'features']
+const SLOT_MARKER_RE = new RegExp(`^#(?:${SLOT_MARKERS.join('|')})$`)
+const EMPTY_HEADING_RE = /^#{1,6}\s*$/
 const HEADINGIZED_COMPONENT_RE = /^#{1,6}\s+:{2,}[a-z0-9][\w-]*/i
-const HEADINGIZED_SLOT_RE = /^#{1,6}\s+#(?:title|description|header|footer|default|code)$/
+const HEADINGIZED_SLOT_RE = new RegExp(`^#{1,6}\\s+#(?:${SLOT_MARKERS.join('|')})$`)
+const HEADINGIZED_PROP_LINE_RE = /^#{1,6}\s+(?:class|label|icon|to|target|color|variant|title|description|src|alt|width|height|loading|ui|name|type|level|default-value|defaultValue):\s*/i
 const ESCAPED_COMPONENT_RE = /^\\:{2,}/
 const COMPONENT_FENCE_CANDIDATE_RE = /^:{2,}[a-z0-9][\w-]*/i
 const COMPONENT_OPEN_PREFIX_RE = /^(:{2,})([a-z0-9][\w-]*)(?:\{[^}\n]*\})?/i
 const COMPONENT_OPEN_RE = /^(:{2,})([a-z0-9][\w-]*)(?:\{[^}\n]*\})?$/i
 const COMPONENT_CLOSE_RE = /^(:{2,})$/
 const PROP_LIKE_RE = /^[a-z][\w-]*:\s*/i
+const SUSPICIOUS_COMPONENT_PROP_KEYS = new Set(['class', 'label', 'icon', 'to', 'target', 'color', 'variant', 'src', 'alt', 'width', 'height', 'loading', 'ui', 'name', 'type', 'level', 'default-value', 'defaultvalue'])
 
 export function walkMarkdownFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -47,6 +63,15 @@ function isWithinDirectory(filePath, directory) {
   return relativePath && !relativePath.startsWith('..') && !isAbsolute(relativePath)
 }
 
+function isWithinAnyContentDirectory(filePath, contentDirs) {
+  return contentDirs.some(directory => filePath === directory || isWithinDirectory(filePath, directory))
+}
+
+function getSuspiciousComponentPropKey(text) {
+  const key = text.match(/^([a-z][\w-]*):\s*/i)?.[1]?.toLowerCase()
+  return key && SUSPICIOUS_COMPONENT_PROP_KEYS.has(key) ? key : null
+}
+
 function resolveInputPath(input, rootDir) {
   if (isAbsolute(input)) {
     return input
@@ -60,9 +85,15 @@ function resolveInputPath(input, rootDir) {
   return resolve(rootDir, input)
 }
 
-export function resolveMarkdownTargets(inputs = [], { rootDir = repoRoot, contentDir = docsContentDir } = {}) {
+export function resolveMarkdownTargets(inputs = [], { rootDir = repoRoot, contentDir, contentDirs } = {}) {
+  const effectiveContentDirs = (contentDirs && contentDirs.length > 0)
+    ? contentDirs
+    : contentDir
+      ? [contentDir]
+      : getWorkspaceMarkdownContentDirs(rootDir)
+
   if (!inputs.length) {
-    return walkMarkdownFiles(contentDir).sort()
+    return [...new Set(effectiveContentDirs.flatMap(directory => walkMarkdownFiles(directory)))].sort()
   }
 
   const resolvedFiles = new Set()
@@ -76,7 +107,7 @@ export function resolveMarkdownTargets(inputs = [], { rootDir = repoRoot, conten
 
     const stats = statSync(targetPath)
     if (stats.isDirectory()) {
-      if (targetPath === contentDir || isWithinDirectory(targetPath, contentDir)) {
+      if (isWithinAnyContentDirectory(targetPath, effectiveContentDirs)) {
         for (const filePath of walkMarkdownFiles(targetPath)) {
           resolvedFiles.add(filePath)
         }
@@ -84,7 +115,7 @@ export function resolveMarkdownTargets(inputs = [], { rootDir = repoRoot, conten
       continue
     }
 
-    if (/\.mdc?$/i.test(targetPath) && (targetPath === contentDir || isWithinDirectory(targetPath, contentDir))) {
+    if (/\.mdc?$/i.test(targetPath) && isWithinAnyContentDirectory(targetPath, effectiveContentDirs)) {
       resolvedFiles.add(targetPath)
     }
   }
@@ -181,6 +212,14 @@ function lintSourceStructure(filePath, rawSource, parseYamlDocument) {
     }
 
     if (componentFrontmatter) {
+      if (trimmed === 'target: \\_blank') {
+        issues.push(createIssue(filePath, 'escaped-blank-target', 'escaped _blank leaked into component props.', lineNumber, 1))
+      }
+
+      if (/https?:\/\/[^)\s]+\/(?:_og|_ipx)\//i.test(trimmed)) {
+        issues.push(createIssue(filePath, 'absolute-generated-asset-url', 'same-site generated asset URLs should use relative paths.', lineNumber, 1))
+      }
+
       if (trimmed === '---') {
         issues.push(...validateYamlBlock({
           filePath,
@@ -203,6 +242,10 @@ function lintSourceStructure(filePath, rawSource, parseYamlDocument) {
 
     if (HEADINGIZED_SLOT_RE.test(trimmed)) {
       issues.push(createIssue(filePath, 'headingized-slot-marker', 'slot marker was converted into a heading.', lineNumber, 1))
+    }
+
+    if (HEADINGIZED_PROP_LINE_RE.test(trimmed)) {
+      issues.push(createIssue(filePath, 'headingized-component-prop', 'component property line was converted into a heading.', lineNumber, 1))
     }
 
     if (ESCAPED_COMPONENT_RE.test(trimmed)) {
@@ -264,8 +307,17 @@ function lintSourceStructure(filePath, rawSource, parseYamlDocument) {
       continue
     }
 
+    if (EMPTY_HEADING_RE.test(trimmed)) {
+      issues.push(createIssue(filePath, 'empty-heading', 'heading marker must include visible text.', lineNumber, 1))
+      continue
+    }
+
     if (SLOT_MARKER_RE.test(trimmed) && componentStack.length === 0) {
       issues.push(createIssue(filePath, 'slot-marker-outside-component', 'slot marker must be nested inside a component fence.', lineNumber, 1))
+    }
+
+    if (getSuspiciousComponentPropKey(trimmed) && componentStack.length === 0) {
+      issues.push(createIssue(filePath, 'orphan-component-prop-line', 'component-like property line leaked outside component frontmatter.', lineNumber, 1))
     }
 
     if (COMPONENT_FENCE_CANDIDATE_RE.test(trimmed) && !COMPONENT_OPEN_RE.test(trimmed)) {

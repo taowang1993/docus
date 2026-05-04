@@ -1,5 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
-import type { Collections, DocsCollectionItem } from '@nuxt/content'
+import type { Collections } from '@nuxt/content'
+import type { DocsCollectionItem } from '../types'
 import { findPageHeadline } from '@nuxt/content/utils'
 import { kebabCase } from 'scule'
 
@@ -14,7 +15,7 @@ export async function useDocsPage(collectionName: Ref<string> | ComputedRef<stri
 
   const [, { data: page }, { data: surround }] = await Promise.all([
     navigationAsyncData,
-    useAsyncData(routeKey, () => queryCollection(collectionName.value as keyof Collections).path(routePath).first() as Promise<DocsCollectionItem>),
+    useAsyncData(routeKey, () => queryCollection(collectionName.value as keyof Collections).path(routePath).first() as Promise<DocsCollectionItem | null>),
     useAsyncData(`${routeKey}-surround`, () => {
       return queryCollectionItemSurroundings(collectionName.value as keyof Collections, routePath, {
         fields: ['description'],

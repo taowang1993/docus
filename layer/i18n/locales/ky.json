@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AIден сураңыз",
+    "panelTitle": "AIден сураңыз",
     "placeholder": "Суроо берүү...",
     "tooltip": "АИге суроо берүү",
     "tryAsking": "Суроо берүүгө аракет кылыңыз",

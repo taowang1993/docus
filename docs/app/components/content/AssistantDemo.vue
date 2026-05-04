@@ -181,7 +181,7 @@ function resetChat() {
             icon="i-lucide-trash-2"
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="sm"
             :disabled="!isEnabled"
             @click="resetChat"
           />
@@ -189,7 +189,7 @@ function resetChat() {
             type="submit"
             icon="i-lucide-arrow-up"
             color="primary"
-            size="xs"
+            size="sm"
             :disabled="!isEnabled || !input.trim() || chat?.status === 'streaming'"
             :loading="chat?.status === 'streaming'"
           />

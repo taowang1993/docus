@@ -37,7 +37,8 @@ const tocDrawerOpen = ref(false)
         icon="i-lucide-text-align-start"
         color="neutral"
         variant="link"
-        size="xs"
+        size="sm"
+        class="px-0 text-xs"
         :aria-label="t('docs.menu')"
       />
 
@@ -69,7 +70,8 @@ const tocDrawerOpen = ref(false)
         trailing-icon="i-lucide-chevron-right"
         color="neutral"
         variant="link"
-        size="xs"
+        size="sm"
+        class="px-0 text-xs"
         :aria-label="t('docs.toc')"
       />
 

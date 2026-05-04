@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Yapay zekaya sor",
+    "panelTitle": "Yapay zekaya sor",
     "placeholder": "Bir soru sorun...",
     "tooltip": "Yapay zekaya bir soru sorun",
     "tryAsking": "Bir soru sormayı deneyin",

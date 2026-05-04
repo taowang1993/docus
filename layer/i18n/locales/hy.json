@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Հարցրեք AI-ին",
+    "panelTitle": "Հարցրեք AI-ին",
     "placeholder": "Հարց տվեք...",
     "tooltip": "Հարց տվեք AI-ին",
     "tryAsking": "Փորձեք հարց տալ",

@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AI-ден сұраңыз",
+    "panelTitle": "AI-ден сұраңыз",
     "placeholder": "Сұрақ қойыңыз...",
     "tooltip": "ЖИ-ге сұрақ қойыңыз",
     "tryAsking": "Сұрақ қоюға тырысыңыз",

@@ -1,20 +1,20 @@
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
 import { relative } from 'node:path'
 import {
-  docsContentDir,
+  getWorkspaceMarkdownContentDirs,
   lintMarkdownFiles,
   repoRoot,
   resolveMarkdownTargets,
 } from './lib/mdc-source-lint.mjs'
 
-assert.ok(existsSync(docsContentDir), `Missing docs content directory: ${docsContentDir}`)
+const workspaceContentDirs = getWorkspaceMarkdownContentDirs()
+assert.ok(workspaceContentDirs.length > 0, 'Missing workspace content directories to lint.')
 
 const requestedPaths = process.argv.slice(2)
 const markdownFiles = resolveMarkdownTargets(requestedPaths)
 
 if (!markdownFiles.length) {
-  console.log('No docs/content markdown files to lint.')
+  console.log('No workspace markdown files to lint.')
   process.exit(0)
 }
 

@@ -84,12 +84,12 @@ Root scripts coordinate common workflows:
 
 - `pnpm run dev` → runs the docs site in dev mode
 - `pnpm run dev:prepare` → prepares layer, docs, and playground Nuxt types
-- `pnpm run check:mdc-source` → parses all `docs/content/**/*.md{,c}` files with the real MDC runtime before the build
-- `pnpm run check:mdc-source:staged` → validates staged new/modified docs content files during pre-commit
+- `pnpm run check:mdc-source` → parses all workspace content markdown files (`docs/content`, `playground/content`, `.starters/default/content`, `.starters/i18n/content`) with the real MDC runtime before the build
+- `pnpm run check:mdc-source:staged` → validates staged new/modified workspace content files during pre-commit
 - `pnpm run docs:build` → runs source MDC lint, builds the docs app while extending `../layer`, then runs the rendered-output content integrity smoke test
 - `pnpm run verify` → prepare + lint + typecheck + docs build
 
-Docs validation is intentionally two-layered: source MDC lint fails fast on malformed `.md` / `.mdc`, while `check:content-integrity` remains as the rendered-output backstop.
+Docs validation is intentionally two-layered: source MDC lint fails fast on malformed `.md` / `.mdc` using the real MDC parser plus structural rules (component fences, frontmatter, slot markers, and empty headings), while `check:content-integrity` remains the rendered-output backstop.
 
 ### 2. Product layer (`layer/`)
 

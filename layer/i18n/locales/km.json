@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "សួរ AI",
+    "panelTitle": "សួរ AI",
     "placeholder": "សំណួរមួយ...",
     "tooltip": "សួរសំណួរទៅកាន់ AI",
     "tryAsking": "ព្យាយាមសួរសំណួរមួយ",

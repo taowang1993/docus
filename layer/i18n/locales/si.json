@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AI අහන්න",
+    "panelTitle": "AI අහන්න",
     "placeholder": "ප්‍රශ්නයක් අහන්න...",
     "tooltip": "AI ගෙන් ප්‍රශ්නයක් අසන්න",
     "tryAsking": "ප්රශ්නයක් ඇසීමට උත්සාහ කරන්න",

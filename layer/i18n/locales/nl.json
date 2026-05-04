@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Vraag AI",
+    "panelTitle": "Vraag AI",
     "placeholder": "Stel een vraag...",
     "tooltip": "Stel een vraag aan AI",
     "tryAsking": "Probeer een vraag te stellen",

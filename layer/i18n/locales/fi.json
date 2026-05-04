@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Kysy tekoälyltä",
+    "panelTitle": "Kysy tekoälyltä",
     "placeholder": "Esitä kysymys...",
     "tooltip": "Esitä tekoälylle kysymys",
     "tryAsking": "Kokeile kysymyksen esittämistä",

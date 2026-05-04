@@ -198,8 +198,15 @@ TockDocs is organized as a **layered monorepo**:
 ## Development Guidelines
 
 - Do not run `pnpm dev`, `nuxt dev`, or other long-running app processes unless the user explicitly asks for it.
+- Be careful with `ClientOnly`: only wrap components that truly require browser-only APIs. Wrapping header, navigation, or other primary interactive UI in `ClientOnly` can delay first paint, cause missing controls on refresh, and create SSR/client rendering inconsistencies. Prefer SSR-safe rendering plus small client-only fallbacks when possible.
 - Before every commit, run `pnpm run precommit`. The repo installs a versioned Git pre-commit hook from `.githooks/pre-commit`; do not bypass it.
 - Before pushing or updating a PR, run the CI-equivalent checks locally: `pnpm run dev:prepare`, `pnpm run lint`, `pnpm run typecheck`, and `pnpm --dir cli run build`.
 - Keep Markdown edits targeted. Do not run repo-wide Markdown formatting commands that can reflow ASCII diagrams; `pnpm run check:diagrams` verifies those snapshots.
+- For every content Markdown/MDC edit under `docs/content`, `playground/content`, or `.starters/*/content`, run `pnpm run check:mdc-source <touched-files>` before moving on; if the change affects docs rendering, routes, or generated output, also run `pnpm run check:content-integrity`.
+- Optimize for Vercel bills: prefer static or prerendered images, keep large raster assets out of Nitro runtime functions, and move heavyweight reusable images to S3 or another CDN instead of serving them from `public/` when possible.
+- If you add OG images, keep them zero-runtime/prerendered whenever possible; avoid browser-screenshot renderers or any runtime image generation on Vercel unless there is no practical alternative.
+- When an image must stay in the repo, keep it at display size and prefer compressed WebP/AVIF over source PNG/JPEG screenshots.
+- For screenshot recompression, use `cwebp` (the libwebp CLI encoder) locally before committing so PNG/JPEG assets become smaller WebP files instead of going through runtime image generation.
+- When embedding generated OG routes like `/_og/...`, use plain `<img>`/`site-image` rather than `NuxtImg` so IPX does not try to treat the route like a local file.
 - Knowledge-base changes are route + content changes. Keep `docs/content/<kb>/kb.yml`, localized content paths, and landing/docs links aligned with the public `/docs/<kb>/<locale>/...` routes.
 - When opening or updating a PR, use `.github/PR.md` as the source template. If it is missing, copy the current draft from `.github/workflows/PR.md` first.

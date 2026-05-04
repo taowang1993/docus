@@ -1,43 +1,26 @@
 import type { RouteLocationNormalized } from 'vue-router'
 import { consola } from 'consola'
 import { getDefaultLocale, getDocsMode, getFilteredLocaleCodes, resolveDocsRoute } from '../../utils/docs'
+import { hasLocaleMessages, resolveLocaleMessages } from '../../utils/locale-messages'
 
 const log = consola.withTag('TockDocs')
 
-const localeFiles = import.meta.glob<{ default: Record<string, unknown> }>('../../i18n/locales/*.json')
-
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin(() => {
   const nuxtApp = useNuxtApp()
+  const appConfig = useAppConfig()
+  const localeCatalog = appConfig.tockdocs.localeMessages || {}
   const publicConfig = nuxtApp.$config.public as Parameters<typeof getDocsMode>[0]
   const i18nConfig = publicConfig.i18n
 
   if (!i18nConfig) {
-    const appConfig = useAppConfig()
     const configuredLocale = appConfig.tockdocs.locale || 'en'
+    const locale = hasLocaleMessages(configuredLocale, localeCatalog) ? configuredLocale : 'en'
 
-    let locale = configuredLocale
-    let resolvedMessages: Record<string, unknown>
-
-    const localeKey = `../../i18n/locales/${configuredLocale}.json`
-    const localeLoader = localeFiles[localeKey]
-
-    if (localeLoader) {
-      const localeModule = await localeLoader()
-      resolvedMessages = localeModule.default
-    }
-    else {
+    if (locale !== configuredLocale) {
       log.warn(`Missing locale file for "${configuredLocale}". Falling back to "en".`)
-      locale = 'en'
-      const fallbackKey = '../../i18n/locales/en.json'
-      const fallbackLoader = localeFiles[fallbackKey]
-      if (fallbackLoader) {
-        const fallbackModule = await fallbackLoader()
-        resolvedMessages = fallbackModule.default
-      }
-      else {
-        resolvedMessages = {} as Record<string, unknown>
-      }
     }
+
+    const resolvedMessages = resolveLocaleMessages(locale, localeCatalog)
 
     nuxtApp.provide('locale', locale)
     nuxtApp.provide('localeMessages', resolvedMessages)

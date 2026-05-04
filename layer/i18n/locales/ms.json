@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Tanya AI",
+    "panelTitle": "Tanya AI",
     "placeholder": "Tanya soalan...",
     "tooltip": "Tanya soalan kepada AI",
     "tryAsking": "Cuba tanya soalan",

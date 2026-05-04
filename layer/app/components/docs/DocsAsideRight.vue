@@ -1,12 +1,30 @@
 <script setup lang="ts">
 import { useSubNavigation } from '../../composables/useSubNavigation'
-import type { DocsCollectionItem } from '@nuxt/content'
+import type { DocsCollectionItem } from '../../types'
+import type { ContentTocLink } from '@nuxt/ui'
 
 const props = defineProps<{
   page?: DocsCollectionItem | null
 }>()
 
-const links = computed(() => props.page?.body?.toc?.links || [])
+function sanitizeTocLinks(links: ContentTocLink[] = []): ContentTocLink[] {
+  return links.flatMap((link) => {
+    const id = link.id?.trim()
+    const children = sanitizeTocLinks(link.children || [])
+
+    if (!id) {
+      return children
+    }
+
+    return [{
+      ...link,
+      id,
+      children,
+    }]
+  })
+}
+
+const links = computed(() => sanitizeTocLinks((props.page?.body?.toc?.links || []) as ContentTocLink[]))
 
 const { shouldPushContent: shouldHideToc } = useAssistant()
 const { subNavigationMode } = useSubNavigation()

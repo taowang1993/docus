@@ -33,6 +33,7 @@
   },
   "assistant": {
     "title": "Tanya AI",
+    "panelTitle": "Tanya AI",
     "placeholder": "Ajukan pertanyaan...",
     "tooltip": "Ajukan pertanyaan kepada AI",
     "tryAsking": "Coba ajukan pertanyaan",

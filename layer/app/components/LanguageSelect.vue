@@ -1,26 +1,34 @@
 <script setup lang="ts">
+const route = useRoute()
+const popoverOpen = ref(false)
 const { locale, locales, switchLocalePath } = useTockDocsI18n()
 
-const currentLocaleLabel = computed(() => {
-  const currentLocale = locales.value.find(localeItem => localeItem.code === locale.value)
+const currentLocale = computed(() => locales.value.find(localeItem => localeItem.code === locale.value))
+const currentLocaleLabel = computed(() => currentLocale.value?.code?.toUpperCase() || locale.value.toUpperCase())
+const currentLocaleAriaLabel = computed(() => currentLocale.value?.name || currentLocaleLabel.value)
 
-  return currentLocale?.name || locale.value.toUpperCase()
+watch(() => route.fullPath, () => {
+  popoverOpen.value = false
 })
 </script>
 
 <template>
-  <UPopover :content="{ align: 'start', sideOffset: 8 }">
+  <UPopover
+    v-model:open="popoverOpen"
+    :content="{ align: 'start', sideOffset: 8 }"
+  >
     <template #default="{ open }">
       <UButton
         color="neutral"
         variant="ghost"
         size="sm"
         :label="currentLocaleLabel"
+        :aria-label="currentLocaleAriaLabel"
         aria-haspopup="menu"
         :aria-expanded="open"
-        class="h-9 rounded-lg bg-default px-3 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
+        class="h-9 rounded-lg bg-default px-2.5 text-sm font-medium shadow-none ring ring-inset ring-transparent transition-colors hover:text-highlighted hover:ring-default focus-visible:ring-default"
         :class="open ? 'text-highlighted ring-default' : 'text-default'"
-        :ui="{ label: 'truncate' }"
+        :ui="{ label: 'truncate max-w-8' }"
       >
         <template #trailing>
           <UIcon
@@ -43,6 +51,7 @@ const currentLocaleLabel = computed(() => {
             class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-highlighted"
             :class="localeItem.code === locale ? 'bg-elevated font-medium text-highlighted' : 'text-muted'"
             :aria-current="localeItem.code === locale ? 'page' : undefined"
+            @click="popoverOpen = false"
           >
             <span class="min-w-0 flex-1 truncate">
               {{ localeItem.name }}

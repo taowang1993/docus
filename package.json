@@ -18,14 +18,15 @@
     "playground:dev": "node scripts/run-dev.mjs playground",
     "lint": "eslint .",
     "check:diagrams": "node scripts/check-ascii-diagrams.mjs",
+    "check:i18n": "node scripts/check-i18n-keys.mjs",
     "check:mdc-source": "node scripts/check-mdc-source.mjs",
     "check:mdc-source:staged": "node scripts/check-mdc-source-staged.mjs",
     "check:content-integrity": "node scripts/check-content-integrity.mjs",
     "test:mdc-source": "node --test scripts/lib/mdc-source-lint.test.mjs",
     "test:regression": "tsx --test layer/modules/config.test.ts",
-    "precommit": "pnpm run check:mdc-source:staged && pnpm run check:diagrams && pnpm run lint && pnpm run docs:build",
+    "precommit": "pnpm run check:mdc-source:staged && pnpm run check:diagrams && pnpm run check:i18n && pnpm run lint && pnpm run docs:build",
     "typecheck": "node scripts/with-env.mjs nuxt typecheck layer",
-    "verify": "pnpm run check:diagrams && pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
+    "verify": "pnpm run check:diagrams && pnpm run check:i18n && pnpm run dev:prepare && pnpm run lint && pnpm run typecheck && pnpm run docs:build",
     "layer:release": "release-it --config .release-it.layer.json && cd layer && npm publish",
     "cli:release": "release-it --config .release-it.cli.json && cd cli && npm publish",
     "release": "pnpm run layer:release && pnpm run cli:release && release-it",
@@ -61,5 +62,10 @@
       }
     }
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.102",
+    "@iconify-json/simple-icons": "^1.2.79",
+    "@iconify-json/vscode-icons": "^1.2.45"
+  }
 }

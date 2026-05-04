@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Frot d'AI",
+    "panelTitle": "Frot d'AI",
     "placeholder": "Stell eng Fro...",
     "tooltip": "Stell der AI eng Fro",
     "tryAsking": "Probéieren eng Fro ze stellen",

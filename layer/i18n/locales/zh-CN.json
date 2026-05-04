@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "询问人工智能",
+    "panelTitle": "询问人工智能",
     "placeholder": "问一个问题...",
     "tooltip": "问人工智能一个问题",
     "tryAsking": "尝试提问",

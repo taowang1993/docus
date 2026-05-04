@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "پرسیار لە AI بکە",
+    "panelTitle": "پرسیار لە AI بکە",
     "placeholder": "پرسیارێک بکە...",
     "tooltip": "پرسیارێک لە AI بکە",
     "tryAsking": "هەوڵبدە پرسیارێک بکەیت",

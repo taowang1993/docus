@@ -1,6 +1,6 @@
 import { addPrerenderRoutes, createResolver, defineNuxtModule, logger } from '@nuxt/kit'
 import { defu } from 'defu'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { formatOgDescription } from '../app/utils/ogImage'
@@ -10,6 +10,7 @@ import { landingPageExists } from '../utils/pages'
 import { getTockDocsContentConfiguration, type TockDocsContentConfiguration } from '../utils/knowledge-bases'
 
 const log = logger.withTag('TockDocs')
+const { resolve } = createResolver(import.meta.url)
 
 type I18nLocale = string | { code: string, name?: string }
 type TockDocsI18nOptions = { locales?: I18nLocale[], strategy?: string }
@@ -30,6 +31,7 @@ export default defineNuxtModule({
     const siteName = (typeof nuxt.options.site === 'object' && nuxt.options.site?.name) || meta.name || gitInfo?.name || ''
     const contentConfiguration = getTockDocsContentConfiguration(dir)
     const availableKnowledgeBaseLocales = new Set(contentConfiguration.knowledgeBases.flatMap(kb => kb.locales))
+    const layerLocaleMessages = readLayerLocaleMessages()
 
     nuxt.options.llms = defu(nuxt.options.llms, {
       domain: url,
@@ -64,6 +66,10 @@ export default defineNuxtModule({
       branch: getGitBranch(),
     })
 
+    nuxt.options.appConfig.tockdocs = defu(nuxt.options.appConfig.tockdocs, {
+      localeMessages: layerLocaleMessages,
+    })
+
     const landingOgImageRoute = getLandingOgImagePrerenderRoute({
       rootDir: dir,
       contentConfiguration,
@@ -94,8 +100,6 @@ export default defineNuxtModule({
     }
 
     if (i18nOptions && typeof i18nOptions === 'object' && i18nOptions.locales) {
-      const { resolve } = createResolver(import.meta.url)
-
       const filteredLocales = i18nOptions.locales.filter((locale: I18nLocale) => {
         const localeCode = typeof locale === 'string' ? locale : locale.code
         const localeFilePath = resolve('../i18n/locales', `${localeCode}.json`)
@@ -157,6 +161,24 @@ export default defineNuxtModule({
     }
   },
 })
+
+function readLayerLocaleMessages(): Record<string, Record<string, unknown>> {
+  const localeDir = resolve('../i18n/locales')
+
+  if (!existsSync(localeDir)) {
+    return {}
+  }
+
+  return Object.fromEntries(
+    readdirSync(localeDir)
+      .filter(fileName => fileName.endsWith('.json'))
+      .map((fileName) => {
+        const localeCode = fileName.replace(/\.json$/i, '')
+        const filePath = join(localeDir, fileName)
+        return [localeCode, JSON.parse(readFileSync(filePath, 'utf8')) as Record<string, unknown>]
+      }),
+  )
+}
 
 type LandingOgImagePrerenderOptions = {
   rootDir: string

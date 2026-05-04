@@ -1,4 +1,29 @@
+import type { ContentTocLink } from '@nuxt/ui'
 import type { FaqQuestions, LocalizedFaqQuestions } from '../../modules/assistant/runtime/types'
+
+export interface DocsCollectionItem {
+  title?: string
+  description?: string
+  seo?: {
+    title?: string
+    description?: string
+  }
+  body?: {
+    toc?: {
+      links?: ContentTocLink[]
+    }
+  }
+  links?: Array<{
+    label: string
+    icon: string
+    to: string
+    target?: string
+  }>
+  stem: string
+  extension: string
+  modifiedAt?: string
+  [k: string]: unknown
+}
 
 export type { FaqCategory, FaqQuestions, LocalizedFaqQuestions } from '../../modules/assistant/runtime/types'
 
@@ -6,6 +31,7 @@ declare module 'nuxt/schema' {
   interface AppConfig {
     tockdocs: {
       locale: string
+      localeMessages: Record<string, Record<string, unknown>>
     }
     seo: {
       titleTemplate: string

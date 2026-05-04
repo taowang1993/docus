@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AI से पूछें",
+    "panelTitle": "AI से पूछें",
     "placeholder": "सवाल पूछें...",
     "tooltip": "AI से सवाल पूछें",
     "tryAsking": "सवाल पूछने की कोशिश करें",

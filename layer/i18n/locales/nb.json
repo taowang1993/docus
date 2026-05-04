@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Spør AI",
+    "panelTitle": "Spør AI",
     "placeholder": "Still et spørsmål...",
     "tooltip": "Still AI et spørsmål",
     "tryAsking": "Prøv å stille et spørsmål",
