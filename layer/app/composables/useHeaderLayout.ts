@@ -5,6 +5,7 @@ const HEADER_LAYOUT_CLASSES = {
     desktopAskAiButton: 'hidden shrink-0 sm:inline-flex',
     mobileAskAiButton: 'shrink-0 sm:hidden',
     drawerOnly: 'lg:hidden',
+    headerSelectors: 'hidden lg:flex items-center gap-1.5',
   },
   docked: {
     center: 'min-w-0 flex-1',
@@ -12,6 +13,7 @@ const HEADER_LAYOUT_CLASSES = {
     desktopAskAiButton: 'hidden shrink-0 min-[1400px]:inline-flex',
     mobileAskAiButton: 'shrink-0 min-[1400px]:hidden',
     drawerOnly: 'min-[1400px]:hidden',
+    headerSelectors: 'hidden min-[1400px]:flex items-center gap-1.5',
   },
   dockedExpanded: {
     center: 'min-w-0 flex-1',
@@ -19,6 +21,7 @@ const HEADER_LAYOUT_CLASSES = {
     desktopAskAiButton: 'hidden shrink-0 min-[1560px]:inline-flex',
     mobileAskAiButton: 'shrink-0 min-[1560px]:hidden',
     drawerOnly: 'min-[1560px]:hidden',
+    headerSelectors: 'hidden min-[1560px]:flex items-center gap-1.5',
   },
 } as const
 

@@ -7,9 +7,24 @@ const appConfig = useAppConfig()
 const route = useRoute()
 const { forced: forcedColorMode } = useTockDocsColorMode()
 
-const { isEnabled: isAssistantEnabled } = useAssistant()
+const { isEnabled: isAssistantEnabled, shouldPushContent: assistantDocked } = useAssistant()
 const { classes: headerLayout } = useHeaderLayout()
 const { subNavigationMode } = useSubNavigation()
+const headerMenuOpen = ref(false)
+
+watch(assistantDocked, (value) => {
+  if (value) {
+    headerMenuOpen.value = false
+  }
+}, { immediate: true })
+
+// Keep the header menu above the docked assistant sidebar.
+const headerMenuUi = computed(() => ({
+  center: headerLayout.value.center,
+  right: 'flex min-w-0 items-center gap-1 shrink-0',
+  content: assistantDocked.value ? `${headerLayout.value.drawerOnly} lg:block z-[71]` : 'z-[71]',
+  overlay: assistantDocked.value ? `${headerLayout.value.drawerOnly} lg:block z-[70]` : 'z-[70]',
+}))
 
 const showAskAiButton = computed(() => isAssistantEnabled.value && route.meta.layout === 'docs')
 
@@ -27,13 +42,8 @@ const links = computed(() => appConfig.github && appConfig.github.url
 
 <template>
   <UHeader
-    :ui="{
-      center: headerLayout.center,
-      right: 'flex min-w-0 items-center gap-1 shrink-0',
-      toggle: headerLayout.drawerOnly,
-      content: headerLayout.drawerOnly,
-      overlay: headerLayout.drawerOnly,
-    }"
+    v-model:open="headerMenuOpen"
+    :ui="headerMenuUi"
     :class="{ 'flex flex-col': subNavigationMode === 'header' }"
   >
     <AppHeaderCenter :show-ask-ai-button="showAskAiButton" />
@@ -114,11 +124,14 @@ const links = computed(() => appConfig.github && appConfig.github.url
     </template>
 
     <template #toggle="{ open, toggle }">
-      <IconMenuToggle
-        :open="open"
-        :class="headerLayout.drawerOnly"
-        @click="toggle"
-      />
+      <div
+        :class="[headerLayout.drawerOnly, 'shrink-0']"
+      >
+        <IconMenuToggle
+          :open="open"
+          @click="toggle"
+        />
+      </div>
     </template>
 
     <template #body>
