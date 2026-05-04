@@ -11,12 +11,6 @@ const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 const navigationKey = computed(() => `${route.path}:${navigation.value?.map(item => item.path).join('|') || 'navigation-empty'}`)
 const contentNavVariants = useUIConfig('contentNavigation')
 
-// Selectors
-const docs = useTockDocs()
-const { isEnabled, locales } = useTockDocsI18n()
-const showKnowledgeBaseSelect = computed(() => docs.isKnowledgeBaseMode.value && docs.knowledgeBases.value.length > 1 && docs.isDocsRoute.value)
-const showLanguageSelect = computed(() => isEnabled.value && locales.value.length > 1 && (!docs.isKnowledgeBaseMode.value || docs.isDocsRoute.value))
-
 function close() {
   isOpen.value = false
 }
@@ -34,18 +28,7 @@ function close() {
       <div class="flex h-full flex-col">
         <!-- Header: selectors + close -->
         <div class="flex h-16 shrink-0 items-center gap-2 border-b border-default px-4">
-          <template v-if="showKnowledgeBaseSelect">
-            <KnowledgeBaseSelect
-              compact
-              class="min-w-0 flex-1"
-            />
-          </template>
-          <template v-if="showLanguageSelect">
-            <LanguageSelect
-              compact
-              class="shrink-0"
-            />
-          </template>
+          <HeaderSelectors compact />
           <UButton
             icon="i-lucide-x"
             color="neutral"
@@ -85,18 +68,7 @@ function close() {
     <div class="flex h-full flex-col">
       <!-- Header: selectors + close -->
       <div class="flex h-16 shrink-0 items-center gap-2 border-b border-default px-4">
-        <template v-if="showKnowledgeBaseSelect">
-          <KnowledgeBaseSelect
-            compact
-            class="min-w-0 flex-1"
-          />
-        </template>
-        <template v-if="showLanguageSelect">
-          <LanguageSelect
-            compact
-            class="shrink-0"
-          />
-        </template>
+        <HeaderSelectors compact />
         <UButton
           icon="i-lucide-x"
           color="neutral"

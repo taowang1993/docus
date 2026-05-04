@@ -30,19 +30,7 @@ const showLanguageSelect = computed(() => isEnabled.value && locales.value.lengt
       v-if="showKnowledgeBaseSelect || showLanguageSelect"
       :class="headerLayout.headerSelectors"
     >
-      <template v-if="showKnowledgeBaseSelect">
-        <KnowledgeBaseSelect
-          :compact="isAssistantDocked"
-          class="min-w-0 shrink"
-        />
-      </template>
-
-      <template v-if="showLanguageSelect">
-        <LanguageSelect
-          :compact="isAssistantDocked"
-          class="shrink-0"
-        />
-      </template>
+      <HeaderSelectors :compact="isAssistantDocked" />
     </div>
   </div>
 </template>

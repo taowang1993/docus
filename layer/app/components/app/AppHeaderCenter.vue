@@ -10,11 +10,16 @@ const { classes: headerLayout } = useHeaderLayout()
 
 <template>
   <div class="flex w-full min-w-0 items-center gap-2">
-    <UContentSearchButton
-      :collapsed="false"
-      size="lg"
-      class="min-w-0 flex-1"
-    />
+    <ClientOnly>
+      <UContentSearchButton
+        :collapsed="false"
+        size="lg"
+        class="min-w-0 flex-1"
+      />
+      <template #fallback>
+        <div class="min-w-0 flex-1 h-10 rounded-md border border-default bg-default/50" />
+      </template>
+    </ClientOnly>
 
     <AskAiButton
       v-if="showAskAiButton"
