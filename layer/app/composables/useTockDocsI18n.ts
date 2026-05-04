@@ -17,6 +17,8 @@ type TockDocsNuxtApp = ReturnType<typeof useNuxtApp> & {
 }
 
 export const useTockDocsI18n = () => {
+  const appConfig = useAppConfig()
+  const localeCatalog = appConfig.tockdocs.localeMessages || {}
   const config = useRuntimeConfig().public
   const nuxtApp = useNuxtApp() as TockDocsNuxtApp
   const docs = useTockDocs()
@@ -55,8 +57,8 @@ export const useTockDocsI18n = () => {
 
     return getLocaleMessageValue(i18nMessages?.[currentLocale], key)
       || getLocaleMessageValue(i18nMessages?.[defaultLocale], key)
-      || getLocaleMessageValue(resolveLocaleMessages(currentLocale), key)
-      || getLocaleMessageValue(resolveLocaleMessages(defaultLocale), key)
+      || getLocaleMessageValue(resolveLocaleMessages(currentLocale, localeCatalog), key)
+      || getLocaleMessageValue(resolveLocaleMessages(defaultLocale, localeCatalog), key)
       || key
   }
   const localePath = (path: string) => docs.mode.value === 'kb'

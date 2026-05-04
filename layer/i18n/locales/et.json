@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Küsi tehisintellekti",
+    "panelTitle": "Küsi tehisintellekti",
     "placeholder": "Esita küsimus...",
     "tooltip": "Esita tehisintellektile küsimus",
     "tryAsking": "Proovi esitada küsimus",

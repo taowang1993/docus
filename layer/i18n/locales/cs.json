@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Zeptejte se AI",
+    "panelTitle": "Zeptejte se AI",
     "placeholder": "Zeptej se...",
     "tooltip": "Zeptejte se umělé inteligence",
     "tryAsking": "Zkus položit otázku",

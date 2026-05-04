@@ -31,6 +31,7 @@ declare module 'nuxt/schema' {
   interface AppConfig {
     tockdocs: {
       locale: string
+      localeMessages: Record<string, Record<string, unknown>>
     }
     seo: {
       titleTemplate: string

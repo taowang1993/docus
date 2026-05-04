@@ -1,18 +1,11 @@
-const localeMessages = Object.fromEntries(
-  Object.entries(import.meta.glob('../i18n/locales/*.json', { eager: true, import: 'default' }))
-    .map(([path, messages]) => {
-      const localeCode = path.match(/\/([^/]+)\.json$/)?.[1]
-      return localeCode ? [localeCode, messages as Record<string, unknown>] : null
-    })
-    .filter((entry): entry is [string, Record<string, unknown>] => Boolean(entry)),
-)
+export type LocaleMessageCatalog = Record<string, Record<string, unknown>>
 
-export function hasLocaleMessages(locale: string): boolean {
+export function hasLocaleMessages(locale: string, localeMessages: LocaleMessageCatalog): boolean {
   const normalizedLocale = locale.toLowerCase()
   return Object.keys(localeMessages).some(code => code.toLowerCase() === normalizedLocale || code.toLowerCase() === normalizedLocale.split('-')[0])
 }
 
-export function resolveLocaleMessages(locale: string): Record<string, unknown> {
+export function resolveLocaleMessages(locale: string, localeMessages: LocaleMessageCatalog): Record<string, unknown> {
   const normalizedLocale = locale.toLowerCase()
   const exactMatch = Object.entries(localeMessages).find(([code]) => code.toLowerCase() === normalizedLocale)?.[1]
   if (exactMatch) {

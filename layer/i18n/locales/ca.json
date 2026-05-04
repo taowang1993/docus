@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Pregunta a la IA",
+    "panelTitle": "Pregunta a la IA",
     "placeholder": "Fes una pregunta...",
     "tooltip": "Fes una pregunta a l'IA",
     "tryAsking": "Prova de fer una pregunta",

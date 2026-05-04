@@ -7,19 +7,20 @@ const log = consola.withTag('TockDocs')
 
 export default defineNuxtPlugin(() => {
   const nuxtApp = useNuxtApp()
+  const appConfig = useAppConfig()
+  const localeCatalog = appConfig.tockdocs.localeMessages || {}
   const publicConfig = nuxtApp.$config.public as Parameters<typeof getDocsMode>[0]
   const i18nConfig = publicConfig.i18n
 
   if (!i18nConfig) {
-    const appConfig = useAppConfig()
     const configuredLocale = appConfig.tockdocs.locale || 'en'
-    const locale = hasLocaleMessages(configuredLocale) ? configuredLocale : 'en'
+    const locale = hasLocaleMessages(configuredLocale, localeCatalog) ? configuredLocale : 'en'
 
     if (locale !== configuredLocale) {
       log.warn(`Missing locale file for "${configuredLocale}". Falling back to "en".`)
     }
 
-    const resolvedMessages = resolveLocaleMessages(locale)
+    const resolvedMessages = resolveLocaleMessages(locale, localeCatalog)
 
     nuxtApp.provide('locale', locale)
     nuxtApp.provide('localeMessages', resolvedMessages)

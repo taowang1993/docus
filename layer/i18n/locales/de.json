@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AI fragen",
+    "panelTitle": "AI fragen",
     "placeholder": "Stellen Sie eine Frage...",
     "tooltip": "KI eine Frage stellen",
     "tryAsking": "Versuchen Sie, eine Frage zu stellen",

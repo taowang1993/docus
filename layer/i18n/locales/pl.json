@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "Zapytaj SI",
+    "panelTitle": "Zapytaj SI",
     "placeholder": "Zadaj pytanie...",
     "tooltip": "Zadaj AI pytanie",
     "tryAsking": "Spróbuj zadać pytanie",

@@ -1,6 +1,7 @@
 export default defineAppConfig({
   tockdocs: {
     locale: 'en',
+    localeMessages: {},
     colorMode: '',
   },
   ui: {

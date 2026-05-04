@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AIに聞く",
+    "panelTitle": "AIに聞く",
     "placeholder": "質問してください...",
     "tooltip": "AIに質問する",
     "tryAsking": "質問してみてください",

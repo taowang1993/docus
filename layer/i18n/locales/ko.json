@@ -30,6 +30,7 @@
   },
   "assistant": {
     "title": "AI에게 물어보기",
+    "panelTitle": "AI에게 물어보기",
     "placeholder": "질문하기...",
     "tooltip": "AI에 질문하기",
     "tryAsking": "질문을 해보세요",
